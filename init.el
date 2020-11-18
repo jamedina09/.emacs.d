@@ -652,6 +652,9 @@
             (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
 
+;; to remove error ls does not support dired
+(when (string= system-type "darwin")
+  (setq dired-use-ls-dired nil))
 
 ;; optionally
 (use-package lsp-ui
