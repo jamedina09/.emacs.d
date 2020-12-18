@@ -51,32 +51,32 @@
 (setq calendar-longitude -78.467834)
 
 
-(use-package doom-themes
- :ensure t)
-
-
-(use-package theme-changer
-  :ensure t
-  :config
-  (change-theme 'doom-solarized-light 'doom-one))
-
-
-
 ;(use-package doom-themes
+; :ensure t)
+
+
+;(use-package theme-changer
 ;  :ensure t
-;  :custom-face
-;  (cursor ((t (:background "BlanchedAlmond"))))
 ;  :config
-;  ;; flashing mode-line on errors
-;  (doom-themes-visual-bell-config)
-;  ;; Corrects (and improves) org-mode's native fontification.
-;  (doom-themes-org-config)
-;  (load-theme 'doom-one t)
-;  (defun switch-theme ()
-;    "An interactive funtion to switch themes."
-;    (interactive)
-;    (disable-theme (intern (car (mapcar #'symbol-name custom-enabled-themes))))
-;    (call-interactively #'load-theme)))
+;  (change-theme 'doom-solarized-light 'doom-one))
+
+
+
+(use-package doom-themes
+  :ensure t
+  :custom-face
+  (cursor ((t (:background "BlanchedAlmond"))))
+  :config
+  ;; flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config)
+  (load-theme 'doom-one t)
+  (defun switch-theme ()
+    "An interactive funtion to switch themes."
+    (interactive)
+    (disable-theme (intern (car (mapcar #'symbol-name custom-enabled-themes))))
+    (call-interactively #'load-theme)))
 
 
 ;;----------------------------------------------------------------------------
