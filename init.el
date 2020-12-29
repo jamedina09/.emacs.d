@@ -17,7 +17,6 @@
 (add-to-list 'package-archives
 	     '("gnu" . "http://elpa.gnu.org/packages/") t)
 
-
 ;; Install use-package if not installed
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -30,60 +29,35 @@
   (setq use-package-enable-imenu-support t))
 
 
-
-;; Auto-update package
-;(use-package auto-package-update
-;  :ensure t
-;  :if (not (daemonp))
-;  :custom
-;  (auto-package-update-interval 7) ;; in days
-;  (auto-package-update-prompt-before-update t)
-;  (auto-package-update-delete-old-versions t)
-;  (auto-package-update-hide-results t)
-;  :config
-;  (auto-package-update-maybe))
-
 ;;----------------------------------------------------------------------------
 ;; theme
 ;;----------------------------------------------------------------------------
-(setq calendar-location-name "Quito, EC")
-(setq calendar-latitude -0.180653)
-(setq calendar-longitude -78.467834)
-
-
-;(use-package doom-themes
-; :ensure t)
-
-
-;(use-package theme-changer
-;  :ensure t
-;  :config
-;  (change-theme 'doom-solarized-light 'doom-one))
-
-
-
 (use-package doom-themes
   :ensure t
-  :custom-face
-  (cursor ((t (:background "BlanchedAlmond"))))
   :config
-  ;; flashing mode-line on errors
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-dracula t)
+
+  ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
+
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (doom-themes-treemacs-config)
+
   ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config)
-  (load-theme 'doom-one t)
-  (defun switch-theme ()
-    "An interactive funtion to switch themes."
-    (interactive)
-    (disable-theme (intern (car (mapcar #'symbol-name custom-enabled-themes))))
-    (call-interactively #'load-theme)))
+  (doom-themes-org-config))
 
 
 ;;----------------------------------------------------------------------------
 ;; Kill general login buffers
 ;;----------------------------------------------------------------------------
 ;; Makes *scratch* empty.
-(setq initial-scratch-message "")
+(setq initial-scratch-message "type C-j to run the code ")
 
 ;; Removes *messages* from the buffer.
 (setq-default message-log-max nil)
@@ -94,7 +68,6 @@
 ;; Prevent may windows open when open one window
 ;;----------------------------------------------------------------------------
 (setq ns-pop-up-frames nil)
-
 
 
 ;;----------------------------------------------------------------------------
@@ -113,10 +86,13 @@
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
   (setq locale-coding-system 'utf-8)
+
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 
+;; Line number configuration
+(global-display-line-numbers-mode)
 
 ;; Window size and features
 (add-to-list 'default-frame-alist '(height . 90))
@@ -126,10 +102,7 @@
 (tool-bar-mode -1)
 (set-scroll-bar-mode nil)
 
-;; line number configuration
-(global-linum-mode t);show line number
-
-;; We don't want to type yes and no all the time so, do y and n
+;; We don't want to type yes and no all the time so do y and n
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Overwrite region selected
@@ -137,7 +110,6 @@
 
 ;; turn on highlight matching brackets when cursor is on one
 (show-paren-mode t)
-
 
 ;; Don't Lock Files
 (setq-default create-lockfiles nil)
@@ -167,37 +139,24 @@
 (display-time-mode 1)
 (display-battery-mode 1)
 
+;; Identation as four spaces
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(lsp-python-ms which-key web-mode vscode-dark-plus-theme use-package undo-tree treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-all-the-icons theme-changer smex smartparens rainbow-mode rainbow-delimiters popwin poly-R poke-line pdf-tools org-bullets nimbus-theme lsp-ui lsp-treemacs lsp-ivy latex-preview-pane ivy-prescient ivy-posframe impatient-mode ibuffer-vc humanoid-themes highlight-indent-guides frog-jump-buffer flycheck-tip flycheck-stan flycheck-pyflakes flycheck-posframe flycheck-grammarly fix-word exec-path-from-shell ess emojify elpy doom-themes doom-modeline dired-k dimmer diminish diff-hl dashboard counsel company-stan company-prescient company-posframe company-jedi company-emoji auctex all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer all-the-icons-gnus all-the-icons-dired))
+ '(tab-width 4)
+ '(warning-suppress-log-types '(((flymake flymake))))
+ '(warning-suppress-types '(((flymake flymake)))))
+
+
 ;;----------------------------------------------------------------------------
 ;; Personal information
 ;;----------------------------------------------------------------------------
 (setq user-full-name "J.A. Medina-Vega")
 (setq user-mail-address "jamedina09@gmail.com")
-
-
-;;----------------------------------------------------------------------------
-;; Use ibuffer instead of normal buffer
-;;----------------------------------------------------------------------------
-(use-package ibuffer
-  :ensure nil
-  :bind ("C-x C-b" . ibuffer)
-  :init
-  (use-package ibuffer-vc
-    :ensure t
-    :commands (ibuffer-vc-set-filter-groups-by-vc-root)
-    :custom
-    (ibuffer-vc-skip-if-remote 'nil))
-  :custom
-  (ibuffer-formats
-   '((mark modified read-only locked " "
-           (name 10 35 :left :elide)
-           " "
-           (size 9 -1 :right)
-           " "
-           (mode 16 16 :left :elide)
-           " " filename-and-process)
-     (mark " "
-           (name 16 -1)
-           " " filename))))
 
 
 ;;----------------------------------------------------------------------------
@@ -218,6 +177,24 @@
 ;; Move up/down paragraph
 (global-set-key (kbd "M-n") #'forward-paragraph)
 (global-set-key (kbd "M-p") #'backward-paragraph)
+
+
+;;----------------------------------------------------------------------------
+;; Smooth scrolling
+;;----------------------------------------------------------------------------
+;; Vertical Scroll
+(setq scroll-step 1)
+(setq scroll-margin 1)
+(setq scroll-conservatively 101)
+(setq scroll-up-aggressively 0.01)
+(setq scroll-down-aggressively 0.01)
+(setq auto-window-vscroll nil)
+(setq fast-but-imprecise-scrolling nil)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq mouse-wheel-progressive-speed nil)
+;; Horizontal Scroll
+(setq hscroll-step 1)
+(setq hscroll-margin 1)
 
 
 ;;----------------------------------------------------------------------------
@@ -249,6 +226,26 @@
       time-stamp-format "Last changed %Y-%02m-%02d %02H:%02M:%02S by %L") ; date format
 (add-hook 'write-file-functions 'time-stamp) ; update when saving
 
+
+;;----------------------------------------------------------------------------
+;; Use ibuffer instead of normal buffer
+;;----------------------------------------------------------------------------
+(use-package ibuffer
+  :ensure nil
+  :bind ("C-x C-b" . ibuffer)
+  :init
+  :custom
+  (ibuffer-formats
+   '((mark modified read-only locked " "
+           (name 10 35 :left :elide)
+           " "
+           (size 9 -1 :right)
+           " "
+           (mode 16 16 :left :elide)
+           " " filename-and-process)
+     (mark " "
+           (name 16 -1)
+           " " filename))))
 
 
 ;;----------------------------------------------------------------------------
@@ -288,61 +285,6 @@
                                  (lambda () (interactive) (find-alternate-file ".."))))))
 
 
-
-
-;;----------------------------------------------------------------------------
-;; Fonts
-;;----------------------------------------------------------------------------
-;; Input Mono, Monaco Style, Line Height 1.3 download from http://input.fontbureau.com/
-;(defvar font-list '(("Input Serif" . 11) ("Input Sans" . 12) ("Input Mono" . 12))
-;  "List of fonts and sizes.  The first one available will be used.")
-
-;; Function to switch between fonts
-;(defun change-font ()
-;  "Documentation."
-;  (interactive)
-;  (let* (available-fonts font-name font-size font-setting)
-;    (dolist (font font-list (setq available-fonts (nreverse available-fonts)))
-;      (when (member (car font) (font-family-list))
-;        (push font available-fonts)))
-;    (if (not available-fonts)
-;        (message "No fonts from the chosen set are available")
-;      (if (called-interactively-p 'interactive)
-;          (let* ((chosen (assoc-string (completing-read "What font to use? " available-fonts nil t) available-fonts)))
-;            (setq font-name (car chosen) font-size (read-number "Font size: " (cdr chosen))))
-;        (setq font-name (caar available-fonts) font-size (cdar available-fonts)))
-;      (setq font-setting (format "%s-%d" font-name font-size))
-;      (set-frame-font font-setting nil t)
-;      (add-to-list 'default-frame-alist (cons 'font font-setting)))))
-;
-;(when (display-graphic-p)
-;  (change-font))
-
-
-
-;;----------------------------------------------------------------------------
-;; Smooth scrolling
-;;----------------------------------------------------------------------------
-;; Vertical Scroll
-(setq scroll-step 1)
-(setq scroll-margin 1)
-(setq scroll-conservatively 101)
-(setq scroll-up-aggressively 0.01)
-(setq scroll-down-aggressively 0.01)
-(setq auto-window-vscroll nil)
-(setq fast-but-imprecise-scrolling nil)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-(setq mouse-wheel-progressive-speed nil)
-;; Horizontal Scroll
-(setq hscroll-step 1)
-(setq hscroll-margin 1)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; FROM HERE PACKAGES NEED TO BE INSTALLED
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;----------------------------------------------------------------------------
 ;; exec-path-from-shell
 ;;----------------------------------------------------------------------------
@@ -352,6 +294,7 @@
   :config
   (exec-path-from-shell-initialize)
   )
+
 
 ;;----------------------------------------------------------------------------
 ;; Page break lines
@@ -367,16 +310,6 @@
 
 
 ;;----------------------------------------------------------------------------
-;; frog-jump-buffer
-;;----------------------------------------------------------------------------
-(use-package frog-jump-buffer
-  :ensure t
-  :bind
-  ("C-z" . frog-jump-buffer))
-
-
-
-;;----------------------------------------------------------------------------
 ;; all the icons
 ;;----------------------------------------------------------------------------
 ;; For this package to work best, you need to install the resource fonts
@@ -385,22 +318,21 @@
   :ensure t
   )
 
-; If you experience a slow down in performance when rendering multiple icons simultaneously, you can try setting the following variable
+; If you experience a slow down in performance when rendering multiple icons
+; simultaneously, you can try setting the following variable
 (setq inhibit-compacting-font-caches t)
+
 
 ;;----------------------------------------------------------------------------
 ;; Projectile
 ;;----------------------------------------------------------------------------
 (use-package projectile
-  :diminish
   :ensure t
   :init
-  (setq projectile-completion-system 'ivy
-	projectile-switch-project-action 'projectile-dired)
-  :config
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1)
-  )
+  :bind (:map projectile-mode-map
+              ("s-p" . projectile-command-map)
+              ("C-c p" . projectile-command-map)))
 
 
 ;;----------------------------------------------------------------------------
@@ -437,7 +369,6 @@
   )
 
 
-
 ;;----------------------------------------------------------------------------
 ;; Dimmer
 ;;----------------------------------------------------------------------------
@@ -461,27 +392,12 @@
 ;;----------------------------------------------------------------------------
 (use-package smartparens
   :ensure t
-  :hook ((prog-mode) . smartparens-mode)
+  :hook ((prog-mode ess-r-mode) . smartparens-mode)
   :diminish ;smartparens-mode
-  :bind
-  (:map smartparens-mode-map
-        ("C-M-f" . sp-forward-sexp)
-        ("C-M-b" . sp-backward-sexp)
-        ("C-M-a" . sp-backward-down-sexp)
-        ("C-M-e" . sp-up-sexp)
-        ("C-M-w" . sp-copy-sexp)
-       ; ("C-M-k" . sp-change-enclosing)
-       ; ("M-k" . sp-kill-sexp)
-       ; ("C-M-<backspace>" . sp-splice-sexp-killing-backward)
-       ; ("C-S-<backspace>" . sp-splice-sexp-killing-around)
-        ("C-]" . sp-select-next-thing-exchange))
-  :custom
-  (sp-escape-quotes-after-insert nil)
   :config
   ;; Stop pairing single quotes in elisp
   (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
   (sp-local-pair 'org-mode "[" nil :actions nil))
-
 
 
 ;;----------------------------------------------------------------------------
@@ -490,23 +406,11 @@
  (use-package doom-modeline
    :ensure t
    :custom
-   ;; Don't compact font caches during GC. Windows Laggy Issue
-   (doom-modeline-icon t)
-   (doom-modeline-major-mode-color-icon t)
    (doom-modeline-height 15)
+   (doom-modeline-bar-width 3)
    (doom-modeline-icon t)
-   (doom-modeline-buffer-file-name-style  'truncate-with-project)
-   :config
-   (doom-modeline-mode))
-
-;;----------------------------------------------------------------------------
-;; Poke-line
-;;----------------------------------------------------------------------------
-(use-package poke-line
-  :ensure t
-  :config
-  (poke-line-global-mode 1)
-  (setq-default poke-line-pokemon "charizard"))
+   (doom-modeline-buffer-file-name-style  'truncate-with-project))
+;;This package requires the fonts included with all-the-icons to be installed. Run M-x all-the-icons-install-fonts to do so.
 
 
 ;;----------------------------------------------------------------------------
@@ -546,13 +450,6 @@
   (use-package smex :ensure t)
   )
 
-(use-package ivy-posframe
-  :diminish ivy-posframe-mode
-  :ensure t
-  :after ivy
-  :config
-  (ivy-posframe-mode 1))
-
 
 (use-package ivy-prescient
   :ensure t
@@ -560,45 +457,32 @@
   :config
   (ivy-prescient-mode))
 
+
 ;;----------------------------------------------------------------------------
 ;; Magit
 ;;----------------------------------------------------------------------------
 (use-package magit
   :ensure t
-  :bind ("C-x g" . magit-status)
-  :init
-  (setq magit-completing-read-function 'ivy-completing-read)
-  )
+  :bind (("C-x g" . magit-status)
+	 ("C-c C-g l" . magit-file-log)))
 
 
 ;;----------------------------------------------------------------------------
-;; GitGutter
+;; diff-hl
 ;;----------------------------------------------------------------------------
-;(use-package git-gutter
-;  :ensure t
-;  :init
-;  (setq
-;    git-gutter:modified-sign "^^"
-;    git-gutter:added-sign "++"
-;    git-gutter:deleted-sign "--")
-;  (global-git-gutter-mode t)
-;  :hook
-;  (window-setup . (lambda ()
-;    (set-face-background 'git-gutter:modified "orange")
-;    (set-face-background 'git-gutter:added "green")
-;    (set-face-background 'git-gutter:deleted "red")))
-;)
-
-
-;;----------------------------------------------------------------------------
-;; Counsel projectile
-;;----------------------------------------------------------------------------
-;(use-package counsel-projectile
-;  :ensure t
-;  :config
-;  (counsel-projectile-mode)
-;  )
-
+(use-package diff-hl
+    :ensure t
+    :config
+    ;; Highlight changes to the current file in the fringe
+    (add-hook 'prog-mode-hook #'diff-hl-mode)
+    ;; Highlight changed files in the fringe of Dired
+    (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+    ;; Fall back to the display margin, if the fringe is unavailable
+    (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+    (diff-hl-margin-mode)
+    (setq diff-hl-margin-side 'right)
+    )
 
 
 ;;----------------------------------------------------------------------------
@@ -621,14 +505,11 @@
     )
   )
 
-
-(use-package treemacs-projectile
-  :defer t
-  :after treemacs projectile
+(use-package treemacs-all-the-icons
   :ensure t)
 
-
-(use-package treemacs-all-the-icons
+(use-package treemacs-projectile
+  :after treemacs projectile
   :ensure t)
 
 (use-package treemacs-icons-dired
@@ -637,7 +518,6 @@
   :config (treemacs-icons-dired-mode))
 
 (use-package treemacs-magit
-  :defer t
   :after treemacs magit
   :ensure t)
 
@@ -648,6 +528,7 @@
 (use-package lsp-mode
   :ensure t
   :hook ((ess-r-mode . lsp)
+		 ;(python-mode . lsp)
             ;; if you want which-key integration
             (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
@@ -658,20 +539,14 @@
 
 ;; optionally
 (use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode)
+  :ensure t)
 ;; to remove child buffers with documentation
-(setq lsp-ui-doc-enable nil)
-
+;(setq lsp-ui-doc-enable nil)
 
 ;; if you are ivy user
 (use-package lsp-ivy
   :ensure t
   :commands lsp-ivy-workspace-symbol)
-
-(use-package lsp-treemacs
-  :ensure t
-  :commands lsp-treemacs-errors-list)
 
 
 
@@ -696,9 +571,7 @@
     (push '("*Occur*" :position bottom :height .3) popwin:special-display-config)
     (push '("*Org Select*" :position bottom :height .3) popwin:special-display-config)
     (push '("*compilation*" :position right :width 80 :noselect t) popwin:special-display-config)
-    (popwin-mode 1))
-  )
-
+    (popwin-mode 1)))
 
 
 ;;----------------------------------------------------------------------------
@@ -707,15 +580,8 @@
 (use-package flycheck
   :ensure t
   :defer t
-  :diminish
-  :hook ((prog-mode markdown-mode text-mode) . flycheck-mode)
-  :custom
-  (flycheck-global-modes
-   '(not text-mode outline-mode fundamental-mode org-mode
-         diff-mode shell-mode eshell-mode term-mode))
-  (flycheck-emacs-lisp-load-path 'inherit)
-  (flycheck-indication-mode 'right-fringe)
-  )
+;  :diminish
+  :hook ((markdown-mode ess-r-mode python-mode) . flycheck-mode))
 
 
 ;;----------------------------------------------------------------------------
@@ -742,24 +608,12 @@
   (setq flycheck-display-errors-function 'ignore)
   )
 
-;;----------------------------------------------------------------------------
-;; flycheck-posframe
-;;----------------------------------------------------------------------------
-(use-package flycheck-posframe
-  :ensure t
-  :after flycheck
-  :config (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
-
 
 ;;----------------------------------------------------------------------------
 ;; Emoji
 ;;----------------------------------------------------------------------------
 (use-package company-emoji
   :ensure t)
-
-(use-package emojify
-  :ensure t
-  :hook (after-init . global-emojify-mode))
 
 
 ;;----------------------------------------------------------------------------
@@ -775,19 +629,12 @@
   )
 
 
-(use-package company-posframe
-  :diminish company-posframe-mode
-  :ensure t
-  :after company
-  :config
-  (company-posframe-mode 1))
-
-
 (use-package company-prescient
   :ensure t
   :after company
   :config
   (company-prescient-mode))
+
 
 ;;----------------------------------------------------------------------------
 ;; Fix word - upcase - downcase region
@@ -834,7 +681,6 @@
 ;; Spell checking should now work with M-x ispell
 
 
-
 ;;----------------------------------------------------------------------------
 ;; Undo-tree
 ;;----------------------------------------------------------------------------
@@ -847,7 +693,6 @@
   (undo-tree-visualizer-diff t)
   (undo-tree-visualizer-timestamps t))
 ;; Open with C-x u
-
 
 
 ;;----------------------------------------------------------------------------
@@ -890,9 +735,7 @@
   :diminish
   :ensure t
   :config
-  (add-hook 'prog-mode-hook 'rainbow-mode))
-
-
+  (add-hook 'prog-mode-hook 'rainbow-mode 'ess-r-mode 'markdown-mode))
 
 
 ;;----------------------------------------------------------------------------
@@ -910,7 +753,6 @@
   (highlight-indent-guides-responsive 'top)
   (highlight-indent-guides-delay 0)
   (highlight-indent-guides-auto-character-face-perc 7))
-
 
 
 ;;----------------------------------------------------------------------------
@@ -959,11 +801,10 @@
   :init (all-the-icons-ibuffer-mode 1))
 
 
-
 ;;----------------------------------------------------------------------------
 ;; pdf-tools
 ;;----------------------------------------------------------------------------
-;;; Instal poppler via homberew via brew install poppler automake
+;;; Instal poppler via homberew  (brew install poppler automake)
 ;;; You will also have to help pkg-config find some libraries by setting PKG_CONFIG_PATH, e.g.
 ;;; in the terminal writte: export PKG_CONFIG_PATH=/usr/local/Cellar/zlib/1.2.8/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
 ;; This are other indications from https://emacs.stackexchange.com/questions/13314/install-pdf-tools-on-emacs-macosx
@@ -985,9 +826,6 @@
  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1))))
 
 
-
-
-
 ;;----------------------------------------------------------------------------
 ;; Web-mode
 ;;----------------------------------------------------------------------------
@@ -995,7 +833,6 @@
   :ensure t
   :mode
  ("\\.html?\\'" . web-mode))
-
 
 
 ;;----------------------------------------------------------------------------
@@ -1018,34 +855,29 @@
 ;; Interpreter setup
 (setq python-shell-interpreter "python3"
       python-shell-interpreter-args "-i")
-;; emacs dont warm me about identation
-(setq python-indent-guess-indent-offset-verbose nil))
+; emacs dont warm me about identation
+(setq python-indent-guess-indent-offset-verbose nil)
+)
 
+
+(add-hook 'python-mode-hook
+(lambda ()
+   (setq indent-tabs-mode nil)
+   (setq python-indent-offset 4)))
+
+;; to use python with lsp install the following
+;; pip3 install 'python-language-server[all]'
 
 
 ;;----------------------------------------------------------------------------
-;; flycheck-pyflakes
+;; lsp-python-ms
 ;;----------------------------------------------------------------------------
-(use-package flycheck-pyflakes
+(use-package lsp-python-ms
   :ensure t
-  :after python)
-
-
-;;----------------------------------------------------------------------------
-;; virtualenvwrapper
-;;----------------------------------------------------------------------------
-;(require 'virtualenvwrapper)
-;(use-package virtualenvwrapper
-;  :ensure t
-;  :config
-;(venv-initialize-interactive-shells) ;; if you want interactive shell support
-;(venv-initialize-eshell)) ;; if you want eshell support
-;; note that setting `venv-location` is not necessary if you
-;; use the default location (`~/.virtualenvs`), or if the
-;; the environment variable `WORKON_HOME` points to the right place
-;;(setq venv-location "/path/to/your/virtualenvs/")
-
-
+  :init (setq lsp-python-ms-auto-install-server t)
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-python-ms)
+                          (lsp))))  ; or lsp-deferred
 
 ;;----------------------------------------------------------------------------
 ;; ESS
@@ -1107,12 +939,8 @@
        'ess-eval-region-or-line-and-step)))
   (unless (getenv "LC_ALL") (setenv "LC_ALL" "en_US.UTF-8")))
 
-
-
 ;; ESS
 (kill-buffer "*ESS*")
-
-
 
 
 ;;----------------------------------------------------------------------------
@@ -1152,7 +980,6 @@
   (TeX-source-correlate-method '((dvi . source-specials) (pdf . synctex)))
   (TeX-source-correlate-mode t))
 
-
  ;; Update PDF buffers after successful LaTeX runs
   (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
             #'TeX-revert-document-buffer)
@@ -1168,7 +995,6 @@
   )
 
 
-
 ;;----------------------------------------------------------------------------
 ;; Markdown-mode
 ;;----------------------------------------------------------------------------
@@ -1177,8 +1003,7 @@
   :defer t
    :mode (("//.markdown" . markdown-mode)
          ("//.md" . markdown-mode)
-         ("//.ronn?" . markdown-mode))
-   )
+         ("//.ronn?" . markdown-mode)))
 
 
 ;;----------------------------------------------------------------------------
@@ -1190,9 +1015,7 @@
    :mode (("//.Rnw" . poly-noweb+r-mode)
 	  ("//.Rmd" . poly-markdown+r-mode)
 	  ("//.Snw" . poly-noweb+r-mode)
-          ("//.rmd" . poly-markdown+r-mode))
-   )
-
+          ("//.rmd" . poly-markdown+r-mode)))
 
 (defcustom polymode-exporter-output-file-format "%s"
   "Format of the exported files.
@@ -1246,7 +1069,6 @@
   (setq flycheck-stanc3-executable nil))
 
 
-
 ;;----------------------------------------------------------------------------
 ;; Org-mode
 ;;----------------------------------------------------------------------------
@@ -1261,16 +1083,13 @@
 ;; to  add a note when a certain TODO is done
 ;(setq org-log-done 'note)
 
-
 ;; Define my todo states
 (setq org-todo-keywords
       '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELLED")))
 
-
 ;; To filter eventual list
 (defun air-org-skip-subtree-if-priority (priority)
   "Skip an agenda subtree if it has a priority of PRIORITY.
-
 
 PRIORITY may be one of the characters ?A, ?B, or ?C."
   (let ((subtree-end (save-excursion (org-end-of-subtree t)))
@@ -1287,7 +1106,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
     (if (string= (org-entry-get nil "STYLE") "habit")
         subtree-end
       nil)))
-
 
 ;; Composite view agenda
 ;(setq org-agenda-custom-commands
@@ -1314,8 +1132,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                                    (org-agenda-skip-if nil '(scheduled deadline))))
                     (org-agenda-overriding-header "ALL normal priority tasks:"))))
          ((org-agenda-compact-blocks nil))))) ; Change to t if you want to remove the equal divisions
-
-
 
 
 (use-package org-bullets
