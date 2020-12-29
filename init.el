@@ -139,18 +139,6 @@
 (display-time-mode 1)
 (display-battery-mode 1)
 
-;; Identation as four spaces
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(lsp-python-ms which-key web-mode vscode-dark-plus-theme use-package undo-tree treemacs-projectile treemacs-magit treemacs-icons-dired treemacs-all-the-icons theme-changer smex smartparens rainbow-mode rainbow-delimiters popwin poly-R poke-line pdf-tools org-bullets nimbus-theme lsp-ui lsp-treemacs lsp-ivy latex-preview-pane ivy-prescient ivy-posframe impatient-mode ibuffer-vc humanoid-themes highlight-indent-guides frog-jump-buffer flycheck-tip flycheck-stan flycheck-pyflakes flycheck-posframe flycheck-grammarly fix-word exec-path-from-shell ess emojify elpy doom-themes doom-modeline dired-k dimmer diminish diff-hl dashboard counsel company-stan company-prescient company-posframe company-jedi company-emoji auctex all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer all-the-icons-gnus all-the-icons-dired))
- '(tab-width 4)
- '(warning-suppress-log-types '(((flymake flymake))))
- '(warning-suppress-types '(((flymake flymake)))))
-
 
 ;;----------------------------------------------------------------------------
 ;; Personal information
@@ -1141,3 +1129,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 
 (provide 'init)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
