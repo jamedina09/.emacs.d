@@ -208,7 +208,7 @@
 ;; Time-stamp
 ;;----------------------------------------------------------------------------
 ;; when there is a "Time-stamp: <>" in the first 10 lines of the file,
-;; emacs will write time-stamp information there when saving the file.
+1;; emacs will write time-stamp information there when saving the file.
 (setq time-stamp-active t  ;; do enable time-stamp
       time-stamp-line-limit 10 ;; check first 10 buffer lines for Time-stamp: <>
       time-stamp-format "Last changed %Y-%02m-%02d %02H:%02M:%02S by %L") ; date format
@@ -473,6 +473,7 @@
     )
 
 
+
 ;;----------------------------------------------------------------------------
 ;; treemacs
 ;;----------------------------------------------------------------------------
@@ -490,24 +491,17 @@
           treemacs-width                         35
           treemacs-workspace-switch-cleanup      nil
 	  treemacs-resize-icons                  5)
-    )
-  )
+    ))
+
 
 (use-package treemacs-all-the-icons
   :ensure t)
 
-(use-package treemacs-projectile
-  :after treemacs projectile
-  :ensure t)
 
 (use-package treemacs-icons-dired
   :after treemacs dired
   :ensure t
   :config (treemacs-icons-dired-mode))
-
-(use-package treemacs-magit
-  :after treemacs magit
-  :ensure t)
 
 
 ;;----------------------------------------------------------------------------
@@ -570,17 +564,6 @@
   :defer t
 ;  :diminish
   :hook ((markdown-mode ess-r-mode python-mode) . flycheck-mode))
-
-
-;;----------------------------------------------------------------------------
-;; flycheck-grammarly
-;;----------------------------------------------------------------------------
-(use-package flycheck-grammarly
-  :defer t
-  :after flycheck
-  :ensure t
-  :config
-  (setq flycheck-grammarly-check-time 0.8))
 
 
 ;;----------------------------------------------------------------------------
@@ -786,7 +769,8 @@
 ;;----------------------------------------------------------------------------
 (use-package all-the-icons-ibuffer
   :ensure t
-  :init (all-the-icons-ibuffer-mode 1))
+  :init (all-the-icons-ibuffer-mode 1)
+  )
 
 
 ;;----------------------------------------------------------------------------
@@ -811,7 +795,8 @@
  (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
  (setq mouse-wheel-follow-mouse t)
  (setq pdf-view-resize-factor 1.10)
- (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1))))
+ (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+ )
 
 
 ;;----------------------------------------------------------------------------
@@ -820,7 +805,8 @@
 (use-package web-mode
   :ensure t
   :mode
- ("\\.html?\\'" . web-mode))
+  ("\\.html?\\'" . web-mode)
+  )
 
 
 ;;----------------------------------------------------------------------------
@@ -853,19 +839,19 @@
    (setq indent-tabs-mode nil)
    (setq python-indent-offset 4)))
 
-;; to use python with lsp install the following
-;; pip3 install 'python-language-server[all]'
-
 
 ;;----------------------------------------------------------------------------
 ;; lsp-python-ms
 ;;----------------------------------------------------------------------------
-(use-package lsp-python-ms
-  :ensure t
-  :init (setq lsp-python-ms-auto-install-server t)
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-python-ms)
-                          (lsp))))  ; or lsp-deferred
+;; to use python with lsp install the following
+;; pip3 install 'python-language-server[all]'
+;(use-package lsp-python-ms
+;  :ensure t
+;  :init (setq lsp-python-ms-auto-install-server t)
+;  :hook (python-mode . (lambda ()
+;                          (require 'lsp-python-ms)
+;                          (lsp))))  ; or lsp-deferred
+
 
 ;;----------------------------------------------------------------------------
 ;; ESS
@@ -1129,6 +1115,13 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 
 (provide 'init)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(org-bullets flycheck-stan company-stan stan-mode poly-R latex-preview-pane auctex ess elpy impatient-mode web-mode pdf-tools all-the-icons-ibuffer all-the-icons-gnus all-the-icons-dired all-the-icons-ivy-rich all-the-icons-ivy highlight-indent-guides rainbow-mode rainbow-delimiters which-key dired-k undo-tree fix-word company-prescient company-emoji flycheck-tip flycheck popwin lsp-ivy lsp-ui lsp-mode treemacs-icons-dired treemacs-all-the-icons treemacs diff-hl magit ivy-prescient counsel ivy-rich ivy doom-modeline smartparens diminish dimmer dashboard projectile all-the-icons page-break-lines exec-path-from-shell doom-themes use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
