@@ -517,16 +517,44 @@
 (when (string= system-type "darwin")
   (setq dired-use-ls-dired nil))
 
-;; optionally
 (use-package lsp-ui
-  :ensure t)
-;; to remove child buffers with documentation
-;(setq lsp-ui-doc-enable nil)
+  :commands lsp-ui-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :bind (("C-c C-v s" . lsp-ui-sideline-toggle-symbols-info)
+         ("C-c C-v d" . lsp-ui-doc-mode))
+  :config
+  (setq
+        ;; lsp-ui-doc
+        lsp-ui-doc-enable t
+        lsp-ui-doc-header nil
+        lsp-ui-doc-include-signature nil
+	lsp-ui-doc-delay 2
+        ;; top, bottom, or at-point
+        lsp-ui-doc-position 'at-point
+        lsp-ui-doc-max-width 120
+        lsp-ui-doc-max-height 30
+        lsp-ui-doc-use-childframe t
+        lsp-ui-doc-use-webkit t
+        ;; lsp-ui-sideline
+        ;lsp-ui-sideline-enable nil
+        ;lsp-ui-sideline-ignore-duplicate t
+        ;lsp-ui-sideline-show-symbol t
+        ;lsp-ui-sideline-show-hover t
+        ;lsp-ui-sideline-show-diagnostics t
+        ;lsp-ui-sideline-show-code-actions t
+        ;lsp-ui-sideline-code-actions-prefix ""
+         ;; lsp-ui-peek
+        lsp-ui-peek-enable t
+        lsp-ui-peek-peek-height 20
+        lsp-ui-peek-list-width 50
+        ;; never, on-demand, or always
+        lsp-ui-peek-fontify 'on-demand
+        ))
 
-;; if you are ivy user
+;; Ivy integration
 (use-package lsp-ivy
   :ensure t
-  :commands lsp-ivy-workspace-symbol)
+  :after lsp-mode)
 
 
 ;;----------------------------------------------------------------------------
@@ -1112,3 +1140,16 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 
 (provide 'init)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(smex org-bullets flycheck-stan company-stan stan-mode poly-R latex-preview-pane auctex ess elpy impatient-mode web-mode pdf-tools all-the-icons-ibuffer all-the-icons-gnus all-the-icons-dired all-the-icons-ivy-rich all-the-icons-ivy highlight-indent-guides rainbow-mode rainbow-delimiters which-key dired-k undo-tree fix-word company-prescient company-emoji flycheck-tip flycheck popwin lsp-ivy lsp-ui lsp-mode treemacs-icons-dired treemacs-all-the-icons treemacs diff-hl magit ivy-prescient counsel ivy-rich ivy doom-modeline smartparens diminish dimmer dashboard projectile all-the-icons page-break-lines exec-path-from-shell doom-themes use-package)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
