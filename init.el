@@ -886,7 +886,39 @@
   :defer t
   :init (require 'ess-site)
   (add-hook 'ess-r-mode-hook
-          (lambda () (flycheck-mode t)))
+            (lambda () (flycheck-mode t)))
+  ;; Outline mode for R
+(add-hook 'ess-mode-hook
+    '(lambda ()
+    (outline-minor-mode)
+    (setq outline-regexp "^#.*----")
+    (defun outline-level ()
+    (cond (looking-at "^#.*----") 1)
+    (t 1000)
+    )
+
+    (defun send-section-to-R ()
+    (interactive ())
+    (let ((beg))
+    (if (outline-on-heading-p)
+    (beginning-of-line)
+    (outline-previous-visible-heading 1))
+    (setq beg (point))
+    (set-mark (point))
+    (outline-next-visible-heading 1)
+    (previous-line 1)
+    (end-of-line 1)
+    (ess-eval-region-or-function-or-paragraph-and-step)
+    )
+    )
+
+    (local-set-key (kbd "C-c h") 'outline-hide-body)
+    (local-set-key (kbd "C-c s") 'outline-show-all)
+    (local-set-key (kbd "C-c <left>") 'outline-hide-entry)
+    (local-set-key (kbd "C-c <right>") 'outline-show-entry)
+    (local-set-key (kbd "C-c <up>") 'outline-previous-heading)
+    (local-set-key (kbd "C-c <down>") 'outline-next-heading)
+    (local-set-key (kbd "C-c e") 'send-section-to-R)))
   :config
   (define-key ess-r-mode-map "_" #'ess-insert-assign)
   (define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
@@ -940,6 +972,11 @@
 
 ;; ESS
 (kill-buffer "*ESS*")
+
+
+
+
+
 
 
 ;;----------------------------------------------------------------------------
