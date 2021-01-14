@@ -1177,7 +1177,8 @@
 (define-key global-map "\C-ca" 'org-agenda)
 ;(setq org-log-done t)
 ;; Define my agenda files
-(setq org-agenda-files (list "~/Google Drive/org/october_2020/todo.org"))
+;(setq org-agenda-files (list "~/Google Drive/org/agenda_2021.org"))
+(setq org-agenda-files '("~/org"))
 
 ;; to automatically add time when a certain TODO is done
 (setq org-log-done 'time)
