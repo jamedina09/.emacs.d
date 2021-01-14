@@ -1175,11 +1175,11 @@
 ;;----------------------------------------------------------------------------
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
-;(setq org-log-done t)
-;; Define my agenda files
-;(setq org-agenda-files (list "~/Google Drive/org/agenda_2021.org"))
 
+
+;; Define my agenda files and capture default file
 (setq org-agenda-files (directory-files-recursively "~//Google Drive/org/" "\\.org$"))
+(setq org-default-notes-file "~/Google Drive/org/2021/agenda.org")
 
 ;; to automatically add time when a certain TODO is done
 (setq org-log-done 'time)
@@ -1210,18 +1210,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         subtree-end
       nil)))
 
-;; Composite view agenda
-;(setq org-agenda-custom-commands
-;      '(("c" "Simple agenda view"
-;         ((tags "PRIORITY=\"A\""
-;                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-;                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
-;          (agenda "")
-;          (alltodo ""
-;                   ((org-agenda-skip-function
-;                     '(or (air-org-skip-subtree-if-priority ?A)
-;                          (org-agenda-skip-if nil '(scheduled deadline))))))))))
-
 ;; the final agenda
 (setq org-agenda-custom-commands
       '(("d" "Daily agenda and all TODOs"
@@ -1235,6 +1223,23 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                                    (org-agenda-skip-if nil '(scheduled deadline))))
                     (org-agenda-overriding-header "ALL normal priority tasks:"))))
          ((org-agenda-compact-blocks nil))))) ; Change to t if you want to remove the equal divisions
+
+
+
+
+;; org-capture
+; activate capture
+(global-set-key (kbd "C-c c") 'org-capture)
+
+;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings, and org-protocol
+(setq org-capture-templates
+    '(("t" "Todo" entry (file "~/Google Drive/org/2021/agenda.org")
+       "* TODO %?" :empty-lines 1)
+      ("m" "Meeting" entry (file+headline "~/Google Drive/org/2021/agenda.org"
+					  "Meetings")
+       "* Meeting with %?" :empty-lines 1)
+      ("p" "Presentation" entry (file "~/Google Drive/org/2021/talks.org")
+       "* Title and author: %?\n%U" :empty-lines 1 :time-prompt t)))
 
 
 (use-package org-bullets
