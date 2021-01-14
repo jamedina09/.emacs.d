@@ -1176,7 +1176,6 @@
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 
-
 ;; Define my agenda files and capture default file
 (setq org-agenda-files (directory-files-recursively "~//Google Drive/org/" "\\.org$"))
 (setq org-default-notes-file "~/Google Drive/org/2021/agenda.org")
@@ -1225,9 +1224,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
          ((org-agenda-compact-blocks nil))))) ; Change to t if you want to remove the equal divisions
 
 
-
-
-;; org-capture
+;; Org-capture
 ; activate capture
 (global-set-key (kbd "C-c c") 'org-capture)
 
@@ -1241,13 +1238,13 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
       ("p" "Presentation" entry (file "~/Google Drive/org/2021/talks.org")
        "* Title and author: %?\n%U" :empty-lines 1 :time-prompt t)))
 
-
 (use-package org-bullets
   :ensure t
   :hook
   (org-mode . (lambda () (org-bullets-mode 1))))
 
 
+;;----------------------------------------------------------------------------
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
