@@ -1178,7 +1178,8 @@
 ;(setq org-log-done t)
 ;; Define my agenda files
 ;(setq org-agenda-files (list "~/Google Drive/org/agenda_2021.org"))
-(setq org-agenda-files '("~/Google Drive/org/agenda_2021.org"))
+
+(setq org-agenda-files (directory-files-recursively "~//Google Drive/org/" "\\.org$"))
 
 ;; to automatically add time when a certain TODO is done
 (setq org-log-done 'time)
