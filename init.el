@@ -1244,20 +1244,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (org-mode . (lambda () (org-bullets-mode 1))))
 
 
-;;----------------------------------------------------------------------------
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(smex org-bullets flycheck-stan company-stan stan-mode poly-R latex-preview-pane auctex ess elpy impatient-mode web-mode pdf-tools all-the-icons-ibuffer all-the-icons-gnus all-the-icons-dired all-the-icons-ivy-rich all-the-icons-ivy highlight-indent-guides rainbow-mode rainbow-delimiters which-key dired-k undo-tree fix-word company-prescient company-emoji flycheck-tip flycheck popwin lsp-ivy lsp-ui lsp-mode treemacs-icons-dired treemacs-all-the-icons treemacs diff-hl magit ivy-prescient counsel ivy-rich ivy doom-modeline smartparens diminish dimmer dashboard projectile all-the-icons page-break-lines exec-path-from-shell doom-themes use-package)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 
 (provide 'init)
