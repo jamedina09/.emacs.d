@@ -1171,73 +1171,8 @@
 
 
 ;;----------------------------------------------------------------------------
-;; Org-mode
+;; Org-bullets
 ;;----------------------------------------------------------------------------
-(define-key global-map "\C-cl" 'org-store-link)
-(define-key global-map "\C-ca" 'org-agenda)
-
-;; Define my agenda files and capture default file
-(setq org-agenda-files (directory-files-recursively "~//Google Drive/org/" "\\.org$"))
-(setq org-default-notes-file "~/Google Drive/org/2021/agenda.org")
-
-;; to automatically add time when a certain TODO is done
-(setq org-log-done 'time)
-;; to  add a note when a certain TODO is done
-;(setq org-log-done 'note)
-
-;; Define my todo states
-(setq org-todo-keywords
-      '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELLED")))
-
-;; To filter eventual list
-(defun air-org-skip-subtree-if-priority (priority)
-  "Skip an agenda subtree if it has a priority of PRIORITY.
-
-PRIORITY may be one of the characters ?A, ?B, or ?C."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-        (pri-value (* 1000 (- org-lowest-priority priority)))
-        (pri-current (org-get-priority (thing-at-point 'line t))))
-    (if (= pri-value pri-current)
-        subtree-end
-      nil)))
-
-;; to filter habits
-(defun air-org-skip-subtree-if-habit ()
-  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-    (if (string= (org-entry-get nil "STYLE") "habit")
-        subtree-end
-      nil)))
-
-;; the final agenda
-(setq org-agenda-custom-commands
-      '(("d" "Daily agenda and all TODOs"
-         ((tags "PRIORITY=\"A\""
-                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
-          (agenda "" ((org-agenda-ndays 1)))
-          (alltodo ""
-                   ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
-                                                   (air-org-skip-subtree-if-priority ?A)
-                                                   (org-agenda-skip-if nil '(scheduled deadline))))
-                    (org-agenda-overriding-header "ALL normal priority tasks:"))))
-         ((org-agenda-compact-blocks nil))))) ; Change to t if you want to remove the equal divisions
-
-
-;; Org-capture
-; activate capture
-(global-set-key (kbd "C-c c") 'org-capture)
-
-;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings, and org-protocol
-(setq org-capture-templates
-    '(("t" "Todo" entry (file "~/Google Drive/org/2021/agenda.org")
-       "* TODO %?" :empty-lines 1)
-      ("m" "Meeting" entry (file+headline "~/Google Drive/org/2021/agenda.org"
-					  "Meetings")
-       "* Meeting with %?" :empty-lines 1)
-      ("p" "Presentation" entry (file "~/Google Drive/org/2021/talks.org")
-       "* Title and author: %?\n%U" :empty-lines 1 :time-prompt t)))
-
 (use-package org-bullets
   :ensure t
   :hook
