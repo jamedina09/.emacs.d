@@ -643,6 +643,7 @@
     (push '("*Occur*" :position bottom :height .3) popwin:special-display-config)
     (push '("*Org Select*" :position bottom :height .3) popwin:special-display-config)
     (push '("*compilation*" :position right :width 80 :noselect t) popwin:special-display-config)
+    (push '("*Calendar*" :position bottom :height .3) popwin:special-display-config)
     (popwin-mode 1)))
 
 
