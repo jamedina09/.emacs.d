@@ -1171,6 +1171,102 @@
 
 
 ;;----------------------------------------------------------------------------
+;; Org-mode
+;;----------------------------------------------------------------------------
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+
+ ;; Define my agenda files
+(setq org-agenda-files (directory-files-recursively "~//Google Drive/org/" "\\.org$"))
+
+;; to automatically add time when a certain TODO is done
+;(setq org-log-done 'time)
+
+ ;; Define my todo states
+(setq org-todo-keywords
+      '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELLED")))
+
+ ;; To filter eventual list
+(defun air-org-skip-subtree-if-priority (priority)
+  "Skip an agenda subtree if it has a priority of PRIORITY.
+
+PRIORITY may be one of the characters ?A, ?B, or ?C."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+        (pri-value (* 1000 (- org-lowest-priority priority)))
+        (pri-current (org-get-priority (thing-at-point 'line t))))
+    (if (= pri-value pri-current)
+        subtree-end
+      nil)))
+
+ ;; to filter habits
+(defun air-org-skip-subtree-if-habit ()
+  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+    (if (string= (org-entry-get nil "STYLE") "habit")
+        subtree-end
+      nil)))
+
+ ;; the final agenda
+ (setq org-agenda-custom-commands
+       '(("d" "Daily agenda and all TODOs"
+          ((tags "PRIORITY=\"A\""
+                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                  (org-agenda-overriding-header "High-priority unfinished tasks:")))
+           (agenda "" ((org-agenda-ndays 1)))
+           (alltodo ""
+                    ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
+                                                    (air-org-skip-subtree-if-priority ?A)
+                                                    (org-agenda-skip-if nil '(scheduled deadline))))
+                     (org-agenda-overriding-header "ALL normal priority tasks:"))))
+          ((org-agenda-compact-blocks nil))))) ; Change to t if you want to remove the equal divisions
+
+
+;;----------------------------------------------------------------------------
+;; Org-journal
+;;----------------------------------------------------------------------------
+(use-package org-journal
+  :ensure t
+  :defer t
+  :init
+  ;; Change default prefix key; needs to be set before loading org-journal
+  (setq org-journal-prefix-key "C-c j ")
+  :config
+  (setq org-journal-dir "~/Google Drive/org/journal/"
+        org-journal-date-format "%A, %d %B %Y"
+	org-journal-file-format "%Y-%m-%d.org"
+	org-journal-find-file 'find-file
+	org-journal-file-type 'weekly
+	org-journal-enable-agenda-integration 't)
+  :bind
+  (("C-c C-j" . org-journal-new-entry)
+   ("C-c C-s" . org-journal-search)))
+
+
+;;----------------------------------------------------------------------------
+;; Org-roam
+;;----------------------------------------------------------------------------
+(use-package org-roam
+  :ensure t
+  :diminish
+  :hook
+  (after-init . org-roam-mode)
+  :custom
+  (org-roam-directory "~/Google Drive/org/notes/")
+  :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
+
+;; From: https://github.com/org-roam/org-roam
+;; Org-roam requires sqlite to function. Org-roam optionally uses Graphviz for
+;; graph-related functionality. It is recommended to install
+;; PCRE-enabled ripgrep for better performance and extended functionality.
+
+
+;;----------------------------------------------------------------------------
 ;; Org-bullets
 ;;----------------------------------------------------------------------------
 (use-package org-bullets
