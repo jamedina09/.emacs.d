@@ -600,11 +600,26 @@
 ;;----------------------------------------------------------------------------
 (use-package lsp-mode
   :ensure t
-  :hook ((ess-r-mode . lsp)
-	 ;;(python-mode . lsp)
-         ;; if you want which-key integration
-         (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
+  :config
+  (setq lsp-idle-delay 0.5
+        lsp-enable-symbol-highlighting t
+        lsp-enable-snippet nil  ;; Not supported by company capf, which is the recommended company backend
+        lsp-pyls-plugins-flake8-enabled t)
+  (lsp-register-custom-settings
+   '(("pyls.plugins.pyls_mypy.enabled" t t)
+     ("pyls.plugins.pyls_mypy.live_mode" nil t)
+     ("pyls.plugins.pyls_black.enabled" t t)
+     ("pyls.plugins.pyls_isort.enabled" t t)
+     ;; Disable these as they're duplicated by flake8
+     ("pyls.plugins.pycodestyle.enabled" nil t)
+     ("pyls.plugins.mccabe.enabled" nil t)
+     ("pyls.plugins.pyflakes.enabled" nil t)))
+  :hook
+  ((ess-r-mode . lsp)
+   (python-mode . lsp)
+   (lsp-mode . lsp-enable-which-key-integration)))
+
+
 
 ;; to remove error ls does not support dired
 (when (string= system-type "darwin")
@@ -630,7 +645,7 @@
    lsp-ui-doc-use-webkit t
    ;; lsp-ui-sideline
    ;;lsp-ui-sideline-enable nil
-   ;;lsp-ui-sideline-ignore-duplicate t
+   lsp-ui-sideline-ignore-duplicate t
    ;;lsp-ui-sideline-show-symbol t
    ;;lsp-ui-sideline-show-hover t
    ;;lsp-ui-sideline-show-diagnostics t
@@ -647,6 +662,13 @@
 (use-package lsp-ivy
   :ensure t
   :after lsp-mode)
+
+;;Company-lsp
+(use-package company-lsp
+  :ensure t
+  :after company lsp-mode
+  :config
+  (push 'company-lsp company-backends))
 
 
 ;;----------------------------------------------------------------------------
@@ -708,12 +730,18 @@
 ;; Company-mode
 ;;----------------------------------------------------------------------------
 (use-package company
-  :diminish
   :ensure t
-  :hook
-  (prog-mode . company-mode)
+  :diminish company-mode
+  :init
+  (global-company-mode)
   :config
-  (add-to-list 'company-backends 'company-emoji))
+  ;; set default `company-backends'
+  (setq company-backends
+        '((company-files          ; files & directory
+           company-keywords       ; keywords
+           company-capf ; completion-at-point-functions
+	   company-emoji)
+          (company-abbrev company-dabbrev))))
 
 
 (use-package company-prescient
@@ -937,7 +965,7 @@
 ;;----------------------------------------------------------------------------
 (use-package impatient-mode
   :ensure t)
-;; Package cl is deprecated -> this warning is ok dont worry
+;; Package cl is deprecated - this warning is ok, dont worry
 
 
 ;;----------------------------------------------------------------------------
@@ -947,19 +975,22 @@
   :ensure t
   :defer t
   :init
-  (advice-add 'python-mode :before 'elpy-enable)
-  :config
-  ;; Interpreter setup
-  (setq python-shell-interpreter "python3"
-	python-shell-interpreter-args "-i")
-					; emacs dont warm me about identation
-  (setq python-indent-guess-indent-offset-verbose nil))
+  (advice-add 'python-mode :before 'elpy-enable))
+;;  :config
+;;Interpreter setup
+;;  (setq python-shell-interpreter "python3"
+;;	python-shell-interpreter-args "-i"
+;;	)
+;; emacs dont warm me about identation
+;; (setq python-indent-guess-indent-offset-verbose nil))
+
+;;(add-hook 'python-mode-hook 'elpy-mode)
 
 
-(add-hook 'python-mode-hook
-	  (lambda ()
-	    (setq indent-tabs-mode nil)
-	    (setq python-indent-offset 4)))
+;;(add-hook 'python-mode-hook;
+;;	  (lambda ()
+;;	    (setq indent-tabs-mode nil)
+;;	    (setq python-indent-offset 4)))
 
 
 ;;----------------------------------------------------------------------------
@@ -1311,3 +1342,16 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 
 (provide 'init)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(company-lsp which-key web-mode use-package undo-tree treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-all-the-icons smex smartparens restart-emacs rainbow-mode rainbow-delimiters popwin poly-R pdf-tools osx-trash org-roam org-journal org-bullets lsp-ui lsp-ivy latex-preview-pane ivy-prescient impatient-mode highlight-indent-guides grip-mode flymd flycheck-tip flycheck-stan fix-word fill-column-indicator exec-path-from-shell ess elpy doom-themes doom-modeline dired-k dimmer diminish diff-hl dashboard counsel company-stan company-prescient company-emoji buffer-move beacon auctex all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer all-the-icons-gnus all-the-icons-dired)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
