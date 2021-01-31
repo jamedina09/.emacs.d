@@ -940,14 +940,14 @@
   :defer t
   :init
   (advice-add 'python-mode :before 'elpy-enable)
-  (remove-hook 'elpy-modules 'elpy-module-flymake))
-;;  :config
-;;Interpreter setup
-;;  (setq python-shell-interpreter "python3"
-;;	python-shell-interpreter-args "-i"
-;;	)
-;; emacs dont warm me about identation
-;; (setq python-indent-guess-indent-offset-verbose nil))
+  (remove-hook 'elpy-modules 'elpy-module-flymake)
+  :config
+  ;;Interpreter setup
+  ;;  (setq python-shell-interpreter "python3"
+  ;;	python-shell-interpreter-args "-i"
+  ;;	)
+  ;; emacs dont warm me about identation
+  (setq python-indent-guess-indent-offset-verbose nil))
 
 ;;(add-hook 'python-mode-hook 'elpy-mode)
 
