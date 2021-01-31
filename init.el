@@ -56,7 +56,7 @@
 ;; Kill general login buffers
 ;;----------------------------------------------------------------------------
 ;; Makes *scratch* empty.
-(setq initial-scratch-message "type C-j to run the code ")
+(setq initial-scratch-message "Type C-j to run the code")
 
 ;; Removes *messages* from the buffer.
 (setq-default message-log-max nil)
@@ -66,7 +66,7 @@
 ;;----------------------------------------------------------------------------
 ;; Prevent may windows open when open one window
 ;;----------------------------------------------------------------------------
-(setq ns-pop-up-frames nil)
+					;(setq ns-pop-up-frames nil)
 
 
 ;;----------------------------------------------------------------------------
@@ -78,13 +78,13 @@
 (message "Current buffer: %s" (buffer-name))
 
 ;; Coding systems
-  (set-selection-coding-system 'utf-8)
-  (prefer-coding-system 'utf-8)
-  (set-language-environment "UTF-8")
-  (set-default-coding-systems 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (setq locale-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(set-language-environment "UTF-8")
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8)
 
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (when (display-graphic-p)
@@ -113,11 +113,6 @@
 ;; Don't Lock Files
 (setq-default create-lockfiles nil)
 
-;; Better Compilation
-(setq-default compilation-always-kill t) ; kill compilation process before starting another
-(setq-default compilation-ask-about-save nil) ; save all buffers on `compile'
-(setq-default compilation-scroll-output t)
-
 ;; Remove noise emacs
 (setq visible-bell t)
 (setq ring-bell-function 'ignore)
@@ -134,9 +129,21 @@
 ;; To remove trailing whitespace
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;;
-(display-time-mode 1)
-(display-battery-mode 1)
+
+;;Highlight Syntax
+(global-font-lock-mode t)
+
+;; Highlight current line
+(global-hl-line-mode 1)
+
+;; maximum font decoration
+(setq font-lock-maximum-decoration t)
+
+					; To change buffer view
+(global-set-key (kbd "C-c <left>")  'windmove-left)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <up>")    'windmove-Up)
+(global-set-key (kbd "C-c <down>")  'windmove-down)
 
 
 ;;----------------------------------------------------------------------------
@@ -199,8 +206,7 @@
       delete-old-versions t ;; don't ask about deleting old versions
       vc-make-backup-files t ;; even backup files under version control (git,svn,etc.)
       ;;make-backup-files nil  ;; no annoying "~file.txt"
-      auto-save-default nil ;; no auto saves to #file#
-      )
+      auto-save-default nil) ;; no auto saves to #file#
 
 
 ;;----------------------------------------------------------------------------
@@ -252,8 +258,6 @@
   (auto-revert-verbose nil)
   ;; Quickly copy/move file in Dired
   (dired-dwim-target t)
-  ;; Move files to trash when deleting
-  (delete-by-moving-to-trash t)
   ;; Load the newest version of a file
   (load-prefer-newer t)
   ;; Detect external file changes and auto refresh file
@@ -273,14 +277,43 @@
 
 
 ;;----------------------------------------------------------------------------
+;; buffer-move
+;;----------------------------------------------------------------------------
+(use-package buffer-move
+  :ensure t
+  :config
+  (global-set-key (kbd "<C-s-up>")     'buf-move-up)
+  (global-set-key (kbd "<C-s-down>")   'buf-move-down)
+  (global-set-key (kbd "<C-s-left>")   'buf-move-left)
+  (global-set-key (kbd "<C-s-right>")  'buf-move-right))
+
+
+;;----------------------------------------------------------------------------
+;; osx-trash
+;;----------------------------------------------------------------------------
+(use-package osx-trash
+  :ensure t
+  :init
+  (when (eq system-type 'darwin)
+    (osx-trash-setup))
+  (setq delete-by-moving-to-trash t))
+
+
+;;----------------------------------------------------------------------------
 ;; exec-path-from-shell
 ;;----------------------------------------------------------------------------
 (use-package exec-path-from-shell
   :ensure t
   :if (memq window-system '(mac ns x))
   :config
-  (exec-path-from-shell-initialize)
-  )
+  (exec-path-from-shell-initialize))
+
+
+;;----------------------------------------------------------------------------
+;; restart-emacs
+;;----------------------------------------------------------------------------
+(use-package restart-emacs
+  :ensure t)
 
 
 ;;----------------------------------------------------------------------------
@@ -291,9 +324,8 @@
   :config
   (setq global-page-break-lines-mode t)
   (set-fontset-font "fontset-default"
-                  (cons page-break-lines-char page-break-lines-char)
-                  (face-attribute 'default :family))
-  )
+                    (cons page-break-lines-char page-break-lines-char)
+                    (face-attribute 'default :family)))
 
 
 ;;----------------------------------------------------------------------------
@@ -302,11 +334,10 @@
 ;; For this package to work best, you need to install the resource fonts
 ;; included in the package. M-x all-the-icons-install-fonts
 (use-package all-the-icons
-  :ensure t
-  )
+  :ensure t)
 
-; If you experience a slow down in performance when rendering multiple icons
-; simultaneously, you can try setting the following variable
+;; If you experience a slow down in performance when rendering multiple icons
+;; simultaneously, you can try setting the following variable
 (setq inhibit-compacting-font-caches t)
 
 
@@ -329,7 +360,7 @@
   :ensure t
   :config
   (dashboard-setup-startup-hook)
-  ;(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  ;;(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
   ;; Set the title
   (setq dashboard-banner-logo-title "")
   ;; Set the banner
@@ -344,16 +375,15 @@
   (setq dashboard-center-content t);
 
   ;; To disable shortcut "jump" indicators for each section, set
-  ;(setq dashboard-show-shortcuts nil)
+  ;;(setq dashboard-show-shortcuts nil)
   (setq dashboard-items '((recents  . 10)
                           (projects . 7)
 			  (agenda . 5)))
- ;; To add icons to the widget headings and their items:
+  ;; To add icons to the widget headings and their items:
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
- ;; A randomly selected footnote will be displayed. To disable it:
-  (setq dashboard-set-footer nil)
-  )
+  ;; A randomly selected footnote will be displayed. To disable it:
+  (setq dashboard-set-footer nil))
 
 
 ;;----------------------------------------------------------------------------
@@ -390,13 +420,14 @@
 ;;----------------------------------------------------------------------------
 ;; Doom-line
 ;;----------------------------------------------------------------------------
- (use-package doom-modeline
-   :ensure t
-   :custom
-   (doom-modeline-height 15)
-   (doom-modeline-bar-width 3)
-   (doom-modeline-icon t)
-   (doom-modeline-buffer-file-name-style  'truncate-with-project))
+(use-package doom-modeline
+  :ensure t
+  :custom
+  (doom-modeline-height 13)
+  (doom-modeline-bar-width 5)
+  (doom-modeline-icon t)
+  (doom-modeline-buffer-file-name-style  'truncate-with-project)
+  :init (doom-modeline-mode 1))
 ;;This package requires the fonts included with all-the-icons to be installed. Run M-x all-the-icons-install-fonts to do so.
 
 
@@ -420,22 +451,20 @@
   :ensure t
   :after counsel
   :config (setq ivy-rich-path-style 'abbrev)
-  :init (ivy-rich-mode 1)
-  )
+  :init (ivy-rich-mode 1))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package counsel
   :ensure t
   :init
   (setq counsel-yank-pop-separator
-    (concat "\n\n"
-      (concat (apply 'concat (make-list 50 "---")) "\n")))
+	(concat "\n\n"
+		(concat (apply 'concat (make-list 50 "---")) "\n")))
   :bind (
-  ("M-y" . counsel-yank-pop)
-  ("C-h f" . counsel-describe-function)
-  ("C-h v" . counsel-describe-variable))
+	 ("M-y" . counsel-yank-pop)
+	 ("C-h f" . counsel-describe-function)
+	 ("C-h v" . counsel-describe-variable))
   :config
-  (use-package smex :ensure t)
-  )
+  (use-package smex :ensure t))
 
 
 (use-package ivy-prescient
@@ -458,18 +487,17 @@
 ;; diff-hl
 ;;----------------------------------------------------------------------------
 (use-package diff-hl
-    :ensure t
-    :config
-    ;; Highlight changes to the current file in the fringe
-    (add-hook 'prog-mode-hook #'diff-hl-mode)
-    ;; Highlight changed files in the fringe of Dired
-    (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-    ;; Fall back to the display margin, if the fringe is unavailable
-    (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
-    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-    (diff-hl-margin-mode)
-    (setq diff-hl-margin-side 'right)
-    )
+  :ensure t
+  :config
+  ;; Highlight changes to the current file in the fringe
+  (add-hook 'prog-mode-hook #'diff-hl-mode)
+  ;; Highlight changed files in the fringe of Dired
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+  ;; Fall back to the display margin, if the fringe is unavailable
+  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  (diff-hl-margin-mode)
+  (setq diff-hl-margin-side 'right))
 
 
 ;;----------------------------------------------------------------------------
@@ -573,9 +601,9 @@
 (use-package lsp-mode
   :ensure t
   :hook ((ess-r-mode . lsp)
-		 ;(python-mode . lsp)
-            ;; if you want which-key integration
-            (lsp-mode . lsp-enable-which-key-integration))
+	 ;;(python-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
 
 ;; to remove error ls does not support dired
@@ -589,32 +617,31 @@
          ("C-c C-v d" . lsp-ui-doc-mode))
   :config
   (setq
-        ;; lsp-ui-doc
-        lsp-ui-doc-enable t
-        lsp-ui-doc-header nil
-        lsp-ui-doc-include-signature nil
-	lsp-ui-doc-delay 2
-        ;; top, bottom, or at-point
-        lsp-ui-doc-position 'at-point
-        lsp-ui-doc-max-width 120
-        lsp-ui-doc-max-height 30
-        lsp-ui-doc-use-childframe t
-        lsp-ui-doc-use-webkit t
-        ;; lsp-ui-sideline
-        ;lsp-ui-sideline-enable nil
-        ;lsp-ui-sideline-ignore-duplicate t
-        ;lsp-ui-sideline-show-symbol t
-        ;lsp-ui-sideline-show-hover t
-        ;lsp-ui-sideline-show-diagnostics t
-        ;lsp-ui-sideline-show-code-actions t
-        ;lsp-ui-sideline-code-actions-prefix ""
-         ;; lsp-ui-peek
-        lsp-ui-peek-enable t
-        lsp-ui-peek-peek-height 20
-        lsp-ui-peek-list-width 50
-        ;; never, on-demand, or always
-        lsp-ui-peek-fontify 'on-demand
-        ))
+   ;; lsp-ui-doc
+   lsp-ui-doc-enable t
+   lsp-ui-doc-header nil
+   lsp-ui-doc-include-signature nil
+   lsp-ui-doc-delay 2.5
+   ;; top, bottom, or at-point
+   lsp-ui-doc-position 'at-point
+   lsp-ui-doc-max-width 90
+   lsp-ui-doc-max-height 40
+   lsp-ui-doc-use-childframe t
+   lsp-ui-doc-use-webkit t
+   ;; lsp-ui-sideline
+   ;;lsp-ui-sideline-enable nil
+   ;;lsp-ui-sideline-ignore-duplicate t
+   ;;lsp-ui-sideline-show-symbol t
+   ;;lsp-ui-sideline-show-hover t
+   ;;lsp-ui-sideline-show-diagnostics t
+   ;;lsp-ui-sideline-show-code-actions t
+   ;;lsp-ui-sideline-code-actions-prefix ""
+   ;; lsp-ui-peek
+   lsp-ui-peek-enable t
+   lsp-ui-peek-peek-height 20
+   lsp-ui-peek-list-width 50
+   ;; never, on-demand, or always
+   lsp-ui-peek-fontify 'on-demand))
 
 ;; Ivy integration
 (use-package lsp-ivy
@@ -653,7 +680,7 @@
 (use-package flycheck
   :ensure t
   :defer t
-;  :diminish
+  ;;:diminish
   :hook ((markdown-mode ess-r-mode python-mode) . flycheck-mode))
 
 
@@ -667,8 +694,7 @@
   :bind (:map flycheck-mode-map
               ("C-c C-n" . flycheck-tip-cycle))
   :config
-  (setq flycheck-display-errors-function 'ignore)
-  )
+  (setq flycheck-display-errors-function 'ignore))
 
 
 ;;----------------------------------------------------------------------------
@@ -687,8 +713,7 @@
   :hook
   (prog-mode . company-mode)
   :config
-  (add-to-list 'company-backends 'company-emoji)
-  )
+  (add-to-list 'company-backends 'company-emoji))
 
 
 (use-package company-prescient
@@ -711,35 +736,35 @@
 ;;----------------------------------------------------------------------------
 ;; Dictionary
 ;;----------------------------------------------------------------------------
-; Spell checking inside Emacs on macOS requires an external checker. I
-; recommend to install Hunspell (<https://hunspell.github.io>) using
-; Homebrew (<https://brew.sh>).
-; The Hunspell installation does not include any dictionaries.
-; Therefore, this distributions of Emacs ships with the following Libre
-; Office dictionaries suitable for use with Hunspell:
-; - English (version 2019.07.01);
-; - French (version 5.7);
-; - German (version 2017.01.12);
-; - Spanish (version 2.4).
-; Copy the files in the `Dictionaries` directory of the disk image to
-; `~/Library/Spelling`. If needed, create a symbolic link named after
-; your LANG environment variable to the corresponding dictionary and
-; affix files. For example, if LANG is set to fr_CA.UTF-8, do from the
-; command line
-;  cd ~/Library/Spelling
-;  ln -s fr-classique.dic fr_CA.dic
-;  ln -s fr-classique.aff fr_CA.aff
-; Finally, add the following lines to your ~/.emacs file:
+;; Spell checking inside Emacs on macOS requires an external checker. I
+;; recommend to install Hunspell (<https://hunspell.github.io>) using
+;; Homebrew (<https://brew.sh>).
+;; The Hunspell installation does not include any dictionaries.
+;; Therefore, this distributions of Emacs ships with the following Libre
+;; Office dictionaries suitable for use with Hunspell:
+;; - English (version 2019.07.01);
+;; - French (version 5.7);
+;; - German (version 2017.01.12);
+;; - Spanish (version 2.4).
+;; Copy the files in the `Dictionaries` directory of the disk image to
+;; `~/Library/Spelling`. If needed, create a symbolic link named after
+;; your LANG environment variable to the corresponding dictionary and
+;; affix files. For example, if LANG is set to fr_CA.UTF-8, do from the
+;; command line
+;;  cd ~/Library/Spelling
+;;  ln -s fr-classique.dic fr_CA.dic
+;;  ln -s fr-classique.aff fr_CA.aff
+;; Finally, add the following lines to your ~/.emacs file:
 (setenv "LANG" "en_US, es_ANY")
 (setq-default  ispell-program-name "/usr/local/bin/hunspell")
 (with-eval-after-load "ispell"
-    (setq ispell-really-hunspell t)
-    (setq ispell-program-name "hunspell")
-    (setq ispell-dictionary "en_US,es_ANY")
-    ;; ispell-set-spellchecker-params has to be called
-    ;; before ispell-hunspell-add-multi-dic will work
-    (ispell-set-spellchecker-params)
-    (ispell-hunspell-add-multi-dic "en_US,es_ANY"))
+  (setq ispell-really-hunspell t)
+  (setq ispell-program-name "hunspell")
+  (setq ispell-dictionary "en_US,es_ANY")
+  ;; ispell-set-spellchecker-params has to be called
+  ;; before ispell-hunspell-add-multi-dic will work
+  (ispell-set-spellchecker-params)
+  (ispell-hunspell-add-multi-dic "en_US,es_ANY"))
 ;; Spell checking should now work with M-x ispell
 
 
@@ -776,28 +801,39 @@
   :ensure t
   :diminish
   :config
-(which-key-mode)
-(which-key-setup-side-window-bottom))
+  (which-key-mode)
+  (which-key-setup-side-window-right-bottom))
 
 
 ;;----------------------------------------------------------------------------
 ;; Rainbow delimiters
 ;;----------------------------------------------------------------------------
 (use-package rainbow-delimiters
-  :ensure t
+  :demand
   :init
   (progn
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+  :config
+  (set-face-attribute 'rainbow-delimiters-max-face-count 6)
+  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "yellow")
+  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "magenta")
+  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "cyan")
+  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "orange")
+  (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "Green")
+  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "purple"))
 
 
 ;;----------------------------------------------------------------------------
 ;; Rainbow mode
 ;;----------------------------------------------------------------------------
+;;Show Hex Color Codes
 (use-package rainbow-mode
+  :commands rainbow-mode
   :diminish
-  :ensure t
-  :config
-  (add-hook 'prog-mode-hook 'rainbow-mode 'ess-r-mode 'markdown-mode))
+  :hook (
+	 (prog-mode . rainbow-mode)
+	 (ess-r-mode . rainbow-mode)))
+
 
 
 ;;----------------------------------------------------------------------------
@@ -805,63 +841,61 @@
 ;;----------------------------------------------------------------------------
 (use-package highlight-indent-guides
   :ensure t
-  :if (display-graphic-p)
   :diminish
-  ;; Enable manually if needed, it a severe bug which potentially core-dumps Emacs
-  ;; https://github.com/DarthFennec/highlight-indent-guides/issues/76
-  :commands (highlight-indent-guides-mode)
+  :commands highlight-indent-guides-mode
   :custom
+  (highlight-indent-guides-auto-enabled t)
+  (highlight-indent-guides-responsive t)
   (highlight-indent-guides-method 'character)
-  (highlight-indent-guides-responsive 'top)
-  (highlight-indent-guides-delay 0)
-  (highlight-indent-guides-auto-character-face-perc 7))
+  :hook
+  (prog-mode  . highlight-indent-guides-mode)
+  (ess-r-mode  . highlight-indent-guides-mode))
 
 
 ;;----------------------------------------------------------------------------
-;; all the icons ivy
+;; Beacon
+;;----------------------------------------------------------------------------
+;;highlight cursor when jump window/buffer
+(use-package beacon
+  :ensure t
+  :diminish
+  :commands beacon-mode
+  :init
+  (beacon-mode 1)
+  :config
+  ;; only flash on window/buffer changes...
+  (setq beacon-blink-when-window-changes t)
+  (setq beacon-blink-when-window-scrolls t)
+  (setq beacon-blink-when-point-moves t)
+  (setq beacon-blink-duration .2)
+  (setq beacon-blink-delay .2)
+  (setq beacon-size 20));end beacon
+
+
+;;----------------------------------------------------------------------------
+;; all the icons
 ;;----------------------------------------------------------------------------
 (use-package all-the-icons-ivy
   :ensure t
   :init
-  (all-the-icons-ivy-setup)
-  )
+  (all-the-icons-ivy-setup))
 
-
-;;----------------------------------------------------------------------------
-;; all the icons ivy rich
-;;----------------------------------------------------------------------------
 (use-package all-the-icons-ivy-rich
   :ensure t
   :init
-  (all-the-icons-ivy-rich-mode 1)
-  )
+  (all-the-icons-ivy-rich-mode 1))
 
-
-;;----------------------------------------------------------------------------
-;; all the icons dired
-;;----------------------------------------------------------------------------
 (use-package all-the-icons-dired
   :ensure t
-  :hook (dired-mode . all-the-icons-dired-mode)
-)
+  :hook (dired-mode . all-the-icons-dired-mode))
 
-
-;;----------------------------------------------------------------------------
-;; all the icons gnus
-;;----------------------------------------------------------------------------
 (use-package all-the-icons-gnus
   :ensure t
-  :init (all-the-icons-gnus-setup)
-)
+  :init (all-the-icons-gnus-setup))
 
-
-;;----------------------------------------------------------------------------
-;; all the icons ibuffer
-;;----------------------------------------------------------------------------
 (use-package all-the-icons-ibuffer
   :ensure t
-  :init (all-the-icons-ibuffer-mode 1)
-  )
+  :init (all-the-icons-ibuffer-mode 1))
 
 
 ;;----------------------------------------------------------------------------
@@ -881,13 +915,12 @@
   :ensure t
   :mode ("\\.pdf\\'" . pdf-tools-install)
   :config
- (custom-set-variables
-    '(pdf-tools-handle-upgrades nil)) ; Use brew upgrade pdf-tools instead.
- (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
- (setq mouse-wheel-follow-mouse t)
- (setq pdf-view-resize-factor 1.10)
- (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
- )
+  (custom-set-variables
+   '(pdf-tools-handle-upgrades nil)) ; Use brew upgrade pdf-tools instead.
+  (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
+  (setq mouse-wheel-follow-mouse t)
+  (setq pdf-view-resize-factor 1.10)
+  (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1))))
 
 
 ;;----------------------------------------------------------------------------
@@ -896,8 +929,7 @@
 (use-package web-mode
   :ensure t
   :mode
-  ("\\.html?\\'" . web-mode)
-  )
+  ("\\.html?\\'" . web-mode))
 
 
 ;;----------------------------------------------------------------------------
@@ -915,20 +947,19 @@
   :ensure t
   :defer t
   :init
- (advice-add 'python-mode :before 'elpy-enable)
- :config
-;; Interpreter setup
-(setq python-shell-interpreter "python3"
-      python-shell-interpreter-args "-i")
-; emacs dont warm me about identation
-(setq python-indent-guess-indent-offset-verbose nil)
-)
+  (advice-add 'python-mode :before 'elpy-enable)
+  :config
+  ;; Interpreter setup
+  (setq python-shell-interpreter "python3"
+	python-shell-interpreter-args "-i")
+					; emacs dont warm me about identation
+  (setq python-indent-guess-indent-offset-verbose nil))
 
 
 (add-hook 'python-mode-hook
-(lambda ()
-   (setq indent-tabs-mode nil)
-   (setq python-indent-offset 4)))
+	  (lambda ()
+	    (setq indent-tabs-mode nil)
+	    (setq python-indent-offset 4)))
 
 
 ;;----------------------------------------------------------------------------
@@ -936,12 +967,12 @@
 ;;----------------------------------------------------------------------------
 ;; to use python with lsp install the following
 ;; pip3 install 'python-language-server[all]'
-;(use-package lsp-python-ms
-;  :ensure t
-;  :init (setq lsp-python-ms-auto-install-server t)
-;  :hook (python-mode . (lambda ()
-;                          (require 'lsp-python-ms)
-;                          (lsp))))  ; or lsp-deferred
+;;(use-package lsp-python-ms
+;;  :ensure t
+;;  :init (setq lsp-python-ms-auto-install-server t)
+;;  :hook (python-mode . (lambda ()
+;;                          (require 'lsp-python-ms)
+;;                          (lsp))))  ; or lsp-deferred
 
 
 ;;----------------------------------------------------------------------------
@@ -954,95 +985,89 @@
   (add-hook 'ess-r-mode-hook
             (lambda () (flycheck-mode t)))
   ;; Outline mode for R
-(add-hook 'ess-mode-hook
-    '(lambda ()
-    (outline-minor-mode)
-    (setq outline-regexp "^#.*----")
-    (defun outline-level ()
-    (cond (looking-at "^#.*----") 1)
-    (t 1000)
-    )
+  (add-hook 'ess-mode-hook
+	    '(lambda ()
+	       (outline-minor-mode)
+	       (setq outline-regexp "^#.*----")
+	       (defun outline-level ()
+		 (cond (looking-at "^#.*----") 1)
+		 (t 1000))
+	       (defun send-section-to-R ()
+		 (interactive ())
+		 (let ((beg))
+		   (if (outline-on-heading-p)
+		       (beginning-of-line)
+		     (outline-previous-visible-heading 1))
+		   (setq beg (point))
+		   (set-mark (point))
+		   (outline-next-visible-heading 1)
+		   (previous-line 1)
+		   (end-of-line 1)
+		   (ess-eval-region-or-function-or-paragraph-and-step)))
 
-    (defun send-section-to-R ()
-    (interactive ())
-    (let ((beg))
-    (if (outline-on-heading-p)
-    (beginning-of-line)
-    (outline-previous-visible-heading 1))
-    (setq beg (point))
-    (set-mark (point))
-    (outline-next-visible-heading 1)
-    (previous-line 1)
-    (end-of-line 1)
-    (ess-eval-region-or-function-or-paragraph-and-step)
-    )
-    )
-
-    (local-set-key (kbd "C-c h") 'outline-hide-body)
-    (local-set-key (kbd "C-c s") 'outline-show-all)
-    (local-set-key (kbd "C-c <left>") 'outline-hide-entry)
-    (local-set-key (kbd "C-c <right>") 'outline-show-entry)
-    (local-set-key (kbd "C-c <up>") 'outline-previous-heading)
-    (local-set-key (kbd "C-c <down>") 'outline-next-heading)
-    (local-set-key (kbd "C-c e") 'send-section-to-R)))
+	       (local-set-key (kbd "C-c h") 'outline-hide-body)
+	       (local-set-key (kbd "C-c s") 'outline-show-all)
+	       (local-set-key (kbd "C-c <left>") 'outline-hide-entry)
+	       (local-set-key (kbd "C-c <right>") 'outline-show-entry)
+	       (local-set-key (kbd "C-c <up>") 'outline-previous-heading)
+	       (local-set-key (kbd "C-c <down>") 'outline-next-heading)
+	       (local-set-key (kbd "C-c e") 'send-section-to-R)))
   :config
   (define-key ess-r-mode-map "_" #'ess-insert-assign)
   (define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
   (setq ess-use-eldoc nil)
-  ;(setq ess-use-company nil)
+  ;;(setq ess-use-company nil)
   (setq inferior-ess-r-program "R")
   (setq ess-eval-visibly t)
   ;;; Flycheck ess
   (setq ess-use-flymake nil) ;; disable Flymake
   ;; Auto-complete only in the script
-  ;(setq ess-use-auto-complete t) ;'script-only
-  ; Syntax highlight
+  (setq ess-use-auto-complete t) ;'script-only
+  ;; To remove fancy comments defaults (issue with #)
+  (setq ess-fancy-comments nil)
+					; Syntax highlight
   (setq ess-R-font-lock-keywords
-   (quote
-    ((ess-R-fl-keyword:keywords . t)
-     (ess-R-fl-keyword:constants . t)
-     (ess-R-fl-keyword:modifiers . t)
-     (ess-R-fl-keyword:fun-defs . t)
-     (ess-R-fl-keyword:assign-ops . t)
-     (ess-R-fl-keyword:%op% . t)
-     (ess-fl-keyword:fun-calls . t)
-     (ess-fl-keyword:numbers . t)
-     (ess-fl-keyword:operators . t)
-     (ess-fl-keyword:delimiters . t)
-     (ess-fl-keyword:= . t)
-     (ess-R-fl-keyword:F&T . t))))
- (setq inferior-ess-r-font-lock-keywords
-   (quote
-    (
-     (ess-S-fl-keyword:prompt . t)
-     (ess-R-fl-keyword:keywords . t)
-     (ess-R-fl-keyword:constants . t)
-     (ess-R-fl-keyword:modifiers . t)
-     (ess-R-fl-keyword:messages . t)
-     (ess-R-fl-keyword:fun-defs . t)
-     (ess-R-fl-keyword:assign-ops . t)
-     (ess-fl-keyword:matrix-labels . t)
-     (ess-fl-keyword:fun-calls . t)
-     (ess-fl-keyword:numbers . t)
-     (ess-fl-keyword:operators . t)
-     (ess-fl-keyword:delimiters . t)
-     (ess-fl-keyword:= . t)
-     (ess-R-fl-keyword:F&T . t)
-     )))
-(eval-after-load "ess-r-mode"
-  '(progn
-     (define-key ess-r-mode-map [(control return)] nil)
-     (define-key ess-r-mode-map [(shift return)]
-       'ess-eval-region-or-line-and-step)))
-  (unless (getenv "LC_ALL") (setenv "LC_ALL" "en_US.UTF-8")))
+	(quote
+	 ((ess-R-fl-keyword:keywords . t)
+	  (ess-R-fl-keyword:constants . t)
+	  (ess-R-fl-keyword:modifiers . t)
+	  (ess-R-fl-keyword:fun-defs . t)
+	  (ess-R-fl-keyword:assign-ops . t)
+	  (ess-R-fl-keyword:%op% . t)
+	  (ess-fl-keyword:fun-calls . t)
+	  (ess-fl-keyword:numbers . t)
+	  (ess-fl-keyword:operators . t)
+	  (ess-fl-keyword:delimiters . t)
+	  (ess-fl-keyword:= . t)
+	  (ess-R-fl-keyword:F&T . t))))
+  (setq inferior-ess-r-font-lock-keywords
+	(quote
+	 (
+	  (ess-S-fl-keyword:prompt . t)
+	  (ess-R-fl-keyword:keywords . t)
+	  (ess-R-fl-keyword:constants . t)
+	  (ess-R-fl-keyword:modifiers . t)
+	  (ess-R-fl-keyword:messages . t)
+	  (ess-R-fl-keyword:fun-defs . t)
+	  (ess-R-fl-keyword:assign-ops . t)
+	  (ess-fl-keyword:matrix-labels . t)
+	  (ess-fl-keyword:fun-calls . t)
+	  (ess-fl-keyword:numbers . t)
+	  (ess-fl-keyword:operators . t)
+	  (ess-fl-keyword:delimiters . t)
+	  (ess-fl-keyword:= . t)
+	  (ess-R-fl-keyword:F&T . t))))
+  (unless (getenv "LC_ALL") (setenv "LC_ALL" "en_US.UTF-8"))
+					; code below to make it more like R-studio
+  (eval-after-load "ess-r-mode"
+    '(progn
+       (define-key ess-r-mode-map [(control return)] nil)
+       (define-key ess-r-mode-map [(shift return)]
+	 'ess-eval-region-or-line-visibly-and-step))))
+
 
 ;; ESS
 (kill-buffer "*ESS*")
-
-
-
-
-
 
 
 ;;----------------------------------------------------------------------------
@@ -1052,24 +1077,24 @@
   :ensure auctex
   :mode ("\\.tex\\'" . latex-mode)
   :init
-;  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-;  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  ;;  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  ;;  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-;  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  ;;  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
   (add-hook 'LaTeX-mode-hook 'company-mode)
 
   ;; Use Skim as viewer, enable source <-> PDF sync
   ;; make latexmk available via C-c C-c
   ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
-;  (add-hook 'LaTeX-mode-hook (lambda ()
-;    (push
-;    '("latexmk" "latexmk -pdf --synctex=1 %s" TeX-run-TeX nil t
-;      :help "Run latexmk on file")
-;    TeX-command-list)))
-   ;; Update PDF buffers after successful LaTeX runs
-;  (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
-;            #'TeX-revert-document-buffer)
-;  (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+  ;;  (add-hook 'LaTeX-mode-hook (lambda ()
+  ;;    (push
+  ;;    '("latexmk" "latexmk -pdf --synctex=1 %s" TeX-run-TeX nil t
+  ;;      :help "Run latexmk on file")
+  ;;    TeX-command-list)))
+  ;; Update PDF buffers after successful LaTeX runs
+  ;;  (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
+  ;;            #'TeX-revert-document-buffer)
+  ;;  (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
   :custom
   (TeX-auto-save t)
   (TeX-parse-self t)
@@ -1082,9 +1107,9 @@
   (TeX-source-correlate-method '((dvi . source-specials) (pdf . synctex)))
   (TeX-source-correlate-mode t))
 
- ;; Update PDF buffers after successful LaTeX runs
-  (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
-            #'TeX-revert-document-buffer)
+;; Update PDF buffers after successful LaTeX runs
+(add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
+          #'TeX-revert-document-buffer)
 
 
 ;;----------------------------------------------------------------------------
@@ -1092,9 +1117,7 @@
 ;;----------------------------------------------------------------------------
 (use-package latex-preview-pane
   :defer t
-  :ensure t
-;; :hook (LaTeX-mode . latex-preview-pane-mode)
-  )
+  :ensure t)
 
 
 ;;----------------------------------------------------------------------------
@@ -1103,9 +1126,20 @@
 (use-package markdown-mode
   :ensure t
   :defer t
-   :mode (("//.markdown" . markdown-mode)
+  :mode (("//.markdown" . markdown-mode)
          ("//.md" . markdown-mode)
          ("//.ronn?" . markdown-mode)))
+
+
+;;----------------------------------------------------------------------------
+;; grip-mode
+;;----------------------------------------------------------------------------
+;; it uses python grip package
+;; pip install grip
+(use-package grip-mode
+  :ensure t
+  :bind (:map markdown-mode-command-map
+              ("g" . grip-mode)))
 
 
 ;;----------------------------------------------------------------------------
@@ -1114,10 +1148,10 @@
 (use-package poly-R
   :ensure t
   :defer t
-   :mode (("//.Rnw" . poly-noweb+r-mode)
-	  ("//.Rmd" . poly-markdown+r-mode)
-	  ("//.Snw" . poly-noweb+r-mode)
-          ("//.rmd" . poly-markdown+r-mode)))
+  :mode (("//.Rnw" . poly-noweb+r-mode)
+	 ("//.Rmd" . poly-markdown+r-mode)
+	 ("//.Snw" . poly-noweb+r-mode)
+         ("//.rmd" . poly-markdown+r-mode)))
 
 (defcustom polymode-exporter-output-file-format "%s"
   "Format of the exported files.
@@ -1139,8 +1173,7 @@
   ;;
   :config
   ;; The officially recommended offset is 2.
-  (setq stan-indentation-offset 2)
-  )
+  (setq stan-indentation-offset 2))
 
 
 ;;; company-stan.el
@@ -1152,8 +1185,7 @@
   ;;
   :config
   ;; Whether to use fuzzy matching in `company-stan'
-  (setq company-stan-fuzzy nil)
-  )
+  (setq company-stan-fuzzy nil))
 
 
 ;;; flycheck-stan.el
@@ -1177,17 +1209,17 @@
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 
- ;; Define my agenda files
+;; Define my agenda files
 (setq org-agenda-files (directory-files-recursively "~//Google Drive/org/" "\\.org$"))
 
 ;; to automatically add time when a certain TODO is done
-;(setq org-log-done 'time)
+;;(setq org-log-done 'time)
 
- ;; Define my todo states
+;; Define my todo states
 (setq org-todo-keywords
       '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELLED")))
 
- ;; To filter eventual list
+;; To filter eventual list
 (defun air-org-skip-subtree-if-priority (priority)
   "Skip an agenda subtree if it has a priority of PRIORITY.
 
@@ -1199,7 +1231,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         subtree-end
       nil)))
 
- ;; to filter habits
+;; to filter habits
 (defun air-org-skip-subtree-if-habit ()
   "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
   (let ((subtree-end (save-excursion (org-end-of-subtree t))))
@@ -1207,19 +1239,19 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         subtree-end
       nil)))
 
- ;; the final agenda
- (setq org-agenda-custom-commands
-       '(("d" "Daily agenda and all TODOs"
-          ((tags "PRIORITY=\"A\""
-                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                  (org-agenda-overriding-header "High-priority unfinished tasks:")))
-           (agenda "" ((org-agenda-ndays 1)))
-           (alltodo ""
-                    ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
-                                                    (air-org-skip-subtree-if-priority ?A)
-                                                    (org-agenda-skip-if nil '(scheduled deadline))))
-                     (org-agenda-overriding-header "ALL normal priority tasks:"))))
-          ((org-agenda-compact-blocks nil))))) ; Change to t if you want to remove the equal divisions
+;; the final agenda
+(setq org-agenda-custom-commands
+      '(("d" "Daily agenda and all TODOs"
+         ((tags "PRIORITY=\"A\""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
+          (agenda "" ((org-agenda-ndays 1)))
+          (alltodo ""
+                   ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
+                                                   (air-org-skip-subtree-if-priority ?A)
+                                                   (org-agenda-skip-if nil '(scheduled deadline))))
+                    (org-agenda-overriding-header "ALL normal priority tasks:"))))
+         ((org-agenda-compact-blocks nil))))) ; Change to t if you want to remove the equal divisions
 
 
 ;;----------------------------------------------------------------------------
