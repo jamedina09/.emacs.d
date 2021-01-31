@@ -291,6 +291,7 @@
 ;;----------------------------------------------------------------------------
 ;; osx-trash
 ;;----------------------------------------------------------------------------
+;; in macos delete-by...-to-trash does not work without this
 (use-package osx-trash
   :ensure t
   :init
@@ -376,9 +377,8 @@
 
   ;; To disable shortcut "jump" indicators for each section, set
   ;;(setq dashboard-show-shortcuts nil)
-  (setq dashboard-items '((recents  . 10)
-                          (projects . 7)
-			  (agenda . 5)))
+  (setq dashboard-items '((recents  . 15)
+                          (projects . 5)))
   ;; To add icons to the widget headings and their items:
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
@@ -396,21 +396,12 @@
   :custom
   (dimmer-fraction 0.225))
 
-
-;;----------------------------------------------------------------------------
-;; Diminish
-;;----------------------------------------------------------------------------
-(use-package diminish
-  :ensure t)
-
-
 ;;----------------------------------------------------------------------------
 ;; smartparens
 ;;----------------------------------------------------------------------------
 (use-package smartparens
   :ensure t
   :hook ((prog-mode ess-r-mode) . smartparens-mode)
-  :diminish ;smartparens-mode
   :config
   ;; Stop pairing single quotes in elisp
   (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
@@ -426,7 +417,7 @@
   (doom-modeline-height 13)
   (doom-modeline-bar-width 5)
   (doom-modeline-icon t)
-  (doom-modeline-buffer-file-name-style  'truncate-with-project)
+  ;;(doom-modeline-buffer-file-name-style  'truncate-with-project)
   :init (doom-modeline-mode 1))
 ;;This package requires the fonts included with all-the-icons to be installed. Run M-x all-the-icons-install-fonts to do so.
 
@@ -437,7 +428,6 @@
 (use-package ivy
   :ensure t
   :defer 0.1
-  :diminish
   :bind
   ("C-s"     . swiper)
   ("M-x"     . counsel-M-x)
@@ -446,13 +436,13 @@
   (ivy-count-format "(%d/%d) ")
   (ivy-use-virtual-buffers t)
   :config (ivy-mode))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package ivy-rich
   :ensure t
   :after counsel
   :config (setq ivy-rich-path-style 'abbrev)
   :init (ivy-rich-mode 1))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package counsel
   :ensure t
   :init
@@ -465,7 +455,6 @@
 	 ("C-h v" . counsel-describe-variable))
   :config
   (use-package smex :ensure t))
-
 
 (use-package ivy-prescient
   :ensure t
@@ -600,68 +589,37 @@
 ;;----------------------------------------------------------------------------
 (use-package lsp-mode
   :ensure t
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
   :config
-  (setq lsp-idle-delay 0.5
-        lsp-enable-symbol-highlighting t
-        lsp-enable-snippet nil  ;; Not supported by company capf, which is the recommended company backend
-        lsp-pyls-plugins-flake8-enabled t)
-  (lsp-register-custom-settings
-   '(("pyls.plugins.pyls_mypy.enabled" t t)
-     ("pyls.plugins.pyls_mypy.live_mode" nil t)
-     ("pyls.plugins.pyls_black.enabled" t t)
-     ("pyls.plugins.pyls_isort.enabled" t t)
-     ;; Disable these as they're duplicated by flake8
-     ("pyls.plugins.pycodestyle.enabled" nil t)
-     ("pyls.plugins.mccabe.enabled" nil t)
-     ("pyls.plugins.pyflakes.enabled" nil t)))
+  (setq lsp-idle-delay 0.75
+        lsp-enable-symbol-highlighting t)
   :hook
   ((ess-r-mode . lsp)
    (python-mode . lsp)
-   (lsp-mode . lsp-enable-which-key-integration)))
-
-
+   (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
 
 ;; to remove error ls does not support dired
-(when (string= system-type "darwin")
-  (setq dired-use-ls-dired nil))
+;(when (string= system-type "darwin")
+;  (setq dired-use-ls-dired nil))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
   :hook (lsp-mode . lsp-ui-mode)
-  :bind (("C-c C-v s" . lsp-ui-sideline-toggle-symbols-info)
-         ("C-c C-v d" . lsp-ui-doc-mode))
   :config
   (setq
-   ;; lsp-ui-doc
+   ;;lsp-ui-doc
    lsp-ui-doc-enable t
    lsp-ui-doc-header nil
    lsp-ui-doc-include-signature nil
    lsp-ui-doc-delay 2.5
-   ;; top, bottom, or at-point
-   lsp-ui-doc-position 'at-point
+   lsp-ui-doc-position 'at-point ;top, bottom, or at-point
    lsp-ui-doc-max-width 90
    lsp-ui-doc-max-height 40
    lsp-ui-doc-use-childframe t
-   lsp-ui-doc-use-webkit t
-   ;; lsp-ui-sideline
-   ;;lsp-ui-sideline-enable nil
-   lsp-ui-sideline-ignore-duplicate t
-   ;;lsp-ui-sideline-show-symbol t
-   ;;lsp-ui-sideline-show-hover t
-   ;;lsp-ui-sideline-show-diagnostics t
-   ;;lsp-ui-sideline-show-code-actions t
-   ;;lsp-ui-sideline-code-actions-prefix ""
-   ;; lsp-ui-peek
-   lsp-ui-peek-enable t
-   lsp-ui-peek-peek-height 20
-   lsp-ui-peek-list-width 50
-   ;; never, on-demand, or always
-   lsp-ui-peek-fontify 'on-demand))
-
-;; Ivy integration
-(use-package lsp-ivy
-  :ensure t
-  :after lsp-mode)
+   lsp-ui-doc-use-webkit t))
 
 ;;Company-lsp
 (use-package company-lsp
@@ -672,11 +630,21 @@
 
 
 ;;----------------------------------------------------------------------------
+;; yasnippet
+;;----------------------------------------------------------------------------
+(use-package yasnippet
+  :ensure t
+  :config
+  (use-package yasnippet-snippets
+    :ensure t)
+  (yas-global-mode 1))
+
+
+;;----------------------------------------------------------------------------
 ;; popwin
 ;;----------------------------------------------------------------------------
 (use-package popwin
   :ensure t
-  :diminish ;popwin
   :config
   (progn
     (push '("*Completions*" :position bottom :height .3) popwin:special-display-config)
@@ -693,6 +661,7 @@
     (push '("*Org Select*" :position bottom :height .3) popwin:special-display-config)
     (push '("*compilation*" :position right :width 80 :noselect t) popwin:special-display-config)
     (push '("*Calendar*" :position bottom :height .3) popwin:special-display-config)
+    (push '("*undo-tree Diff*" :position bottom :height .3) popwin:special-display-config)
     (popwin-mode 1)))
 
 
@@ -702,8 +671,9 @@
 (use-package flycheck
   :ensure t
   :defer t
-  ;;:diminish
   :hook ((markdown-mode ess-r-mode python-mode) . flycheck-mode))
+;; to enable flycheck in markdown oyu need to install:
+;; brew install markdownlint-cli
 
 
 ;;----------------------------------------------------------------------------
@@ -731,7 +701,6 @@
 ;;----------------------------------------------------------------------------
 (use-package company
   :ensure t
-  :diminish company-mode
   :init
   (global-company-mode)
   :config
@@ -802,7 +771,6 @@
 (use-package undo-tree
   :ensure t
   :defer t
-  :diminish ;undo-tree-mode
   :init (global-undo-tree-mode)
   :custom
   (undo-tree-visualizer-diff t)
@@ -827,7 +795,6 @@
 ;;----------------------------------------------------------------------------
 (use-package which-key
   :ensure t
-  :diminish
   :config
   (which-key-mode)
   (which-key-setup-side-window-right-bottom))
@@ -857,7 +824,6 @@
 ;;Show Hex Color Codes
 (use-package rainbow-mode
   :commands rainbow-mode
-  :diminish
   :hook (
 	 (prog-mode . rainbow-mode)
 	 (ess-r-mode . rainbow-mode)))
@@ -869,7 +835,6 @@
 ;;----------------------------------------------------------------------------
 (use-package highlight-indent-guides
   :ensure t
-  :diminish
   :commands highlight-indent-guides-mode
   :custom
   (highlight-indent-guides-auto-enabled t)
@@ -886,7 +851,6 @@
 ;;highlight cursor when jump window/buffer
 (use-package beacon
   :ensure t
-  :diminish
   :commands beacon-mode
   :init
   (beacon-mode 1)
@@ -975,7 +939,8 @@
   :ensure t
   :defer t
   :init
-  (advice-add 'python-mode :before 'elpy-enable))
+  (advice-add 'python-mode :before 'elpy-enable)
+  (remove-hook 'elpy-modules 'elpy-module-flymake))
 ;;  :config
 ;;Interpreter setup
 ;;  (setq python-shell-interpreter "python3"
@@ -985,12 +950,6 @@
 ;; (setq python-indent-guess-indent-offset-verbose nil))
 
 ;;(add-hook 'python-mode-hook 'elpy-mode)
-
-
-;;(add-hook 'python-mode-hook;
-;;	  (lambda ()
-;;	    (setq indent-tabs-mode nil)
-;;	    (setq python-indent-offset 4)))
 
 
 ;;----------------------------------------------------------------------------
@@ -1237,7 +1196,6 @@
 ;;----------------------------------------------------------------------------
 ;; Org-mode
 ;;----------------------------------------------------------------------------
-(define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 
 ;; Define my agenda files
@@ -1311,7 +1269,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;;----------------------------------------------------------------------------
 (use-package org-roam
   :ensure t
-  :diminish
   :hook
   (after-init . org-roam-mode)
   :custom
@@ -1342,16 +1299,3 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 
 (provide 'init)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(company-lsp which-key web-mode use-package undo-tree treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-all-the-icons smex smartparens restart-emacs rainbow-mode rainbow-delimiters popwin poly-R pdf-tools osx-trash org-roam org-journal org-bullets lsp-ui lsp-ivy latex-preview-pane ivy-prescient impatient-mode highlight-indent-guides grip-mode flymd flycheck-tip flycheck-stan fix-word fill-column-indicator exec-path-from-shell ess elpy doom-themes doom-modeline dired-k dimmer diminish diff-hl dashboard counsel company-stan company-prescient company-emoji buffer-move beacon auctex all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer all-the-icons-gnus all-the-icons-dired)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
