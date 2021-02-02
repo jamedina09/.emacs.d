@@ -51,6 +51,9 @@
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
+;; Change highlight region color
+(set-face-attribute 'region nil :background "grey35")
+
 
 ;;----------------------------------------------------------------------------
 ;; Kill general login buffers
