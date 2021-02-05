@@ -37,7 +37,7 @@
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-moonlight t)
+  (load-theme 'doom-dracula t) ;Iosvkem
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -278,6 +278,14 @@
                   (local-set-key (kbd "^")
                                  (lambda () (interactive) (find-alternate-file ".."))))))
 
+
+;;----------------------------------------------------------------------------
+;; solaire-mode
+;;----------------------------------------------------------------------------
+;; A simple config:
+(use-package solaire-mode
+  :ensure t
+  :hook (after-init . solaire-global-mode))
 
 ;;----------------------------------------------------------------------------
 ;; buffer-move
@@ -810,15 +818,15 @@
   :demand
   :init
   (progn
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-  :config
-  (set-face-attribute 'rainbow-delimiters-max-face-count 6)
-  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "yellow")
-  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "magenta")
-  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "cyan")
-  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "orange")
-  (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "Green")
-  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "purple"))
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
+;  :config
+;  (set-face-attribute 'rainbow-delimiters-max-face-count 6)
+;  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "yellow")
+;  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "magenta")
+;  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "cyan")
+;  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "orange")
+; (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "Green")
+;  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "purple"))
 
 
 ;;----------------------------------------------------------------------------
@@ -1297,7 +1305,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :ensure t
   :hook
   (org-mode . (lambda () (org-bullets-mode 1))))
-
 
 
 
