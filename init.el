@@ -1083,19 +1083,6 @@
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
   ;;  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
   (add-hook 'LaTeX-mode-hook 'company-mode)
-
-  ;; Use Skim as viewer, enable source <-> PDF sync
-  ;; make latexmk available via C-c C-c
-  ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
-  ;;  (add-hook 'LaTeX-mode-hook (lambda ()
-  ;;    (push
-  ;;    '("latexmk" "latexmk -pdf --synctex=1 %s" TeX-run-TeX nil t
-  ;;      :help "Run latexmk on file")
-  ;;    TeX-command-list)))
-  ;; Update PDF buffers after successful LaTeX runs
-  ;;  (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
-  ;;            #'TeX-revert-document-buffer)
-  ;;  (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
   :custom
   (TeX-auto-save t)
   (TeX-parse-self t)
