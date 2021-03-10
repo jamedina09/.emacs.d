@@ -605,12 +605,20 @@
   (setq lsp-keymap-prefix "C-c l")
   :config
   (setq lsp-idle-delay 0.75
-        lsp-enable-symbol-highlighting t)
+        lsp-enable-symbol-highlighting t
+	lsp-ui-sideline-enable nil
+	lsp-ui-sideline-show-diagnostics nil
+	lsp-signature-render-documentation nil
+	lsp-completion-show-detail nil
+	lsp-completion-show-kind nil)
   :hook
   ((ess-r-mode . lsp)
    (python-mode . lsp)
    (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
+
+
+
 
 ;; to remove error ls does not support dired
 ;(when (string= system-type "darwin")
