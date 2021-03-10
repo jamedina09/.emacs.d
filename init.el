@@ -69,7 +69,7 @@
 ;;----------------------------------------------------------------------------
 ;; Prevent may windows open when open one window
 ;;----------------------------------------------------------------------------
-					;(setq ns-pop-up-frames nil)
+;(setq ns-pop-up-frames nil)
 
 
 ;;----------------------------------------------------------------------------
@@ -94,7 +94,7 @@
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 
 ;; Line number configuration
-(global-display-line-numbers-mode)
+;;(global-display-line-numbers-mode)
 
 ;; Window size and features
 (add-to-list 'default-frame-alist '(height . 90))
@@ -148,6 +148,10 @@
 (global-set-key (kbd "C-c <up>")    'windmove-Up)
 (global-set-key (kbd "C-c <down>")  'windmove-down)
 
+
+;; Make the fringe narrower
+;; make the left fringe 4 pixels wide and the right disappear
+(fringe-mode '1)
 
 ;;----------------------------------------------------------------------------
 ;; Personal information
@@ -690,9 +694,12 @@
 (use-package flycheck
   :ensure t
   :defer t
-  :hook ((markdown-mode ess-r-mode python-mode) . flycheck-mode))
+  :hook ((markdown-mode ess-r-mode python-mode) . flycheck-mode)
+  ;:custom (flycheck-indication-mode nil)
+  )
 ;; to enable flycheck in markdown oyu need to install:
 ;; brew install markdownlint-cli
+
 
 
 ;;----------------------------------------------------------------------------
@@ -1302,18 +1309,4 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (org-mode . (lambda () (org-bullets-mode 1))))
 
 
-
 (provide 'init)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(yasnippet-snippets which-key web-mode use-package undo-tree treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-all-the-icons solaire-mode smex smartparens restart-emacs rainbow-mode rainbow-delimiters popwin poly-R pdf-tools osx-trash org-roam org-journal org-bullets lsp-ui latex-preview-pane ivy-prescient impatient-mode highlight-indent-guides grip-mode flycheck-tip flycheck-stan fix-word exec-path-from-shell ess elpy doom-themes doom-modeline dired-k dimmer diff-hl dashboard dash-functional counsel company-stan company-prescient company-lsp company-emoji buffer-move beacon auctex all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer all-the-icons-gnus all-the-icons-dired)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
