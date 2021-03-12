@@ -223,7 +223,7 @@
 ;; Time-stamp
 ;;----------------------------------------------------------------------------
 ;; when there is a "Time-stamp: <>" in the first 10 lines of the file,
-1;; emacs will write time-stamp information there when saving the file.
+;; emacs will write time-stamp information there when saving the file.
 (setq time-stamp-active t  ;; do enable time-stamp
       time-stamp-line-limit 10 ;; check first 10 buffer lines for Time-stamp: <>
       time-stamp-format "Last changed %Y-%02m-%02d %02H:%02M:%02S by %L") ; date format
@@ -403,7 +403,8 @@
   ;; A randomly selected footnote will be displayed. To disable it:
   (setq dashboard-set-footer nil)
   ;; to use it with counsel-projectile
-  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name))
+  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+  )
 
 
 ;;----------------------------------------------------------------------------
@@ -437,7 +438,6 @@
   (doom-modeline-height 13)
   (doom-modeline-bar-width 5)
   ;; Whether display the minor modes in the mode-line.
-  (doom-modeline-minor-modes t)
   (doom-modeline-icon t)
   ;;(doom-modeline-buffer-file-name-style  'truncate-with-project)
   :init (doom-modeline-mode 1))
@@ -531,10 +531,10 @@
   (company-prescient-mode))
 
 
-;; cool icons
-(use-package company-box
-  :ensure t
-  :hook (company-mode . company-box-mode))
+;; ### cannot control idle delay help files so out
+;(use-package company-box
+;  :ensure t
+;  :hook (company-mode . company-box-mode))
 
 
 ;;----------------------------------------------------------------------------
@@ -699,7 +699,7 @@
 ;;----------------------------------------------------------------------------
 (use-package flycheck
   :ensure t
-;;  :defer t
+  :defer t
   :hook ((markdown-mode ess-r-mode python-mode) . flycheck-mode)
   ;:custom (flycheck-indication-mode nil)
   )
@@ -708,7 +708,7 @@
 
 (use-package flycheck-tip
   :ensure t
-;;  :defer t
+  :defer t
   :commands 'flycheck-tip-cycle
   :after flycheck
   :bind (:map flycheck-mode-map
@@ -718,7 +718,7 @@
 
 (use-package flycheck-pos-tip
   :ensure t
-;;  :defer t
+  :defer t
   :if (display-graphic-p)
   :after flycheck
   :commands flycheck-pos-tip-mode
@@ -1324,40 +1324,23 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 (setq gc-cons-threshold 100000000)
 
-;(use-package lsp-ui
-;  :commands lsp-ui-mode
-;  :hook (lsp-mode . lsp-ui-mode)
-;  :config
-;  (setq
-;   ;;lsp-ui-doc
-;   lsp-ui-doc-enable t
-;   lsp-ui-doc-header nil
-;   lsp-ui-doc-include-signature nil
-;   lsp-ui-doc-delay 4
-;   lsp-ui-doc-position 'at-point top, bottom, or at-point
-;   lsp-ui-doc-max-width 90
-;   lsp-ui-doc-max-height 40
-;   lsp-ui-doc-use-childframe t
-;   lsp-ui-doc-use-webkit t)
-;  )
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :config
+  (setq
+   ;;lsp-ui-doc
+   lsp-ui-doc-enable t
+   lsp-ui-doc-header nil
+   lsp-ui-doc-include-signature nil
+   lsp-ui-doc-delay 4
+   lsp-ui-doc-position 'at-point top, bottom, or at-point
+   lsp-ui-doc-max-width 90
+   lsp-ui-doc-max-height 40
+   lsp-ui-doc-use-childframe t
+   lsp-ui-doc-use-webkit t)
+  )
 
-
-;(use-package company-quickhelp
-;  :ensure t
-;  :after company
-;  :config
-;  (setq company-quickhelp-delay 4)
-;  (company-quickhelp-mode 1))
-
-;(use-package pos-tip
-;  :ensure t)
-
-
-;(company-quickhelp-mode)
-;(eval-after-load 'company
-;  '(define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin));
-;
-;(setq company-quickhelp-delay 5)
 
 ;;----------------------------------------------------------------------------
 ;;----------------------------------------------------------------------------
