@@ -4,8 +4,11 @@
 ;;; Commentary:
 ;; I used a lot of code from https://github.com/MatthewZMD/.emacs.d
 ;; I use emacs-head@28 from daviderestivo/homebrew-emacs-head,
-
+;; To use c-spc as set-mark-command in mac you need to modify at
+;; the mac os level:: System Preferences > Keyboard > Shortcuts >
+;; Input Sources > Select the previous input source and uncheck
 ;;; Code:
+
 (require 'package)
 (package-initialize)
 
@@ -392,13 +395,15 @@
 
   ;; To disable shortcut "jump" indicators for each section, set
   ;;(setq dashboard-show-shortcuts nil)
-  (setq dashboard-items '((recents  . 15)
+  (setq dashboard-items '((recents  . 10)
                           (projects . 5)))
   ;; To add icons to the widget headings and their items:
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
   ;; A randomly selected footnote will be displayed. To disable it:
-  (setq dashboard-set-footer nil))
+  (setq dashboard-set-footer nil)
+  ;; to use it with counsel-projectile
+  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name))
 
 
 ;;----------------------------------------------------------------------------
@@ -431,11 +436,12 @@
   :custom
   (doom-modeline-height 13)
   (doom-modeline-bar-width 5)
+  ;; Whether display the minor modes in the mode-line.
+  (doom-modeline-minor-modes t)
   (doom-modeline-icon t)
   ;;(doom-modeline-buffer-file-name-style  'truncate-with-project)
   :init (doom-modeline-mode 1))
 ;;This package requires the fonts included with all-the-icons to be installed. Run M-x all-the-icons-install-fonts to do so.
-
 
 ;;----------------------------------------------------------------------------
 ;; Ivy, ivy rich and dependatns
@@ -476,6 +482,59 @@
   :after ivy
   :config
   (ivy-prescient-mode))
+
+
+;;----------------------------------------------------------------------------
+;; Counsel projectile
+;;----------------------------------------------------------------------------
+(use-package counsel-projectile
+  :ensure t
+  :config
+  (counsel-projectile-mode))
+
+
+
+;;----------------------------------------------------------------------------
+;; Company-mode
+;;----------------------------------------------------------------------------
+(use-package company
+  :ensure t
+  :init
+  (global-company-mode)
+  :config
+  ;; set default `company-backends'
+  (setq company-backends
+        '((company-files          ; files & directory
+           company-keywords       ; keywords
+           company-capf ; completion-at-point-functions
+	   company-emoji)
+          (company-abbrev company-dabbrev))))
+
+
+;; Company binds ‘RET’ key to ‘company-complete-selection’. This is rather inconvenient in inferior R buffers. One solution is to use ‘TAB’ to complete common part and ‘M-TAB’ for full selection:
+(define-key company-active-map [return] nil)
+(define-key company-active-map [tab] 'company-complete-common)
+(define-key company-active-map (kbd "TAB") 'company-complete-common)
+(define-key company-active-map (kbd "M-TAB") 'company-complete-selection)
+
+(setq company-selection-wrap-around t
+      company-tooltip-align-annotations t
+      company-idle-delay 0.5
+      company-minimum-prefix-length 2
+      company-tooltip-limit 10)
+
+
+(use-package company-prescient
+  :ensure t
+  :after company
+  :config
+  (company-prescient-mode))
+
+
+;; cool icons
+(use-package company-box
+  :ensure t
+  :hook (company-mode . company-box-mode))
 
 
 ;;----------------------------------------------------------------------------
@@ -600,59 +659,6 @@
 
 
 ;;----------------------------------------------------------------------------
-;; lsp-mode
-;;----------------------------------------------------------------------------
-(use-package lsp-mode
-  :ensure t
-  :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  (setq lsp-keymap-prefix "C-c l")
-  :config
-  (setq lsp-idle-delay 0.75
-        lsp-enable-symbol-highlighting t
-	lsp-ui-sideline-enable nil
-	lsp-ui-sideline-show-diagnostics nil
-	lsp-signature-render-documentation nil
-	lsp-completion-show-detail nil
-	lsp-completion-show-kind nil)
-  :hook
-  ((ess-r-mode . lsp)
-   (python-mode . lsp)
-   (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
-
-
-
-
-;; to remove error ls does not support dired
-;(when (string= system-type "darwin")
-;  (setq dired-use-ls-dired nil))
-
-(use-package lsp-ui
-  :commands lsp-ui-mode
-  :hook (lsp-mode . lsp-ui-mode)
-  :config
-  (setq
-   ;;lsp-ui-doc
-   lsp-ui-doc-enable t
-   lsp-ui-doc-header nil
-   lsp-ui-doc-include-signature nil
-   lsp-ui-doc-delay 2.5
-   lsp-ui-doc-position 'at-point ;top, bottom, or at-point
-   lsp-ui-doc-max-width 90
-   lsp-ui-doc-max-height 40
-   lsp-ui-doc-use-childframe t
-   lsp-ui-doc-use-webkit t))
-
-;;Company-lsp
-;;(use-package company-lsp
-;;  :ensure t
-;; :after company lsp-mode
-;;:config
-;;(push 'company-lsp company-backends))
-
-
-;;----------------------------------------------------------------------------
 ;; yasnippet
 ;;----------------------------------------------------------------------------
 (use-package yasnippet
@@ -693,20 +699,16 @@
 ;;----------------------------------------------------------------------------
 (use-package flycheck
   :ensure t
-  :defer t
+;;  :defer t
   :hook ((markdown-mode ess-r-mode python-mode) . flycheck-mode)
   ;:custom (flycheck-indication-mode nil)
   )
 ;; to enable flycheck in markdown oyu need to install:
 ;; brew install markdownlint-cli
 
-
-
-;;----------------------------------------------------------------------------
-;; flycheck-tip
-;;----------------------------------------------------------------------------
 (use-package flycheck-tip
   :ensure t
+;;  :defer t
   :commands 'flycheck-tip-cycle
   :after flycheck
   :bind (:map flycheck-mode-map
@@ -714,36 +716,19 @@
   :config
   (setq flycheck-display-errors-function 'ignore))
 
+(use-package flycheck-pos-tip
+  :ensure t
+;;  :defer t
+  :if (display-graphic-p)
+  :after flycheck
+  :commands flycheck-pos-tip-mode
+  :hook (flycheck-mode . flycheck-pos-tip-mode))
 
 ;;----------------------------------------------------------------------------
 ;; Emoji
 ;;----------------------------------------------------------------------------
 (use-package company-emoji
   :ensure t)
-
-
-;;----------------------------------------------------------------------------
-;; Company-mode
-;;----------------------------------------------------------------------------
-(use-package company
-  :ensure t
-  :init
-  (global-company-mode)
-  :config
-  ;; set default `company-backends'
-  (setq company-backends
-        '((company-files          ; files & directory
-           company-keywords       ; keywords
-           company-capf ; completion-at-point-functions
-	   company-emoji)
-          (company-abbrev company-dabbrev))))
-
-
-(use-package company-prescient
-  :ensure t
-  :after company
-  :config
-  (company-prescient-mode))
 
 
 ;;----------------------------------------------------------------------------
@@ -1032,16 +1017,18 @@
   (define-key ess-r-mode-map "_" #'ess-insert-assign)
   (define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
   (setq ess-use-eldoc nil)
-  ;;(setq ess-use-company nil)
   (setq inferior-ess-r-program "R")
   (setq ess-eval-visibly t)
   ;;; Flycheck ess
   (setq ess-use-flymake nil) ;; disable Flymake
-  ;; Auto-complete only in the script
-  (setq ess-use-auto-complete t) ;'script-only
+  ;; use comany-mode
+  (setq ess-use-auto-complete nil)
+  (setq ess-use-company t)
+  ;; Make ‘M-h’ to display quick help:
+  (define-key company-active-map (kbd "M-h") 'company-show-doc-buffer)
   ;; To remove fancy comments defaults (issue with #)
   (setq ess-fancy-comments nil)
-					; Syntax highlight
+  ;; Syntax highlight
   (setq ess-R-font-lock-keywords
 	(quote
 	 ((ess-R-fl-keyword:keywords . t)
@@ -1083,7 +1070,7 @@
 
 
 ;; ESS
-(kill-buffer "*ESS*")
+;;(kill-buffer "*ESS*")
 
 
 ;;----------------------------------------------------------------------------
@@ -1309,4 +1296,69 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (org-mode . (lambda () (org-bullets-mode 1))))
 
 
+;;----------------------------------------------------------------------------
+;; lsp-mode
+;;----------------------------------------------------------------------------
+(use-package lsp-mode
+  :ensure t
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  (setq lsp-idle-delay 0.5
+        lsp-enable-symbol-highlighting t
+	lsp-ui-sideline-enable nil
+	lsp-ui-sideline-show-diagnostics nil
+	lsp-signature-render-documentation nil
+	lsp-completion-show-detail nil
+	lsp-completion-show-kind nil)
+  :hook
+  ((ess-r-mode . lsp)
+   (python-mode . lsp)
+   (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+;; to remove error ls does not support dired
+;(when (string= system-type "darwin")
+;  (setq dired-use-ls-dired nil))
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq gc-cons-threshold 100000000)
+
+;(use-package lsp-ui
+;  :commands lsp-ui-mode
+;  :hook (lsp-mode . lsp-ui-mode)
+;  :config
+;  (setq
+;   ;;lsp-ui-doc
+;   lsp-ui-doc-enable t
+;   lsp-ui-doc-header nil
+;   lsp-ui-doc-include-signature nil
+;   lsp-ui-doc-delay 4
+;   lsp-ui-doc-position 'at-point top, bottom, or at-point
+;   lsp-ui-doc-max-width 90
+;   lsp-ui-doc-max-height 40
+;   lsp-ui-doc-use-childframe t
+;   lsp-ui-doc-use-webkit t)
+;  )
+
+
+;(use-package company-quickhelp
+;  :ensure t
+;  :after company
+;  :config
+;  (setq company-quickhelp-delay 4)
+;  (company-quickhelp-mode 1))
+
+;(use-package pos-tip
+;  :ensure t)
+
+
+;(company-quickhelp-mode)
+;(eval-after-load 'company
+;  '(define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin));
+;
+;(setq company-quickhelp-delay 5)
+
+;;----------------------------------------------------------------------------
+;;----------------------------------------------------------------------------
 (provide 'init)
