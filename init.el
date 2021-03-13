@@ -54,7 +54,7 @@
 ;; Change highlight region color
 (set-face-attribute 'region nil :background "grey35")
 
-					;(set-face-foreground 'font-lock-string-face "")
+;; (set-face-foreground 'font-lock-string-face "")
 (set-face-foreground 'font-lock-comment-face "gray63")
 
 
@@ -67,12 +67,6 @@
 ;; Removes *messages* from the buffer.
 (setq-default message-log-max nil)
 (kill-buffer "*Messages*")
-
-
-;;----------------------------------------------------------------------------
-;; Prevent may windows open when open one window
-;;----------------------------------------------------------------------------
-					;(setq ns-pop-up-frames nil)
 
 
 ;;----------------------------------------------------------------------------
@@ -470,7 +464,8 @@
   (doom-modeline-icon t)
   ;;(doom-modeline-buffer-file-name-style  'truncate-with-project)
   :init (doom-modeline-mode 1))
-;;This package requires the fonts included with all-the-icons to be installed. Run M-x all-the-icons-install-fonts to do so.
+;;This package requires the fonts included with all-the-icons to be installed.
+;;Run M-x all-the-icons-install-fonts to do so.
 
 ;;----------------------------------------------------------------------------
 ;; Ivy, ivy rich and dependatns
@@ -541,7 +536,10 @@
           (company-abbrev company-dabbrev))))
 
 
-;; Company binds ‘RET’ key to ‘company-complete-selection’. This is rather inconvenient in inferior R buffers. One solution is to use ‘TAB’ to complete common part and ‘M-TAB’ for full selection:
+;; Company binds ‘RET’ key to ‘company-complete-selection’.
+;; This is rather inconvenient in inferior R buffers.
+;; One solution is to use ‘TAB’ to complete common
+;; part and ‘M-TAB’ for full selection:
 (define-key company-active-map [return] nil)
 (define-key company-active-map [tab] 'company-complete-common)
 (define-key company-active-map (kbd "TAB") 'company-complete-common)
@@ -559,12 +557,6 @@
   :after company
   :config
   (company-prescient-mode))
-
-
-;; ### cannot control idle delay help files so out
-					;(use-package company-box
-					;  :ensure t
-					;  :hook (company-mode . company-box-mode))
 
 
 ;;----------------------------------------------------------------------------
@@ -849,14 +841,14 @@
   :init
   (progn
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
-					;  :config
-					;  (set-face-attribute 'rainbow-delimiters-max-face-count 6)
-					;  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "yellow")
-					;  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "magenta")
-					;  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "cyan")
-					;  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "orange")
-					; (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "Green")
-					;  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "purple"))
+;;  :config
+;;  (set-face-attribute 'rainbow-delimiters-max-face-count 6)
+;;  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "yellow")
+;;  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "magenta")
+;;  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "cyan")
+;;  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "orange")
+;; (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "Green")
+;;  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "purple"))
 
 
 ;;----------------------------------------------------------------------------
@@ -1270,7 +1262,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                                    (air-org-skip-subtree-if-priority ?A)
                                                    (org-agenda-skip-if nil '(scheduled deadline))))
                     (org-agenda-overriding-header "ALL normal priority tasks:"))))
-         ((org-agenda-compact-blocks nil))))) ; Change to t if you want to remove the equal divisions
+         ((org-agenda-compact-blocks nil))))) ;; Change to t if you want to remove the equal divisions
 
 
 ;;----------------------------------------------------------------------------
@@ -1349,8 +1341,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :commands lsp)
 
 ;; to remove error ls does not support dired
-					;(when (string= system-type "darwin")
-					;  (setq dired-use-ls-dired nil))
+;;(when (string= system-type "darwin")
+;;  (setq dired-use-ls-dired nil))
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 (setq gc-cons-threshold 100000000)
 
