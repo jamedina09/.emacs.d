@@ -54,7 +54,7 @@
 ;; Change highlight region color
 (set-face-attribute 'region nil :background "grey35")
 
-;(set-face-foreground 'font-lock-string-face "")
+					;(set-face-foreground 'font-lock-string-face "")
 (set-face-foreground 'font-lock-comment-face "gray63")
 
 
@@ -72,7 +72,7 @@
 ;;----------------------------------------------------------------------------
 ;; Prevent may windows open when open one window
 ;;----------------------------------------------------------------------------
-;(setq ns-pop-up-frames nil)
+					;(setq ns-pop-up-frames nil)
 
 
 ;;----------------------------------------------------------------------------
@@ -145,12 +145,8 @@
 ;; maximum font decoration
 (setq font-lock-maximum-decoration t)
 
-					; To change buffer view
-(global-set-key (kbd "C-c <left>")  'windmove-left)
-(global-set-key (kbd "C-c <right>") 'windmove-right)
-(global-set-key (kbd "C-c <up>")    'windmove-Up)
-(global-set-key (kbd "C-c <down>")  'windmove-down)
-
+;; To change buffer view
+(windmove-default-keybindings 'meta)
 
 ;; Make the fringe narrower
 ;; make the left fringe 4 pixels wide and the right disappear
@@ -286,6 +282,31 @@
                                  (lambda () (interactive) (find-alternate-file ".."))))))
 
 
+
+;;narrow dired to match filter
+(use-package dired-narrow
+  :ensure t
+  :after dired
+  :bind (:map dired-mode-map
+              ("/" . dired-narrow)))
+
+;; make small subtrees within the same buffer
+(use-package dired-subtree
+  :ensure t
+  :config
+  (bind-keys :map dired-mode-map
+             ("i" . dired-subtree-insert)
+             (";" . dired-subtree-remove)))
+
+
+;; copy paste easy in dired :)
+(use-package dired-ranger
+  :ensure t
+  :bind (:map dired-mode-map
+              ("W" . dired-ranger-copy)
+              ("X" . dired-ranger-move)
+              ("Y" . dired-ranger-paste)))
+
 ;;----------------------------------------------------------------------------
 ;; solaire-mode
 ;;----------------------------------------------------------------------------
@@ -295,27 +316,34 @@
   :hook (after-init . solaire-global-mode))
 
 ;;----------------------------------------------------------------------------
-;; buffer-move
+;; transpose-frame
 ;;----------------------------------------------------------------------------
-(use-package buffer-move
+(use-package transpose-frame
   :ensure t
-  :config
-  (global-set-key (kbd "<C-s-up>")     'buf-move-up)
-  (global-set-key (kbd "<C-s-down>")   'buf-move-down)
-  (global-set-key (kbd "<C-s-left>")   'buf-move-left)
-  (global-set-key (kbd "<C-s-right>")  'buf-move-right))
-
+  :bind (("C-c t" . transpose-frame)
+	 ("C-c f" . rotate-frame)))
 
 ;;----------------------------------------------------------------------------
 ;; osx-trash
 ;;----------------------------------------------------------------------------
 ;; in macos delete-by...-to-trash does not work without this
+;; install brew install trash
 (use-package osx-trash
   :ensure t
   :init
   (when (eq system-type 'darwin)
     (osx-trash-setup))
   (setq delete-by-moving-to-trash t))
+
+
+;;----------------------------------------------------------------------------
+;; goto-line-preview
+;;----------------------------------------------------------------------------
+(use-package goto-line-preview
+  :ensure t)
+
+(global-set-key [remap goto-line] 'goto-line-preview)
+
 
 
 ;;----------------------------------------------------------------------------
@@ -370,6 +398,7 @@
   :bind (:map projectile-mode-map
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
+(setq projectile-sort-order 'recently-active)
 
 
 ;;----------------------------------------------------------------------------
@@ -456,6 +485,7 @@
   :custom
   (ivy-count-format "(%d/%d) ")
   (ivy-use-virtual-buffers t)
+  (ivy--regex-ignore-order t)
   :config (ivy-mode))
 
 (use-package ivy-rich
@@ -532,9 +562,9 @@
 
 
 ;; ### cannot control idle delay help files so out
-;(use-package company-box
-;  :ensure t
-;  :hook (company-mode . company-box-mode))
+					;(use-package company-box
+					;  :ensure t
+					;  :hook (company-mode . company-box-mode))
 
 
 ;;----------------------------------------------------------------------------
@@ -701,7 +731,7 @@
   :ensure t
   :defer t
   :hook ((markdown-mode ess-r-mode python-mode) . flycheck-mode)
-  ;:custom (flycheck-indication-mode nil)
+					;:custom (flycheck-indication-mode nil)
   )
 ;; to enable flycheck in markdown oyu need to install:
 ;; brew install markdownlint-cli
@@ -819,14 +849,14 @@
   :init
   (progn
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
-;  :config
-;  (set-face-attribute 'rainbow-delimiters-max-face-count 6)
-;  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "yellow")
-;  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "magenta")
-;  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "cyan")
-;  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "orange")
-; (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "Green")
-;  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "purple"))
+					;  :config
+					;  (set-face-attribute 'rainbow-delimiters-max-face-count 6)
+					;  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "yellow")
+					;  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "magenta")
+					;  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "cyan")
+					;  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "orange")
+					; (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "Green")
+					;  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "purple"))
 
 
 ;;----------------------------------------------------------------------------
@@ -1319,8 +1349,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :commands lsp)
 
 ;; to remove error ls does not support dired
-;(when (string= system-type "darwin")
-;  (setq dired-use-ls-dired nil))
+					;(when (string= system-type "darwin")
+					;  (setq dired-use-ls-dired nil))
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 (setq gc-cons-threshold 100000000)
 
