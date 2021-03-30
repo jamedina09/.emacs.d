@@ -12,7 +12,6 @@
 (require 'package)
 (package-initialize)
 
-
 ;;; Package archives
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.org/packages/") t)
@@ -30,7 +29,6 @@
   (setq use-package-compute-statistics t)
   (setq use-package-enable-imenu-support t))
 
-
 ;;----------------------------------------------------------------------------
 ;; theme
 ;;----------------------------------------------------------------------------
@@ -39,24 +37,16 @@
   :config
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+        doom-themes-enable-italic t
+	doom-themes-treemacs-theme "doom-colors") ; if nil, italics is universally disabled
   (load-theme 'doom-dracula t) ;Iosvkem
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  (doom-themes-neotree-config)
-  ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
 ;; Change highlight region color
 (set-face-attribute 'region nil :background "grey35")
-
-;; (set-face-foreground 'font-lock-string-face "")
+;; comments colors
 (set-face-foreground 'font-lock-comment-face "gray63")
-
 
 ;;----------------------------------------------------------------------------
 ;; Kill general login buffers
@@ -67,7 +57,6 @@
 ;; Removes *messages* from the buffer.
 (setq-default message-log-max nil)
 (kill-buffer "*Messages*")
-
 
 ;;----------------------------------------------------------------------------
 ;; Interface and General Tweaks
@@ -90,9 +79,6 @@
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 
-;; Line number configuration
-;;(global-display-line-numbers-mode)
-
 ;; Window size and features
 (add-to-list 'default-frame-alist '(height . 90))
 (add-to-list 'default-frame-alist '(width . 90))
@@ -111,7 +97,7 @@
 (show-paren-mode t)
 
 ;; Don't Lock Files
-(setq-default create-lockfiles nil)
+(setq create-lockfiles nil)
 
 ;; Remove noise emacs
 (setq visible-bell t)
@@ -126,32 +112,22 @@
 ;; Title bar
 (setq-default frame-title-format '("" user-login-name "@" system-name " - %b"))
 
-;; To remove trailing whitespace
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-
-;;Highlight Syntax
-(global-font-lock-mode t)
-
-;; Highlight current line
-(global-hl-line-mode 1)
-
 ;; maximum font decoration
 (setq font-lock-maximum-decoration t)
-
-;; To change buffer view
-(windmove-default-keybindings 'meta)
 
 ;; Make the fringe narrower
 ;; make the left fringe 4 pixels wide and the right disappear
 (fringe-mode '1)
+
+;; Trim spaces
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(setq require-final-newline t)
 
 ;;----------------------------------------------------------------------------
 ;; Personal information
 ;;----------------------------------------------------------------------------
 (setq user-full-name "J.A. Medina-Vega")
 (setq user-mail-address "jamedina09@gmail.com")
-
 
 ;;----------------------------------------------------------------------------
 ;; Key bindings
@@ -169,9 +145,8 @@
 (global-set-key (kbd "C-+") #'text-scale-increase)
 (global-set-key (kbd "C--") #'text-scale-decrease)
 ;; Move up/down paragraph
-(global-set-key (kbd "M-n") #'forward-paragraph)
-(global-set-key (kbd "M-p") #'backward-paragraph)
-
+(global-set-key (kbd "M-<down>") #'forward-paragraph)
+(global-set-key (kbd "M-<up>") #'backward-paragraph)
 
 ;;----------------------------------------------------------------------------
 ;; Smooth scrolling
@@ -190,7 +165,6 @@
 (setq hscroll-step 1)
 (setq hscroll-margin 1)
 
-
 ;;----------------------------------------------------------------------------
 ;; Backpups
 ;;----------------------------------------------------------------------------
@@ -201,13 +175,12 @@
       version-control t ;; number and keep versions of backups
       backup-by-copying t ;; and copy (don't clobber symlinks) them to...
       backup-directory-alist '(("." . "~/Google Drive/EMACS_BACKUPS/")) ;; ... here
-      kept-new-versions 6 ;; the number of newest (before current version) version to keep
+      kept-new-versions 6 ;; the number of newest version to keep
       kept-old-versions 2 ;; the number of old versions to keep
       delete-old-versions t ;; don't ask about deleting old versions
       vc-make-backup-files t ;; even backup files under version control (git,svn,etc.)
       ;;make-backup-files nil  ;; no annoying "~file.txt"
       auto-save-default nil) ;; no auto saves to #file#
-
 
 ;;----------------------------------------------------------------------------
 ;; Time-stamp
@@ -218,7 +191,6 @@
       time-stamp-line-limit 10 ;; check first 10 buffer lines for Time-stamp: <>
       time-stamp-format "Last changed %Y-%02m-%02d %02H:%02M:%02S by %L") ; date format
 (add-hook 'write-file-functions 'time-stamp) ; update when saving
-
 
 ;;----------------------------------------------------------------------------
 ;; Use ibuffer instead of normal buffer
@@ -239,6 +211,15 @@
      (mark " "
            (name 16 -1)
            " " filename))))
+
+;;----------------------------------------------------------------------------
+;; neotree
+;;----------------------------------------------------------------------------
+;; neotree
+(use-package neotree
+  :ensure t
+  :bind ([f8] . neotree-toggle)
+  :config (setq neo-default-system-application "open"))
 
 
 ;;----------------------------------------------------------------------------
@@ -275,8 +256,6 @@
                   (local-set-key (kbd "^")
                                  (lambda () (interactive) (find-alternate-file ".."))))))
 
-
-
 ;;narrow dired to match filter
 (use-package dired-narrow
   :ensure t
@@ -291,7 +270,6 @@
   (bind-keys :map dired-mode-map
              ("i" . dired-subtree-insert)
              (";" . dired-subtree-remove)))
-
 
 ;; copy paste easy in dired :)
 (use-package dired-ranger
@@ -329,7 +307,6 @@
     (osx-trash-setup))
   (setq delete-by-moving-to-trash t))
 
-
 ;;----------------------------------------------------------------------------
 ;; goto-line-preview
 ;;----------------------------------------------------------------------------
@@ -337,8 +314,6 @@
   :ensure t)
 
 (global-set-key [remap goto-line] 'goto-line-preview)
-
-
 
 ;;----------------------------------------------------------------------------
 ;; exec-path-from-shell
@@ -349,13 +324,11 @@
   :config
   (exec-path-from-shell-initialize))
 
-
 ;;----------------------------------------------------------------------------
 ;; restart-emacs
 ;;----------------------------------------------------------------------------
 (use-package restart-emacs
   :ensure t)
-
 
 ;;----------------------------------------------------------------------------
 ;; Page break lines
@@ -367,7 +340,6 @@
   (set-fontset-font "fontset-default"
                     (cons page-break-lines-char page-break-lines-char)
                     (face-attribute 'default :family)))
-
 
 ;;----------------------------------------------------------------------------
 ;; all the icons
@@ -381,7 +353,6 @@
 ;; simultaneously, you can try setting the following variable
 (setq inhibit-compacting-font-caches t)
 
-
 ;;----------------------------------------------------------------------------
 ;; Projectile
 ;;----------------------------------------------------------------------------
@@ -393,7 +364,6 @@
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
 (setq projectile-sort-order 'recently-active)
-
 
 ;;----------------------------------------------------------------------------
 ;; Dashboard
@@ -415,7 +385,6 @@
 
   ;; Content is not centered by default. To center, set
   (setq dashboard-center-content t);
-
   ;; To disable shortcut "jump" indicators for each section, set
   ;;(setq dashboard-show-shortcuts nil)
   (setq dashboard-items '((recents  . 10)
@@ -428,7 +397,6 @@
   ;; to use it with counsel-projectile
   (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
   )
-
 
 ;;----------------------------------------------------------------------------
 ;; Dimmer
@@ -451,7 +419,6 @@
   (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
   (sp-local-pair 'org-mode "[" nil :actions nil))
 
-
 ;;----------------------------------------------------------------------------
 ;; Doom-line
 ;;----------------------------------------------------------------------------
@@ -460,12 +427,64 @@
   :custom
   (doom-modeline-height 13)
   (doom-modeline-bar-width 5)
-  ;; Whether display the minor modes in the mode-line.
   (doom-modeline-icon t)
-  ;;(doom-modeline-buffer-file-name-style  'truncate-with-project)
+  (doom-modeline-major-mode-icon t)
+  (doom-modeline-minor-modes nil)
+  (doom-modeline-buffer-file-name-style 'truncate-upto-root)
   :init (doom-modeline-mode 1))
 ;;This package requires the fonts included with all-the-icons to be installed.
 ;;Run M-x all-the-icons-install-fonts to do so.
+
+;;----------------------------------------------------------------------------
+;; Fancy battery
+;;----------------------------------------------------------------------------
+(use-package fancy-battery
+  :ensure t
+  :config
+  (setq fancy-battery-show-percentage t)
+  (setq battery-update-interval 15)
+  (if window-system
+      (fancy-battery-mode)
+    (display-battery-mode)))
+
+;;----------------------------------------------------------------------------
+;; Ace window
+;;----------------------------------------------------------------------------
+(use-package ace-window
+  :ensure t
+  :bind ("M-o" . shackra/other-window)
+  :init
+  (custom-set-faces
+   '(aw-leading-char-face
+     ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+  (defun --count-frames ()
+    "Return the number of visible frames"
+    (let* ((frames (if (daemonp) (butlast (visible-frame-list) 1) (visible-frame-list))))
+      (length frames)))
+  (defun shackra/other-window ()
+    "Change the cursor's focus to another window"
+    (interactive)
+    (if (or (> (count-windows) 2) (> (--count-frames) 1))
+        (ace-window 1)
+      (ace-window 0)))
+  :config
+  (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+
+;;----------------------------------------------------------------------------
+;; Drag-stuff
+;;----------------------------------------------------------------------------
+;; drag lines up and down
+(use-package drag-stuff
+  :ensure t
+  :diminish drag-stuff-mode
+  :init (setq drag-stuff-modifier 'ctrl) ; hack to stop drag-stuff setting key mappings over ones our existing
+  :config (drag-stuff-global-mode 1)
+  (bind-keys :map drag-stuff-mode-map
+	     ("<M-S-down>" . drag-stuff-down) ;;S is shift
+	     ("<M-S-up>" . drag-stuff-up)))
+
+(eval-after-load "drag-stuff"
+  '(define-key drag-stuff-mode-map (kbd "<M-left>") nil))
 
 ;;----------------------------------------------------------------------------
 ;; Ivy, ivy rich and dependatns
@@ -508,7 +527,6 @@
   :config
   (ivy-prescient-mode))
 
-
 ;;----------------------------------------------------------------------------
 ;; Counsel projectile
 ;;----------------------------------------------------------------------------
@@ -516,8 +534,6 @@
   :ensure t
   :config
   (counsel-projectile-mode))
-
-
 
 ;;----------------------------------------------------------------------------
 ;; Company-mode
@@ -558,7 +574,6 @@
   :config
   (company-prescient-mode))
 
-
 ;;----------------------------------------------------------------------------
 ;; Magit
 ;;----------------------------------------------------------------------------
@@ -566,7 +581,6 @@
   :ensure t
   :bind (("C-x g" . magit-status)
 	 ("C-c C-g l" . magit-file-log)))
-
 
 ;;----------------------------------------------------------------------------
 ;; diff-hl
@@ -584,102 +598,6 @@
   (diff-hl-margin-mode)
   (setq diff-hl-margin-side 'right))
 
-
-;;----------------------------------------------------------------------------
-;; treemacs
-;;----------------------------------------------------------------------------
-(use-package treemacs
-  :ensure t
-  :defer t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-  :config
-  (progn
-    (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
-          treemacs-deferred-git-apply-delay      0.5
-          treemacs-directory-name-transformer    #'identity
-          treemacs-display-in-side-window        t
-          treemacs-eldoc-display                 t
-          treemacs-file-event-delay              5000
-          treemacs-file-extension-regex          treemacs-last-period-regex-value
-          treemacs-file-follow-delay             0.2
-          treemacs-file-name-transformer         #'identity
-          treemacs-follow-after-init             t
-          treemacs-git-command-pipe              ""
-          treemacs-goto-tag-strategy             'refetch-index
-          treemacs-indentation                   2
-          treemacs-indentation-string            " "
-          treemacs-is-never-other-window         nil
-          treemacs-max-git-entries               5000
-          treemacs-missing-project-action        'ask
-          treemacs-move-forward-on-expand        nil
-          treemacs-no-png-images                 nil
-          treemacs-no-delete-other-windows       t
-          treemacs-project-follow-cleanup        nil
-          treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-          treemacs-position                      'left
-          treemacs-read-string-input             'from-child-frame
-          treemacs-recenter-distance             0.1
-          treemacs-recenter-after-file-follow    nil
-          treemacs-recenter-after-tag-follow     nil
-          treemacs-recenter-after-project-jump   'always
-          treemacs-recenter-after-project-expand 'on-distance
-          treemacs-show-cursor                   nil
-          treemacs-show-hidden-files             t
-          treemacs-silent-filewatch              nil
-          treemacs-silent-refresh                nil
-          treemacs-sorting                       'alphabetic-asc
-          treemacs-space-between-root-nodes      t
-          treemacs-tag-follow-cleanup            t
-          treemacs-tag-follow-delay              1.5
-          treemacs-user-mode-line-format         nil
-          treemacs-user-header-line-format       nil
-          treemacs-width                         35
-          treemacs-workspace-switch-cleanup      nil)
-    ;; The default width and height of the icons is 22 pixels. If you are
-    ;; using a Hi-DPI display, uncomment this to double the icon size.
-    ;;(treemacs-resize-icons 44)
-    (treemacs-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode 'always)
-    (pcase (cons (not (null (executable-find "git")))
-                 (not (null treemacs-python-executable)))
-      (`(t . t)
-       (treemacs-git-mode 'deferred))
-      (`(t . _)
-       (treemacs-git-mode 'simple))))
-  :bind
-  (:map global-map
-        ("M-0"       . treemacs-select-window)
-        ("C-x t 1"   . treemacs-delete-other-windows)
-        ("C-x t t"   . treemacs)
-        ("C-x t B"   . treemacs-bookmark)
-        ("C-x t C-t" . treemacs-find-file)
-        ("C-x t M-t" . treemacs-find-tag)))
-
-(use-package treemacs-projectile
-  :after treemacs projectile
-  :ensure t)
-
-(use-package treemacs-icons-dired
-  :after treemacs dired
-  :ensure t
-  :config (treemacs-icons-dired-mode))
-
-(use-package treemacs-magit
-  :after treemacs magit
-  :ensure t)
-
-(use-package treemacs-persp ;;treemacs-persective if you use perspective.el vs. persp-mode
-  :after treemacs persp-mode ;;or perspective vs. persp-mode
-  :ensure t
-  :config (treemacs-set-scope-type 'Perspectives))
-
-(use-package treemacs-all-the-icons
-  :ensure t)
-
-
 ;;----------------------------------------------------------------------------
 ;; yasnippet
 ;;----------------------------------------------------------------------------
@@ -689,7 +607,6 @@
   (use-package yasnippet-snippets
     :ensure t)
   (yas-global-mode 1))
-
 
 ;;----------------------------------------------------------------------------
 ;; popwin
@@ -715,15 +632,14 @@
     (push '("*undo-tree Diff*" :position bottom :height .3) popwin:special-display-config)
     (popwin-mode 1)))
 
-
 ;;----------------------------------------------------------------------------
 ;; flycheck
 ;;----------------------------------------------------------------------------
 (use-package flycheck
   :ensure t
   :defer t
-  :hook ((markdown-mode ess-r-mode python-mode) . flycheck-mode)
-					;:custom (flycheck-indication-mode nil)
+  :hook ((markdown-mode ess-r-mode) . flycheck-mode)
+  ;;:custom (flycheck-indication-mode nil)
   )
 ;; to enable flycheck in markdown oyu need to install:
 ;; brew install markdownlint-cli
@@ -752,7 +668,6 @@
 (use-package company-emoji
   :ensure t)
 
-
 ;;----------------------------------------------------------------------------
 ;; Fix word - upcase - downcase region
 ;;----------------------------------------------------------------------------
@@ -761,7 +676,6 @@
   :bind (("M-u" . fix-word-upcase)
 	 ("M-l" . fix-word-downcase)
 	 ("M-c" . fix-word-capitalize)))
-
 
 ;;----------------------------------------------------------------------------
 ;; Dictionary
@@ -797,7 +711,6 @@
   (ispell-hunspell-add-multi-dic "en_US,es_ANY"))
 ;; Spell checking should now work with M-x ispell
 
-
 ;;----------------------------------------------------------------------------
 ;; Undo-tree
 ;;----------------------------------------------------------------------------
@@ -810,7 +723,6 @@
   (undo-tree-visualizer-timestamps t))
 ;; Open with C-x u
 
-
 ;;----------------------------------------------------------------------------
 ;; Dired k
 ;;----------------------------------------------------------------------------
@@ -822,7 +734,6 @@
   (add-hook 'dired-initial-position-hook 'dired-k)
   (add-hook 'dired-after-readin-hook #'dired-k-no-revert))
 
-
 ;;----------------------------------------------------------------------------
 ;; Which key  - Do not use with Ivi because it blocks its use
 ;;----------------------------------------------------------------------------
@@ -831,7 +742,6 @@
   :config
   (which-key-mode)
   (which-key-setup-side-window-right-bottom))
-
 
 ;;----------------------------------------------------------------------------
 ;; Rainbow delimiters
@@ -850,7 +760,6 @@
 ;; (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "Green")
 ;;  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "purple"))
 
-
 ;;----------------------------------------------------------------------------
 ;; Rainbow mode
 ;;----------------------------------------------------------------------------
@@ -860,8 +769,6 @@
   :hook (
 	 (prog-mode . rainbow-mode)
 	 (ess-r-mode . rainbow-mode)))
-
-
 
 ;;----------------------------------------------------------------------------
 ;; Highlight-Identation
@@ -876,7 +783,6 @@
   :hook
   (prog-mode  . highlight-indent-guides-mode)
   (ess-r-mode  . highlight-indent-guides-mode))
-
 
 ;;----------------------------------------------------------------------------
 ;; Beacon
@@ -895,7 +801,6 @@
   (setq beacon-blink-duration .2)
   (setq beacon-blink-delay .2)
   (setq beacon-size 20));end beacon
-
 
 ;;----------------------------------------------------------------------------
 ;; all the icons
@@ -922,7 +827,6 @@
   :ensure t
   :init (all-the-icons-ibuffer-mode 1))
 
-
 ;;----------------------------------------------------------------------------
 ;; pdf-tools
 ;;----------------------------------------------------------------------------
@@ -947,56 +851,104 @@
   (setq pdf-view-resize-factor 1.10)
   (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1))))
 
+;;----------------------------------------------------------------------------
+;; Org-mode
+;;----------------------------------------------------------------------------
+(define-key global-map "\C-ca" 'org-agenda)
+
+;; Define my agenda files
+(setq org-agenda-files (directory-files-recursively "~//Google Drive/org/" "\\.org$"))
+
+;; to automatically add time when a certain TODO is done
+;;(setq org-log-done 'time)
+
+;; Define my todo states
+(setq org-todo-keywords
+      '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELLED")))
+
+;; To filter eventual list
+(defun air-org-skip-subtree-if-priority (priority)
+  "Skip an agenda subtree if it has a priority of PRIORITY.
+
+PRIORITY may be one of the characters ?A, ?B, or ?C."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+        (pri-value (* 1000 (- org-lowest-priority priority)))
+        (pri-current (org-get-priority (thing-at-point 'line t))))
+    (if (= pri-value pri-current)
+        subtree-end
+      nil)))
+
+;; to filter habits
+(defun air-org-skip-subtree-if-habit ()
+  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+    (if (string= (org-entry-get nil "STYLE") "habit")
+        subtree-end
+      nil)))
+
+;; the final agenda
+(setq org-agenda-custom-commands
+      '(("d" "Daily agenda and all TODOs"
+         ((tags "PRIORITY=\"A\""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
+          (agenda "" ((org-agenda-ndays 1)))
+          (alltodo ""
+                   ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
+                                                   (air-org-skip-subtree-if-priority ?A)
+                                                   (org-agenda-skip-if nil '(scheduled deadline))))
+                    (org-agenda-overriding-header "ALL normal priority tasks:"))))
+         ((org-agenda-compact-blocks nil))))) ;; Change to t if you want to remove the equal divisions
 
 ;;----------------------------------------------------------------------------
-;; Web-mode
+;; Org-journal
 ;;----------------------------------------------------------------------------
-(use-package web-mode
-  :ensure t
-  :mode
-  ("\\.html?\\'" . web-mode))
-
-
-;;----------------------------------------------------------------------------
-;; impatient-mode
-;;----------------------------------------------------------------------------
-(use-package impatient-mode
-  :ensure t)
-;; Package cl is deprecated - this warning is ok, dont worry
-
-
-;;----------------------------------------------------------------------------
-;; elpy
-;;----------------------------------------------------------------------------
-(use-package elpy
+(use-package org-journal
   :ensure t
   :defer t
   :init
-  (advice-add 'python-mode :before 'elpy-enable)
-  (remove-hook 'elpy-modules 'elpy-module-flymake)
+  ;; Change default prefix key; needs to be set before loading org-journal
+  (setq org-journal-prefix-key "C-c j ")
   :config
-  ;;Interpreter setup
-  ;;  (setq python-shell-interpreter "python3"
-  ;;	python-shell-interpreter-args "-i"
-  ;;	)
-  ;; emacs dont warm me about identation
-  (setq python-indent-guess-indent-offset-verbose nil))
-
-;;(add-hook 'python-mode-hook 'elpy-mode)
-
+  (setq org-journal-dir "~/Google Drive/org/journal/"
+        org-journal-date-format "%A, %d %B %Y"
+	org-journal-file-format "%Y-%m-%d.org"
+	org-journal-find-file 'find-file
+	org-journal-file-type 'weekly
+	org-journal-enable-agenda-integration 't)
+  :bind
+  (("C-c C-j" . org-journal-new-entry)
+   ("C-c C-s" . org-journal-search)))
 
 ;;----------------------------------------------------------------------------
-;; lsp-python-ms
+;; Org-roam
 ;;----------------------------------------------------------------------------
-;; to use python with lsp install the following
-;; pip3 install 'python-language-server[all]'
-;;(use-package lsp-python-ms
-;;  :ensure t
-;;  :init (setq lsp-python-ms-auto-install-server t)
-;;  :hook (python-mode . (lambda ()
-;;                          (require 'lsp-python-ms)
-;;                          (lsp))))  ; or lsp-deferred
+(use-package org-roam
+  :ensure t
+  :hook
+  (after-init . org-roam-mode)
+  :custom
+  (org-roam-directory "~/Google Drive/org/notes/")
+  :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
 
+;; From: https://github.com/org-roam/org-roam
+;; Org-roam requires sqlite to function. Org-roam optionally uses Graphviz for
+;; graph-related functionality. It is recommended to install
+;; PCRE-enabled ripgrep for better performance and extended functionality.
+
+;;----------------------------------------------------------------------------
+;; Org-bullets
+;;----------------------------------------------------------------------------
+(use-package org-bullets
+  :ensure t
+  :hook
+  (org-mode . (lambda () (org-bullets-mode 1))))
 
 ;;----------------------------------------------------------------------------
 ;; ESS
@@ -1089,234 +1041,8 @@
        (define-key ess-r-mode-map [(control return)] nil)
        (define-key ess-r-mode-map [(shift return)]
 	 'ess-eval-region-or-line-visibly-and-step))))
-
-
 ;; ESS
 ;;(kill-buffer "*ESS*")
-
-
-;;----------------------------------------------------------------------------
-;; AucTeX
-;;----------------------------------------------------------------------------
-(use-package tex-site
-  :ensure auctex
-  :mode ("\\.tex\\'" . latex-mode)
-  :init
-  ;;  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-  ;;  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-  ;;  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-  (add-hook 'LaTeX-mode-hook 'company-mode)
-  :custom
-  (TeX-auto-save t)
-  (TeX-parse-self t)
-  (TeX-master nil)
-  ;; to use pdfview with auctex
-  (TeX-view-program-selection '((output-pdf "pdf-tools"))
-                              TeX-source-correlate-start-server t)
-  (TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
-  (TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
-  (TeX-source-correlate-method '((dvi . source-specials) (pdf . synctex)))
-  (TeX-source-correlate-mode t))
-
-;; Update PDF buffers after successful LaTeX runs
-(add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
-          #'TeX-revert-document-buffer)
-
-
-;;----------------------------------------------------------------------------
-;; Latex preview pane
-;;----------------------------------------------------------------------------
-(use-package latex-preview-pane
-  :defer t
-  :ensure t)
-
-
-;;----------------------------------------------------------------------------
-;; Markdown-mode
-;;----------------------------------------------------------------------------
-(use-package markdown-mode
-  :ensure t
-  :defer t
-  :mode (("//.markdown" . markdown-mode)
-         ("//.md" . markdown-mode)
-         ("//.ronn?" . markdown-mode)))
-
-
-;;----------------------------------------------------------------------------
-;; grip-mode
-;;----------------------------------------------------------------------------
-;; it uses python grip package
-;; pip install grip
-(use-package grip-mode
-  :ensure t
-  :bind (:map markdown-mode-command-map
-              ("g" . grip-mode)))
-
-
-;;----------------------------------------------------------------------------
-;; Polymode - Poly R
-;;----------------------------------------------------------------------------
-(use-package poly-R
-  :ensure t
-  :defer t
-  :mode (("//.Rnw" . poly-noweb+r-mode)
-	 ("//.Rmd" . poly-markdown+r-mode)
-	 ("//.Snw" . poly-noweb+r-mode)
-         ("//.rmd" . poly-markdown+r-mode)))
-
-(defcustom polymode-exporter-output-file-format "%s"
-  "Format of the exported files.
-%s is substituted with the current file name sans extension."
-  :group 'polymode-export
-  :type 'string)
-
-
-;;----------------------------------------------------------------------------
-;; Stan
-;;----------------------------------------------------------------------------
-;;; stan-mode.el
-(use-package stan-mode
-  :ensure t
-  ;; Uncomment if directly loading from your development repo
-  ;; :load-path "your-path/stan-mode/stan-mode"
-  :mode ("\\.stan\\'" . stan-mode)
-  :hook (stan-mode . stan-mode-setup)
-  ;;
-  :config
-  ;; The officially recommended offset is 2.
-  (setq stan-indentation-offset 2))
-
-
-;;; company-stan.el
-(use-package company-stan
-  :ensure t
-  ;; Uncomment if directly loading from your development repo
-  ;; :load-path "your-path/stan-mode/company-stan/"
-  :hook (stan-mode . company-stan-setup)
-  ;;
-  :config
-  ;; Whether to use fuzzy matching in `company-stan'
-  (setq company-stan-fuzzy nil))
-
-
-;;; flycheck-stan.el
-(use-package flycheck-stan
-  :ensure t
-  ;; Add a hook to setup `flycheck-stan' upon `stan-mode' entry
-  :hook ((stan-mode . flycheck-stan-stanc2-setup)
-         (stan-mode . flycheck-stan-stanc3-setup))
-  :config
-  ;; A string containing the name or the path of the stanc2 executable
-  ;; If nil, defaults to `stanc2'
-  (setq flycheck-stanc-executable nil)
-  ;; A string containing the name or the path of the stanc2 executable
-  ;; If nil, defaults to `stanc3'
-  (setq flycheck-stanc3-executable nil))
-
-
-;;----------------------------------------------------------------------------
-;; Org-mode
-;;----------------------------------------------------------------------------
-(define-key global-map "\C-ca" 'org-agenda)
-
-;; Define my agenda files
-(setq org-agenda-files (directory-files-recursively "~//Google Drive/org/" "\\.org$"))
-
-;; to automatically add time when a certain TODO is done
-;;(setq org-log-done 'time)
-
-;; Define my todo states
-(setq org-todo-keywords
-      '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELLED")))
-
-;; To filter eventual list
-(defun air-org-skip-subtree-if-priority (priority)
-  "Skip an agenda subtree if it has a priority of PRIORITY.
-
-PRIORITY may be one of the characters ?A, ?B, or ?C."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-        (pri-value (* 1000 (- org-lowest-priority priority)))
-        (pri-current (org-get-priority (thing-at-point 'line t))))
-    (if (= pri-value pri-current)
-        subtree-end
-      nil)))
-
-;; to filter habits
-(defun air-org-skip-subtree-if-habit ()
-  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-    (if (string= (org-entry-get nil "STYLE") "habit")
-        subtree-end
-      nil)))
-
-;; the final agenda
-(setq org-agenda-custom-commands
-      '(("d" "Daily agenda and all TODOs"
-         ((tags "PRIORITY=\"A\""
-                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
-          (agenda "" ((org-agenda-ndays 1)))
-          (alltodo ""
-                   ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
-                                                   (air-org-skip-subtree-if-priority ?A)
-                                                   (org-agenda-skip-if nil '(scheduled deadline))))
-                    (org-agenda-overriding-header "ALL normal priority tasks:"))))
-         ((org-agenda-compact-blocks nil))))) ;; Change to t if you want to remove the equal divisions
-
-
-;;----------------------------------------------------------------------------
-;; Org-journal
-;;----------------------------------------------------------------------------
-(use-package org-journal
-  :ensure t
-  :defer t
-  :init
-  ;; Change default prefix key; needs to be set before loading org-journal
-  (setq org-journal-prefix-key "C-c j ")
-  :config
-  (setq org-journal-dir "~/Google Drive/org/journal/"
-        org-journal-date-format "%A, %d %B %Y"
-	org-journal-file-format "%Y-%m-%d.org"
-	org-journal-find-file 'find-file
-	org-journal-file-type 'weekly
-	org-journal-enable-agenda-integration 't)
-  :bind
-  (("C-c C-j" . org-journal-new-entry)
-   ("C-c C-s" . org-journal-search)))
-
-
-;;----------------------------------------------------------------------------
-;; Org-roam
-;;----------------------------------------------------------------------------
-(use-package org-roam
-  :ensure t
-  :hook
-  (after-init . org-roam-mode)
-  :custom
-  (org-roam-directory "~/Google Drive/org/notes/")
-  :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
-
-;; From: https://github.com/org-roam/org-roam
-;; Org-roam requires sqlite to function. Org-roam optionally uses Graphviz for
-;; graph-related functionality. It is recommended to install
-;; PCRE-enabled ripgrep for better performance and extended functionality.
-
-
-;;----------------------------------------------------------------------------
-;; Org-bullets
-;;----------------------------------------------------------------------------
-(use-package org-bullets
-  :ensure t
-  :hook
-  (org-mode . (lambda () (org-bullets-mode 1))))
-
 
 ;;----------------------------------------------------------------------------
 ;; lsp-mode
@@ -1336,7 +1062,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	lsp-completion-show-kind nil)
   :hook
   ((ess-r-mode . lsp)
-   (python-mode . lsp)
    (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
 
@@ -1363,6 +1088,82 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
    lsp-ui-doc-use-webkit t)
   )
 
+;;----------------------------------------------------------------------------
+;; Markdown-mode
+;;----------------------------------------------------------------------------
+(use-package markdown-mode
+  :ensure t
+  :defer t
+  :mode (("//.markdown" . markdown-mode)
+         ("//.md" . markdown-mode)
+         ("//.ronn?" . markdown-mode)))
+
+;;----------------------------------------------------------------------------
+;; grip-mode
+;;----------------------------------------------------------------------------
+;; it uses python grip package
+;; pip install grip
+(use-package grip-mode
+  :ensure t
+  :bind (:map markdown-mode-command-map
+              ("g" . grip-mode)))
+
+;;----------------------------------------------------------------------------
+;; Polymode - Poly R
+;;----------------------------------------------------------------------------
+(use-package poly-R
+  :ensure t
+  :defer t
+  :mode (("//.Rnw" . poly-noweb+r-mode)
+	 ("//.Rmd" . poly-markdown+r-mode)
+	 ("//.Snw" . poly-noweb+r-mode)
+         ("//.rmd" . poly-markdown+r-mode)))
+
+(defcustom polymode-exporter-output-file-format "%s"
+  "Format of the exported files.
+%s is substituted with the current file name sans extension."
+  :group 'polymode-export
+  :type 'string)
+
+;;----------------------------------------------------------------------------
+;; Stan
+;;----------------------------------------------------------------------------
+;;; stan-mode.el
+(use-package stan-mode
+  :ensure t
+  ;; Uncomment if directly loading from your development repo
+  ;; :load-path "your-path/stan-mode/stan-mode"
+  :mode ("\\.stan\\'" . stan-mode)
+  :hook (stan-mode . stan-mode-setup)
+  ;;
+  :config
+  ;; The officially recommended offset is 2.
+  (setq stan-indentation-offset 2))
+
+;;; company-stan.el
+(use-package company-stan
+  :ensure t
+  ;; Uncomment if directly loading from your development repo
+  ;; :load-path "your-path/stan-mode/company-stan/"
+  :hook (stan-mode . company-stan-setup)
+  ;;
+  :config
+  ;; Whether to use fuzzy matching in `company-stan'
+  (setq company-stan-fuzzy nil))
+
+;;; flycheck-stan.el
+(use-package flycheck-stan
+  :ensure t
+  ;; Add a hook to setup `flycheck-stan' upon `stan-mode' entry
+  :hook ((stan-mode . flycheck-stan-stanc2-setup)
+         (stan-mode . flycheck-stan-stanc3-setup))
+  :config
+  ;; A string containing the name or the path of the stanc2 executable
+  ;; If nil, defaults to `stanc2'
+  (setq flycheck-stanc-executable nil)
+  ;; A string containing the name or the path of the stanc2 executable
+  ;; If nil, defaults to `stanc3'
+  (setq flycheck-stanc3-executable nil))
 
 ;;----------------------------------------------------------------------------
 ;;----------------------------------------------------------------------------
