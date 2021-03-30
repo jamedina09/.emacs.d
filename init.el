@@ -35,9 +35,9 @@
   :ensure t
   :config
   ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t
-	doom-themes-treemacs-theme "doom-colors") ; if nil, italics is universally disabled
+  (setq doom-themes-enable-bold t ;; if nil, bold is universally disabled
+        doom-themes-enable-italic t ;; if nil, italics is universally disabled
+	doom-themes-treemacs-theme "doom-colors")
   (load-theme 'doom-challenger-deep t) ;Iosvkem
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
