@@ -213,6 +213,39 @@
            " " filename))))
 
 ;;----------------------------------------------------------------------------
+;; Dashboard
+;;----------------------------------------------------------------------------
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook)
+  ;;(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  ;; Set the title
+  (setq dashboard-banner-logo-title "")
+  ;; Set the banner
+  (setq dashboard-startup-banner 'logo)
+  ;; Value can be
+  ;; 'official which displays the official emacs logo
+  ;; 'logo which displays an alternative emacs logo
+  ;; 1, 2 or 3 which displays one of the text banners
+  ;; "path/to/your/image.png" which displays whatever image you would prefer;
+
+  ;; Content is not centered by default. To center, set
+  (setq dashboard-center-content t);
+  ;; To disable shortcut "jump" indicators for each section, set
+  ;;(setq dashboard-show-shortcuts nil)
+  (setq dashboard-items '((recents  . 10)
+                          (projects . 5)))
+  ;; To add icons to the widget headings and their items:
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  ;; A randomly selected footnote will be displayed. To disable it:
+  (setq dashboard-set-footer nil)
+  ;; to use it with counsel-projectile
+  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+  )
+
+;;----------------------------------------------------------------------------
 ;; neotree
 ;;----------------------------------------------------------------------------
 ;; neotree
@@ -220,7 +253,6 @@
   :ensure t
   :bind ([f8] . neotree-toggle)
   :config (setq neo-default-system-application "open"))
-
 
 ;;----------------------------------------------------------------------------
 ;; Dired
@@ -312,7 +344,6 @@
 ;;----------------------------------------------------------------------------
 (use-package goto-line-preview
   :ensure t)
-
 (global-set-key [remap goto-line] 'goto-line-preview)
 
 ;;----------------------------------------------------------------------------
@@ -361,42 +392,8 @@
   :init
   (projectile-mode +1)
   :bind (:map projectile-mode-map
-              ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
 (setq projectile-sort-order 'recently-active)
-
-;;----------------------------------------------------------------------------
-;; Dashboard
-;;----------------------------------------------------------------------------
-(use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook)
-  ;;(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-  ;; Set the title
-  (setq dashboard-banner-logo-title "")
-  ;; Set the banner
-  (setq dashboard-startup-banner 'logo)
-  ;; Value can be
-  ;; 'official which displays the official emacs logo
-  ;; 'logo which displays an alternative emacs logo
-  ;; 1, 2 or 3 which displays one of the text banners
-  ;; "path/to/your/image.png" which displays whatever image you would prefer;
-
-  ;; Content is not centered by default. To center, set
-  (setq dashboard-center-content t);
-  ;; To disable shortcut "jump" indicators for each section, set
-  ;;(setq dashboard-show-shortcuts nil)
-  (setq dashboard-items '((recents  . 10)
-                          (projects . 5)))
-  ;; To add icons to the widget headings and their items:
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons t)
-  ;; A randomly selected footnote will be displayed. To disable it:
-  (setq dashboard-set-footer nil)
-  ;; to use it with counsel-projectile
-  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
-  )
 
 ;;----------------------------------------------------------------------------
 ;; Dimmer
@@ -521,6 +518,7 @@
   :config
   (use-package smex :ensure t))
 
+;; you must load Counsel before ivy-prescient.el
 (use-package ivy-prescient
   :ensure t
   :after ivy
@@ -551,7 +549,6 @@
 	   company-emoji)
           (company-abbrev company-dabbrev))))
 
-
 ;; Company binds ‘RET’ key to ‘company-complete-selection’.
 ;; This is rather inconvenient in inferior R buffers.
 ;; One solution is to use ‘TAB’ to complete common
@@ -566,7 +563,6 @@
       company-idle-delay 0.5
       company-minimum-prefix-length 2
       company-tooltip-limit 10)
-
 
 (use-package company-prescient
   :ensure t
@@ -638,11 +634,8 @@
 (use-package flycheck
   :ensure t
   :defer t
-  :hook ((markdown-mode ess-r-mode) . flycheck-mode)
-  ;;:custom (flycheck-indication-mode nil)
+  :hook ((ess-r-mode) . flycheck-mode)
   )
-;; to enable flycheck in markdown oyu need to install:
-;; brew install markdownlint-cli
 
 (use-package flycheck-tip
   :ensure t
@@ -1062,6 +1055,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	lsp-completion-show-kind nil)
   :hook
   ((ess-r-mode . lsp)
+   (python-mode . lsp)
    (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
 
@@ -1087,7 +1081,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
    lsp-ui-doc-use-childframe t
    lsp-ui-doc-use-webkit t)
   )
-
 ;;----------------------------------------------------------------------------
 ;; Markdown-mode
 ;;----------------------------------------------------------------------------
