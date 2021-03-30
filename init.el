@@ -38,7 +38,7 @@
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t
 	doom-themes-treemacs-theme "doom-colors") ; if nil, italics is universally disabled
-  (load-theme 'doom-dracula t) ;Iosvkem
+  (load-theme 'doom-challenger-deep t) ;Iosvkem
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
@@ -251,7 +251,10 @@
 (use-package neotree
   :ensure t
   :bind ([f8] . neotree-toggle)
-  :config (setq neo-default-system-application "open"))
+  :config
+  (setq neo-default-system-application "open")
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+  (setq neo-window-width 30))
 
 ;;----------------------------------------------------------------------------
 ;; Dired
