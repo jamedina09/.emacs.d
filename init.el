@@ -944,6 +944,31 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (org-mode . (lambda () (org-bullets-mode 1))))
 
 ;;----------------------------------------------------------------------------
+;; Elpy
+;;----------------------------------------------------------------------------
+(use-package elpy
+    :ensure t
+    :bind
+    (:map elpy-mode-map
+          ("C-M-n" . elpy-nav-forward-block)
+          ("C-M-p" . elpy-nav-backward-block))
+    :hook ((elpy-mode . flycheck-mode)
+           (elpy-mode . (lambda ()
+                          (set (make-local-variable 'company-backends)
+                               '((elpy-company-backend :with company-yasnippet))))))
+    :init
+    (elpy-enable)
+    :config
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    ; fix for MacOS, see https://github.com/jorgenschaefer/elpy/issues/1550
+    (setq elpy-shell-echo-output nil)
+    (setq elpy-rpc-python-command "python3")
+    (setq elpy-rpc-timeout 2))
+
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "-i --simple-prompt")
+
+;;----------------------------------------------------------------------------
 ;; ESS
 ;;----------------------------------------------------------------------------
 (use-package ess
@@ -1049,6 +1074,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
 	 (LaTeX-mode . lsp)
+	 (python-mode . lsp)
          )
   :commands lsp
   :config
@@ -1056,13 +1082,16 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         lsp-enable-symbol-highlighting nil
 	lsp-enable-snippet t
 	lsp-diagnostics-provider 'flycheck
+	lsp-prefer-flymake nil
 	lsp-signature-render-documentation nil
 	lsp-signature-auto-activate t
 	lsp-completion-show-detail t
 	lsp-completion-show-kind nil
 	lsp-modeline-code-actions-enable t
 	lsp-eldoc-enable-hover t
-  ))
+	lsp-pyls-plugins-pylint-enabled nil
+        lsp-pyls-configuration-sources ["flake8"]
+	))
 
 ;; to remove error ls does not support dired
 ;;(when (string= system-type "darwin")
@@ -1091,6 +1120,14 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
    lsp-ui-sideline-show-diagnostics nil
    )
   )
+
+(use-package lsp-python-ms
+  :ensure t
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-python-ms)
+                         (lsp)))
+  :init
+  (setq lsp-python-ms-executable (executable-find "python-language-server")))
 
 ;;----------------------------------------------------------------------------
 ;; Markdown-mode
@@ -1203,31 +1240,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (use-package latex-preview-pane
   :defer t
   :ensure t)
-
-;;----------------------------------------------------------------------------
-;; Elpy
-;;----------------------------------------------------------------------------
-(use-package elpy
-    :ensure t
-    :bind
-    (:map elpy-mode-map
-          ("C-M-n" . elpy-nav-forward-block)
-          ("C-M-p" . elpy-nav-backward-block))
-    :hook ((elpy-mode . flycheck-mode)
-           (elpy-mode . (lambda ()
-                          (set (make-local-variable 'company-backends)
-                               '((elpy-company-backend :with company-yasnippet))))))
-    :init
-    (elpy-enable)
-    :config
-    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-    ; fix for MacOS, see https://github.com/jorgenschaefer/elpy/issues/1550
-    (setq elpy-shell-echo-output nil)
-    (setq elpy-rpc-python-command "python3")
-    (setq elpy-rpc-timeout 2))
-
-(setq python-shell-interpreter "ipython"
-      python-shell-interpreter-args "-i --simple-prompt")
 
 ;;----------------------------------------------------------------------------
 ;;----------------------------------------------------------------------------
