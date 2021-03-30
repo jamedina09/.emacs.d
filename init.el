@@ -979,7 +979,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
             (lambda () (flycheck-mode t)))
   ;; Outline mode for R
   (add-hook 'ess-mode-hook
-	    '(lambda ()
+	    (lambda ()
 	       (outline-minor-mode)
 	       (setq outline-regexp "^#.*----")
 	       (defun outline-level ()
