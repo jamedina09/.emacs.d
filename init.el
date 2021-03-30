@@ -546,8 +546,8 @@
         '((company-files          ; files & directory
            company-keywords       ; keywords
            company-capf ; completion-at-point-functions
-	   company-emoji)
-          (company-abbrev company-dabbrev))))
+	   company-emoji
+           (company-abbrev company-dabbrev)))))
 
 ;; Company binds ‘RET’ key to ‘company-complete-selection’.
 ;; This is rather inconvenient in inferior R buffers.
@@ -1041,23 +1041,28 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; lsp-mode
 ;;----------------------------------------------------------------------------
 (use-package lsp-mode
-  :ensure t
-  :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  :init
   (setq lsp-keymap-prefix "C-c l")
+  :hook (
+         (ess-r-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration)
+	 (LaTeX-mode . lsp)
+         )
+  :commands lsp
   :config
   (setq lsp-idle-delay 0.5
-        lsp-enable-symbol-highlighting t
-	lsp-ui-sideline-enable nil
-	lsp-ui-sideline-show-diagnostics nil
+        lsp-enable-symbol-highlighting nil
+	lsp-enable-snippet t
+	lsp-diagnostics-provider 'flycheck
 	lsp-signature-render-documentation nil
-	lsp-completion-show-detail nil
-	lsp-completion-show-kind nil)
-  :hook
-  ((ess-r-mode . lsp)
-   (python-mode . lsp)
-   (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
+	lsp-signature-auto-activate t
+	lsp-completion-show-detail t
+	lsp-completion-show-kind nil
+	lsp-modeline-code-actions-enable t
+	lsp-eldoc-enable-hover t
+  ))
 
 ;; to remove error ls does not support dired
 ;;(when (string= system-type "darwin")
@@ -1066,21 +1071,27 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (setq gc-cons-threshold 100000000)
 
 (use-package lsp-ui
+  :ensure t
   :commands lsp-ui-mode
   :hook (lsp-mode . lsp-ui-mode)
   :config
   (setq
-   ;;lsp-ui-doc
    lsp-ui-doc-enable t
    lsp-ui-doc-header nil
    lsp-ui-doc-include-signature nil
-   lsp-ui-doc-delay 4
-   lsp-ui-doc-position 'at-point top, bottom, or at-point
-   lsp-ui-doc-max-width 90
+   lsp-ui-doc-delay 2
+   lsp-ui-doc-position 'at-point ;;top, bottom, or at-point
+   lsp-ui-doc-max-width 80
    lsp-ui-doc-max-height 40
    lsp-ui-doc-use-childframe t
-   lsp-ui-doc-use-webkit t)
+   lsp-ui-doc-use-webkit nil
+   lsp-ui-doc-show-with-cursor t
+   lsp-ui-doc-show-with-mouse nil
+   lsp-ui-sideline-enable nil
+   lsp-ui-sideline-show-diagnostics nil
+   )
   )
+
 ;;----------------------------------------------------------------------------
 ;; Markdown-mode
 ;;----------------------------------------------------------------------------
@@ -1157,6 +1168,66 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   ;; A string containing the name or the path of the stanc2 executable
   ;; If nil, defaults to `stanc3'
   (setq flycheck-stanc3-executable nil))
+
+;;----------------------------------------------------------------------------
+;; AucTeX
+;;----------------------------------------------------------------------------
+(use-package tex-site
+  :ensure auctex
+  :mode ("\\.tex\\'" . latex-mode)
+  :init
+  ;;  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  ;;  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  ;;  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+  ;;  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (add-hook 'LaTeX-mode-hook 'company-mode)
+  :custom
+  (TeX-auto-save t)
+  (TeX-parse-self t)
+  (TeX-master nil)
+  ;; to use pdfview with auctex
+  (TeX-view-program-selection '((output-pdf "pdf-tools"))
+                              TeX-source-correlate-start-server t)
+  (TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
+  (TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+  (TeX-source-correlate-method '((dvi . source-specials) (pdf . synctex)))
+  (TeX-source-correlate-mode t))
+
+;; Update PDF buffers after successful LaTeX runs
+(add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
+          #'TeX-revert-document-buffer)
+
+;;----------------------------------------------------------------------------
+;; Latex preview pane
+;;----------------------------------------------------------------------------
+(use-package latex-preview-pane
+  :defer t
+  :ensure t)
+
+;;----------------------------------------------------------------------------
+;; Elpy
+;;----------------------------------------------------------------------------
+(use-package elpy
+    :ensure t
+    :bind
+    (:map elpy-mode-map
+          ("C-M-n" . elpy-nav-forward-block)
+          ("C-M-p" . elpy-nav-backward-block))
+    :hook ((elpy-mode . flycheck-mode)
+           (elpy-mode . (lambda ()
+                          (set (make-local-variable 'company-backends)
+                               '((elpy-company-backend :with company-yasnippet))))))
+    :init
+    (elpy-enable)
+    :config
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    ; fix for MacOS, see https://github.com/jorgenschaefer/elpy/issues/1550
+    (setq elpy-shell-echo-output nil)
+    (setq elpy-rpc-python-command "python3")
+    (setq elpy-rpc-timeout 2))
+
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "-i --simple-prompt")
 
 ;;----------------------------------------------------------------------------
 ;;----------------------------------------------------------------------------
