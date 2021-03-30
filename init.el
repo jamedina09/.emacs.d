@@ -2,8 +2,7 @@
 ;;; init.el ---
 
 ;;; Commentary:
-;; I used a lot of code from https://github.com/MatthewZMD/.emacs.d
-;; I use emacs-head@28 from daviderestivo/homebrew-emacs-head,
+;; I use emacs-head@28 from: brew install emacs-plus@28
 ;; To use c-spc as set-mark-command in mac you need to modify at
 ;; the mac os level:: System Preferences > Keyboard > Shortcuts >
 ;; Input Sources > Select the previous input source and uncheck
@@ -570,6 +569,9 @@
   :config
   (company-prescient-mode))
 
+(use-package company-emoji
+  :ensure t)
+
 ;;----------------------------------------------------------------------------
 ;; Magit
 ;;----------------------------------------------------------------------------
@@ -654,12 +656,6 @@
   :after flycheck
   :commands flycheck-pos-tip-mode
   :hook (flycheck-mode . flycheck-pos-tip-mode))
-
-;;----------------------------------------------------------------------------
-;; Emoji
-;;----------------------------------------------------------------------------
-(use-package company-emoji
-  :ensure t)
 
 ;;----------------------------------------------------------------------------
 ;; Fix word - upcase - downcase region
@@ -947,23 +943,23 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; Elpy
 ;;----------------------------------------------------------------------------
 (use-package elpy
-    :ensure t
-    :bind
-    (:map elpy-mode-map
-          ("C-M-n" . elpy-nav-forward-block)
-          ("C-M-p" . elpy-nav-backward-block))
-    :hook ((elpy-mode . flycheck-mode)
-           (elpy-mode . (lambda ()
-                          (set (make-local-variable 'company-backends)
-                               '((elpy-company-backend :with company-yasnippet))))))
-    :init
-    (elpy-enable)
-    :config
-    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-    ; fix for MacOS, see https://github.com/jorgenschaefer/elpy/issues/1550
-    (setq elpy-shell-echo-output nil)
-    (setq elpy-rpc-python-command "python3")
-    (setq elpy-rpc-timeout 2))
+  :ensure t
+  :bind
+  (:map elpy-mode-map
+        ("C-M-n" . elpy-nav-forward-block)
+        ("C-M-p" . elpy-nav-backward-block))
+  :hook ((elpy-mode . flycheck-mode)
+         (elpy-mode . (lambda ()
+                        (set (make-local-variable 'company-backends)
+                             '((elpy-company-backend :with company-yasnippet))))))
+  :init
+  (elpy-enable)
+  :config
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  ;; fix for MacOS, see https://github.com/jorgenschaefer/elpy/issues/1550
+  (setq elpy-shell-echo-output nil)
+  (setq elpy-rpc-python-command "python3")
+  (setq elpy-rpc-timeout 2))
 
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "-i --simple-prompt")
@@ -980,35 +976,34 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   ;; Outline mode for R
   (add-hook 'ess-mode-hook
 	    (lambda ()
-	       (outline-minor-mode)
-	       (setq outline-regexp "^#.*----")
-	       (defun outline-level ()
-		 (cond (looking-at "^#.*----") 1)
-		 (t 1000))
-	       (defun send-section-to-R ()
-		 (interactive ())
-		 (let ((beg))
-		   (if (outline-on-heading-p)
-		       (beginning-of-line)
-		     (outline-previous-visible-heading 1))
-		   (setq beg (point))
-		   (set-mark (point))
-		   (outline-next-visible-heading 1)
-		   (previous-line 1)
-		   (end-of-line 1)
-		   (ess-eval-region-or-function-or-paragraph-and-step)))
-
-	       (local-set-key (kbd "C-c h") 'outline-hide-body)
-	       (local-set-key (kbd "C-c s") 'outline-show-all)
-	       (local-set-key (kbd "C-c <left>") 'outline-hide-entry)
-	       (local-set-key (kbd "C-c <right>") 'outline-show-entry)
-	       (local-set-key (kbd "C-c <up>") 'outline-previous-heading)
-	       (local-set-key (kbd "C-c <down>") 'outline-next-heading)
-	       (local-set-key (kbd "C-c e") 'send-section-to-R)))
+	      (outline-minor-mode)
+	      (setq outline-regexp "^#.*----")
+	      (defun outline-level ()
+		(cond (looking-at "^#.*----") 1)
+		(t 1000))
+	      (defun send-section-to-R ()
+		(interactive ())
+		(let ((beg))
+		  (if (outline-on-heading-p)
+		      (beginning-of-line)
+		    (outline-previous-visible-heading 1))
+		  (setq beg (point))
+		  (set-mark (point))
+		  (outline-next-visible-heading 1)
+		  (previous-line 1)
+		  (end-of-line 1)
+		  (ess-eval-region-or-function-or-paragraph-and-step)))
+	      (local-set-key (kbd "C-c h") 'outline-hide-body)
+	      (local-set-key (kbd "C-c s") 'outline-show-all)
+	      (local-set-key (kbd "C-c <left>") 'outline-hide-entry)
+	      (local-set-key (kbd "C-c <right>") 'outline-show-entry)
+	      (local-set-key (kbd "C-c <up>") 'outline-previous-heading)
+	      (local-set-key (kbd "C-c <down>") 'outline-next-heading)
+	      (local-set-key (kbd "C-c e") 'send-section-to-R)))
   :config
   (define-key ess-r-mode-map "_" #'ess-insert-assign)
   (define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
-  (setq ess-use-eldoc nil)
+  (setq ess-use-eldoc 'script-only)
   (setq inferior-ess-r-program "R")
   (setq ess-eval-visibly t)
   ;;; Flycheck ess
@@ -1209,34 +1204,188 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;;----------------------------------------------------------------------------
 ;; AucTeX
 ;;----------------------------------------------------------------------------
-(use-package tex-site
+;; for lsp support you need to install a server
+;; https://github.com/latex-lsp/texlab#building-from-source
+;; 1) (in terminal) curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+;; 2) $HOME/.cargo/env
+;; 3) cargo install --git https://github.com/latex-lsp/texlab.git --locked
+;; Installed in: /Users/josemedina/.cargo/bin/texlab
+;;; LaTeX with AUCTeX
+(use-package tex-site                   ;; AUCTeX initialization
+  :ensure auctex)
+
+(use-package tex                        ;; TeX editing/processing
   :ensure auctex
-  :mode ("\\.tex\\'" . latex-mode)
-  :init
-  ;;  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-  ;;  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-  ;;  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-  ;;  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-  (add-hook 'LaTeX-mode-hook 'company-mode)
+  :defer t
+  :config
+  (setq TeX-parse-self t                ;; Parse documents to provide completion
+        ;; for packages, etc.
+        TeX-auto-save t                 ;; Automatically save style information
+        TeX-electric-sub-and-superscript t ;; Automatically insert braces after
+        ;; sub- and superscripts in math mode
+        TeX-electric-math '("\\(" "\\)")
+        ;; Don't insert magic quotes right away.
+        TeX-quote-after-quote t
+        ;; Don't ask for confirmation when cleaning
+        TeX-clean-confirm nil)
+  (setq-default TeX-master nil          ;; Ask for the master file
+                TeX-engine 'luatex      ;; Use a modern engine
+                ;; Redundant in 11.88, but keep for older AUCTeX
+                TeX-PDF-mode t)
+  ;; Move to chktex
+  (setcar (cdr (assoc "Check" TeX-command-list)) "chktex -v6 %s")
   :custom
-  (TeX-auto-save t)
-  (TeX-parse-self t)
   (TeX-master nil)
-  ;; to use pdfview with auctex
+  ;;to use pdfview with auctex
   (TeX-view-program-selection '((output-pdf "pdf-tools"))
                               TeX-source-correlate-start-server t)
   (TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
   (TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+  ;; Provide forward and inverse search with SyncTeX
   (TeX-source-correlate-method '((dvi . source-specials) (pdf . synctex)))
-  (TeX-source-correlate-mode t))
+  (TeX-source-correlate-mode t)
+  (add-hook 'LaTeX-mode-hook 'company-mode))
 
 ;; Update PDF buffers after successful LaTeX runs
 (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
           #'TeX-revert-document-buffer)
 
-;;----------------------------------------------------------------------------
-;; Latex preview pane
-;;----------------------------------------------------------------------------
+
+(use-package tex-buf                    ;; TeX buffer management
+  :ensure auctex
+  :defer t
+  ;; Don't ask for confirmation when saving before processing
+  :config (setq TeX-save-query nil))
+
+(use-package tex-style                  ;; TeX style
+  :ensure auctex
+  :defer t
+  :config
+  ;; Enable support for csquotes
+  (setq LaTeX-csquotes-close-quote "}"
+        LaTeX-csquotes-open-quote "\\enquote{"))
+
+(use-package tex-fold                  ;; TeX folding
+  :ensure auctex
+  :defer t
+  :init (add-hook 'TeX-mode-hook #'TeX-fold-mode))
+
+(use-package tex-mode                   ;; TeX mode
+  :ensure auctex
+  :defer t
+  :config
+  (font-lock-add-keywords 'latex-mode
+                          `((,(rx "\\"
+                                  symbol-start
+                                  "fx" (1+ (or (syntax word) (syntax symbol)))
+                                  symbol-end)
+                             . font-lock-warning-face))))
+
+(use-package latex                      ;; LaTeX editing
+  :ensure auctex
+  :defer t
+  :config
+  ;; Teach TeX folding about KOMA script sections
+  (setq TeX-outline-extra `((,(rx (0+ space) "\\section*{") 2)
+                            (,(rx (0+ space) "\\subsection*{") 3)
+                            (,(rx (0+ space) "\\subsubsection*{") 4)
+                            (,(rx (0+ space) "\\minisec{") 5))
+        ;; No language-specific hyphens please
+        LaTeX-babel-hyphen nil)
+
+  (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode) ;; Easy math input
+  (add-hook 'LaTeX-mode-hook 'company-mode))
+
+(use-package auctex-latexmk             ;; latexmk command for AUCTeX
+  :ensure t
+  :defer t
+  :after latex
+  :config (auctex-latexmk-setup))
+
+(use-package auctex-skim                ;; Skim as viewer for AUCTeX
+  :load-path "lisp/"
+  :commands (auctex-skim-select)
+  :after tex
+  :config (auctex-skim-select))
+
+(use-package bibtex                     ;; BibTeX editing
+  :defer t
+  :config
+  ;; Run prog mode hooks for bibtex
+  (add-hook 'bibtex-mode-hook (lambda () (run-hooks 'prog-mode-hook)))
+
+  ;; Use a modern BibTeX dialect
+  (bibtex-set-dialect 'biblatex))
+
+(defun lunaryorn-reftex-find-ams-environment-caption (environment)
+  "Find the caption of an AMS ENVIRONMENT."
+  (let ((re (rx-to-string `(and "\\begin{" ,environment "}"))))
+    ;; Go to the beginning of the label first
+    (re-search-backward re)
+    (goto-char (match-end 0)))
+  (if (not (looking-at (rx (zero-or-more space) "[")))
+      (error "Environment %s has no title" environment)
+    (let ((beg (match-end 0)))
+      ;; Move point onto the title start bracket and move over to the end,
+      ;; skipping any other brackets in between, and eventually extract the text
+      ;; between the brackets
+      (goto-char (1- beg))
+      (forward-list)
+      (buffer-substring-no-properties beg (1- (point))))))
+
+(use-package reftex                     ;; TeX/BibTeX cross-reference management
+  :defer t
+  :init (add-hook 'LaTeX-mode-hook #'reftex-mode)
+  :config
+  ;; Plug into AUCTeX
+  (setq reftex-plug-into-AUCTeX t
+        ;; Automatically derive labels, and prompt for confirmation
+        reftex-insert-label-flags '(t t)
+        reftex-label-alist
+        '(
+          ;; Additional label definitions for RefTeX.
+          ("definition" ?d "def:" "~\\ref{%s}"
+           lunaryorn-reftex-find-ams-environment-caption
+           ("definition" "def.") -3)
+          ("theorem" ?h "thm:" "~\\ref{%s}"
+           lunaryorn-reftex-find-ams-environment-caption
+           ("theorem" "th.") -3)
+          ("example" ?x "ex:" "~\\ref{%s}"
+           lunaryorn-reftex-find-ams-environment-caption
+           ("example" "ex") -3)
+          ;; Algorithms package
+          ("algorithm" ?a "alg:" "~\\ref{%s}"
+           "\\\\caption[[{]" ("algorithm" "alg") -3)))
+
+  ;; Provide basic RefTeX support for biblatex
+  (unless (assq 'biblatex reftex-cite-format-builtin)
+    (add-to-list 'reftex-cite-format-builtin
+                 '(biblatex "The biblatex package"
+                            ((?\C-m . "\\cite[]{%l}")
+                             (?t . "\\textcite{%l}")
+                             (?a . "\\autocite[]{%l}")
+                             (?p . "\\parencite{%l}")
+                             (?f . "\\footcite[][]{%l}")
+                             (?F . "\\fullcite[]{%l}")
+                             (?x . "[]{%l}")
+                             (?X . "{%l}"))))
+    (setq reftex-cite-format 'biblatex))
+  :diminish reftex-mode)
+
+;;; Markup languages
+(use-package rst ;; ReStructuredText
+  :defer t
+  :config
+  ;; Indent with 3 spaces after all kinds of literal blocks
+  (setq rst-indent-literal-minimized 3
+        rst-indent-literal-normal 3)
+
+  (bind-key "C-=" nil rst-mode-map)
+  ;; For similarity with AUCTeX
+  (bind-key "C-c C-j" #'rst-insert-list rst-mode-map)
+  ;; …and with Markdown Mode
+  (bind-key "M-RET" #'rst-insert-list rst-mode-map))
+
 (use-package latex-preview-pane
   :defer t
   :ensure t)
