@@ -588,7 +588,7 @@
 ;;----------------------------------------------------------------------------
 (use-package diff-hl
   :ensure t
-  :config
+  :init
   ;; Highlight changes to the current file in the fringe
   (add-hook 'prog-mode-hook #'diff-hl-mode)
   ;; Highlight changed files in the fringe of Dired
@@ -596,6 +596,7 @@
   ;; Fall back to the display margin, if the fringe is unavailable
   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  :config
   (diff-hl-margin-mode)
   (setq diff-hl-margin-side 'right))
 
