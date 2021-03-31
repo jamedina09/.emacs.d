@@ -233,8 +233,10 @@
   (setq dashboard-center-content t);
   ;; To disable shortcut "jump" indicators for each section, set
   ;;(setq dashboard-show-shortcuts nil)
-  (setq dashboard-items '((recents  . 10)
-                          (projects . 5)))
+  (setq dashboard-items '((bookmarks . 5)
+			  (recents  . 10)
+                          (projects . 5)
+			  ))
   ;; To add icons to the widget headings and their items:
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
@@ -243,6 +245,13 @@
   ;; to use it with counsel-projectile
   (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
   )
+
+;; bookmarks stuff--
+(define-key global-map [f5] 'bookmark-set)
+(define-key global-map [f6] 'bookmark-jump)
+(define-key global-map [f7] 'bookmark-delete)
+(setq bookmark-default-file "~/.emacs.d/bookmarks")  ;;define file to use.
+(setq bookmark-save-flag 1)  ;save bookmarks to .emacs.bmk after each entry
 
 ;;----------------------------------------------------------------------------
 ;; neotree
@@ -549,7 +558,8 @@
            company-keywords       ; keywords
            company-capf ; completion-at-point-functions
 	   company-emoji
-           (company-abbrev company-dabbrev)))))
+           company-abbrev
+	   company-dabbrev))))
 
 ;; Company binds ‘RET’ key to ‘company-complete-selection’.
 ;; This is rather inconvenient in inferior R buffers.
