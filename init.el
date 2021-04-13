@@ -1114,7 +1114,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :hook (lsp-mode . lsp-ui-mode)
   :config
   (setq
-   lsp-ui-doc-enable t
+   lsp-ui-doc-enable nil
    lsp-ui-doc-header nil
    lsp-ui-doc-include-signature nil
    lsp-ui-doc-delay 2
@@ -1123,8 +1123,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
    lsp-ui-doc-max-height 40
    lsp-ui-doc-use-childframe t
    lsp-ui-doc-use-webkit nil
-   lsp-ui-doc-show-with-cursor t
-   lsp-ui-doc-show-with-mouse nil
+   ;;lsp-ui-doc-show-with-cursor nil
+   ;;lsp-ui-doc-show-with-mouse nil
    lsp-ui-sideline-enable nil
    lsp-ui-sideline-show-diagnostics nil
    )
