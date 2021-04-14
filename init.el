@@ -453,7 +453,7 @@
   (setq battery-update-interval 15)
   (if window-system
       (fancy-battery-mode)
-    (display-battery-mode)))
+    (display-battery-Mode)))
 
 ;;----------------------------------------------------------------------------
 ;; Ace window
@@ -485,7 +485,7 @@
 (use-package drag-stuff
   :ensure t
   :diminish drag-stuff-mode
-  :init (setq drag-stuff-modifier 'ctrl) ; hack to stop drag-stuff setting key mappings over ones our existing
+  :init (setq drag-stuff-modifier 'ctrl) ;; hack to stop drag-stuff setting key mappings over ones our existing
   :config (drag-stuff-global-mode 1)
   (bind-keys :map drag-stuff-mode-map
 	     ("<M-S-down>" . drag-stuff-down) ;;S is shift
@@ -1018,6 +1018,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (define-key ess-r-mode-map "_" #'ess-insert-assign)
   (define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
   (setq ess-use-eldoc 'script-only)
+  ;; History directory
+  (setq ess-history-directory "~/.cache")
   (setq inferior-ess-r-program "R")
   (setq ess-eval-visibly t)
   ;;; Flycheck ess
