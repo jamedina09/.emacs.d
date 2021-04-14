@@ -34,18 +34,19 @@
 (use-package doom-themes
   :ensure t
   :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t ;; if nil, bold is universally disabled
-        doom-themes-enable-italic t ;; if nil, italics is universally disabled
+  ;;   Global settings (defaults)
+  (setq doom-themes-enable-bold t;;  if nil, bold is universally disabled
+        doom-themes-enable-italic t;;  if nil, italics is universally disabled
 	doom-themes-treemacs-theme "doom-colors")
-  (load-theme 'doom-challenger-deep t) ;Iosvkem
-  ;; Corrects (and improves) org-mode's native fontification.
+  (load-theme 'doom-one t);; Iosvkem
+  ;;   Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
 ;; Change highlight region color
-(set-face-attribute 'region nil :background "grey35")
+(set-face-attribute 'region nil :background "RoyalBlue4")
+
 ;; comments colors
-(set-face-foreground 'font-lock-comment-face "gray63")
+(set-face-foreground 'font-lock-comment-face "gray47")
 
 ;;----------------------------------------------------------------------------
 ;; Kill general login buffers
@@ -433,12 +434,14 @@
 (use-package doom-modeline
   :ensure t
   :custom
-  (doom-modeline-height 13)
-  (doom-modeline-bar-width 5)
-  (doom-modeline-icon t)
+  (doom-modeline-height 10)
+  (doom-modeline-bar-width 7)
+  (doom-modeline-window-width-limit fill-column)
+  (doom-modeline-icon (display-graphic-p))
+  (doom-modeline-lsp t)
   (doom-modeline-major-mode-icon t)
   (doom-modeline-minor-modes nil)
-  (doom-modeline-buffer-file-name-style 'truncate-upto-root)
+  (doom-modeline-buffer-file-name-style 'auto) ;;truncate-upto-root
   :init (doom-modeline-mode 1))
 ;;This package requires the fonts included with all-the-icons to be installed.
 ;;Run M-x all-the-icons-install-fonts to do so.
