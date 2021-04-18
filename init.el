@@ -717,6 +717,14 @@
   (ispell-hunspell-add-multi-dic "en_US,es_ANY"))
 ;; Spell checking should now work with M-x ispell
 
+(dolist (hook '(text-mode-hook markdown-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode -1))))
+
+(eval-after-load "flyspell"
+  '(progn
+     (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+     (define-key flyspell-mouse-map [mouse-3] #'undefined)))
+
 ;;----------------------------------------------------------------------------
 ;; Undo-tree
 ;;----------------------------------------------------------------------------
@@ -1151,7 +1159,10 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :defer t
   :mode (("//.markdown" . markdown-mode)
          ("//.md" . markdown-mode)
-         ("//.ronn?" . markdown-mode)))
+         ("//.ronn?" . markdown-mode))
+  :init
+  (setq markdown-command "markdown"))
+
 
 ;;----------------------------------------------------------------------------
 ;; grip-mode
@@ -1172,8 +1183,23 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :mode (("//.Rnw" . poly-noweb+r-mode)
 	 ("//.Rmd" . poly-markdown+r-mode)
 	 ("//.Snw" . poly-noweb+r-mode)
-         ("//.rmd" . poly-markdown+r-mode)))
+         ("//.rmd" . poly-markdown+r-mode))
+  :config
+  ;; Wrap lines at column limit, but don't put hard returns in
+  (add-hook 'markdown-mode-hook (lambda () (visual-line-mode 1)))
+  ;; Flyspell on
+  (add-hook 'markdown-mode-hook (lambda () (flyspell-mode 1))))
 
+;;Insert new chunk for Rmarkdown
+(defun tws-insert-r-chunk (header)
+  "Insert an r-chunk in markdown mode. Necessary due to interactions between polymode and yas snippet"
+  (interactive "sHeader: ")
+  (insert (concat "```{r " header "}\n\n```"))
+  (forward-line -1))
+
+(global-set-key (kbd "C-c c") 'tws-insert-r-chunk)
+
+;; store the pdf with proper name
 (defcustom polymode-exporter-output-file-format "%s"
   "Format of the exported files.
 %s is substituted with the current file name sans extension."
