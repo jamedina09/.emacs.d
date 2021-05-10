@@ -87,6 +87,9 @@
 (tool-bar-mode -1)
 (set-scroll-bar-mode nil)
 
+;; Remove menu bar
+(menu-bar-mode -1)
+
 ;; We don't want to type yes and no all the time so do y and n
 (defalias 'yes-or-no-p 'y-or-n-p)
 
