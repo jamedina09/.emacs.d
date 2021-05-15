@@ -43,10 +43,9 @@
   (doom-themes-org-config))
 
 ;; Change highlight region color
-(set-face-attribute 'region nil :background "RoyalBlue4")
-
+;(set-face-attribute 'region nil :background "RoyalBlue4")
 ;; comments colors
-(set-face-foreground 'font-lock-comment-face "gray47")
+;(set-face-foreground 'font-lock-comment-face "gray47")
 
 ;;----------------------------------------------------------------------------
 ;; Kill general login buffers
@@ -260,7 +259,6 @@
 ;;----------------------------------------------------------------------------
 ;; neotree
 ;;----------------------------------------------------------------------------
-;; neotree
 (use-package neotree
   :ensure t
   :bind ([f8] . neotree-toggle)
@@ -325,14 +323,6 @@
               ("W" . dired-ranger-copy)
               ("X" . dired-ranger-move)
               ("Y" . dired-ranger-paste)))
-
-;;----------------------------------------------------------------------------
-;; solaire-mode
-;;----------------------------------------------------------------------------
-;; A simple config:
-(use-package solaire-mode
-  :ensure t
-  :hook (after-init . solaire-global-mode))
 
 ;;----------------------------------------------------------------------------
 ;; transpose-frame
