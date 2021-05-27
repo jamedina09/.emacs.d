@@ -87,7 +87,7 @@
 (set-scroll-bar-mode nil)
 
 ;; Remove menu bar
-(menu-bar-mode -1)
+(menu-bar-mode nil) ;-1
 
 ;; We don't want to type yes and no all the time so do y and n
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -124,6 +124,15 @@
 ;; Trim spaces
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq require-final-newline t)
+
+;; Wrap lines automatically
+(setq-default fill-column 80)
+(add-hook 'text-mode-hook #'auto-fill-mode)
+(add-hook 'prog-mode-hook #'auto-fill-mode)
+
+;; line and column number
+(setq column-number-mode t)
+(setq line-number-mode t)
 
 ;;----------------------------------------------------------------------------
 ;; Personal information
@@ -415,7 +424,7 @@
 ;;----------------------------------------------------------------------------
 (use-package smartparens
   :ensure t
-  :hook ((prog-mode ess-r-mode) . smartparens-mode)
+  :hook ((prog-mode) . smartparens-mode)
   :config
   ;; Stop pairing single quotes in elisp
   (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
@@ -774,8 +783,7 @@
 (use-package rainbow-mode
   :commands rainbow-mode
   :hook (
-	 (prog-mode . rainbow-mode)
-	 (ess-r-mode . rainbow-mode)))
+	 (prog-mode . rainbow-mode)))
 
 ;;----------------------------------------------------------------------------
 ;; Highlight-Identation
@@ -788,8 +796,7 @@
   (highlight-indent-guides-responsive t)
   (highlight-indent-guides-method 'character)
   :hook
-  (prog-mode  . highlight-indent-guides-mode)
-  (ess-r-mode  . highlight-indent-guides-mode))
+  (prog-mode  . highlight-indent-guides-mode))
 
 ;;----------------------------------------------------------------------------
 ;; Beacon
@@ -1019,8 +1026,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	      (local-set-key (kbd "C-c <down>") 'outline-next-heading)
 	      (local-set-key (kbd "C-c e") 'send-section-to-R)))
   :config
-  (define-key ess-r-mode-map "_" #'ess-insert-assign)
-  (define-key inferior-ess-r-mode-map "_" #'ess-insert-assign)
+  (define-key ess-r-mode-map ";" #'ess-insert-assign)
+  (define-key inferior-ess-r-mode-map ";" #'ess-insert-assign)
   (setq ess-use-eldoc 'script-only)
   ;; History directory
   (setq ess-history-directory "~/.cache")
