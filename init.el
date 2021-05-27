@@ -1,4 +1,4 @@
-;;; package --- Summary
+1;;; package --- Summary
 ;;; init.el ---
 
 ;;; Commentary:
