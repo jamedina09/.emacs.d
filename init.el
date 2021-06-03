@@ -2,7 +2,8 @@
 ;;; init.el ---
 
 ;;; Commentary:
-;; I use emacs-head@28 from: brew install emacs-plus@28
+;; I use emacs from https://emacsformacosx.com installed via::
+;; brew install --cask emacs
 ;; To use c-spc as set-mark-command in mac you need to modify at
 ;; the mac os level:: System Preferences > Keyboard > Shortcuts >
 ;; Input Sources > Select the previous input source and uncheck
@@ -534,13 +535,6 @@
   :config
   (use-package smex :ensure t))
 
-;; you must load Counsel before ivy-prescient.el
-(use-package ivy-prescient
-  :ensure t
-  :after ivy
-  :config
-  (ivy-prescient-mode))
-
 ;;----------------------------------------------------------------------------
 ;; Counsel projectile
 ;;----------------------------------------------------------------------------
@@ -581,11 +575,6 @@
       company-minimum-prefix-length 2
       company-tooltip-limit 10)
 
-(use-package company-prescient
-  :ensure t
-  :after company
-  :config
-  (company-prescient-mode))
 
 (use-package company-emoji
   :ensure t)
@@ -1438,3 +1427,17 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;;----------------------------------------------------------------------------
 ;;----------------------------------------------------------------------------
 (provide 'init)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(latex-preview-pane auctex-latexmk auctex flycheck-stan company-stan stan-mode poly-R grip-mode lsp-python-ms lsp-ui lsp-mode ess elpy org-bullets org-roam org-journal pdf-tools all-the-icons-ibuffer all-the-icons-gnus all-the-icons-dired all-the-icons-ivy-rich all-the-icons-ivy beacon highlight-indent-guides rainbow-mode rainbow-delimiters which-key dired-k undo-tree fix-word flycheck-pos-tip flycheck-tip flycheck popwin yasnippet-snippets yasnippet diff-hl magit company-emoji company counsel-projectile counsel drag-stuff ace-window fancy-battery doom-modeline smartparens dimmer projectile all-the-icons restart-emacs exec-path-from-shell goto-line-preview osx-trash transpose-frame dired-ranger dired-subtree dired-narrow neotree dashboard doom-themes use-package))
+ '(pdf-tools-handle-upgrades nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0)))))
