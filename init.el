@@ -2,8 +2,8 @@
 ;;; init.el ---
 
 ;;; Commentary:
-;; I use emacs from https://emacsformacosx.com installed via::
-;; brew install --cask emacs
+;; I use  emacs-head@28 from:
+;; https://github.com/daviderestivo/homebrew-emacs-head
 ;; To use c-spc as set-mark-command in mac you need to modify at
 ;; the mac os level:: System Preferences > Keyboard > Shortcuts >
 ;; Input Sources > Select the previous input source and uncheck
@@ -43,11 +43,6 @@
   ;;   Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
-;; Change highlight region color
-;(set-face-attribute 'region nil :background "RoyalBlue4")
-;; comments colors
-;(set-face-foreground 'font-lock-comment-face "gray47")
-
 ;;----------------------------------------------------------------------------
 ;; Kill general login buffers
 ;;----------------------------------------------------------------------------
@@ -74,10 +69,6 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (setq locale-coding-system 'utf-8)
-
-;; Treat clipboard input as UTF-8 string first; compound text next, etc.
-(when (display-graphic-p)
-  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 
 ;; Window size and features
 (add-to-list 'default-frame-alist '(height . 90))
@@ -115,9 +106,6 @@
 ;; Title bar
 (setq-default frame-title-format '("" user-login-name "@" system-name " - %b"))
 
-;; maximum font decoration
-(setq font-lock-maximum-decoration t)
-
 ;; Make the fringe narrower
 ;; make the left fringe 4 pixels wide and the right disappear
 (fringe-mode '1)
@@ -135,23 +123,6 @@
 (setq column-number-mode t)
 (setq line-number-mode t)
 
-;; Set default font size and family.
-;;
-;; Disable font smoothing on Big Sur:
-;;   defaults -currentHost write -g AppleFontSmoothing -int 0
-;(set-face-attribute 'default nil :height 120 :family "PragmataPro Liga")
-;(set-face-attribute 'variable-pitch nil :family "Neue Haas Grotesk Text Pro")
-
-;; Fancy font when ligatures are available (Yamamoto Mitsuharu's Mac port)
-(defconst amk-use-fancy-ligatures (fboundp #'mac-auto-operator-composition-mode))
-(when amk-use-fancy-ligatures
-  ;; Fira Code: https://github.com/tonsky/FiraCode
-  ;; Iosevka: https://typeof.net/Iosevka/
-  ;; PragmataPro: https://www.fsd.it/shop/fonts/pragmatapro/
-  (set-face-attribute 'default nil :family "PragmataPro Liga") ; Or "Fira Code" or "Iosevka"
-  (setq split-height-threshold 100)
-  (mac-auto-operator-composition-mode))
-
 ;;----------------------------------------------------------------------------
 ;; Personal information
 ;;----------------------------------------------------------------------------
@@ -161,14 +132,6 @@
 ;;----------------------------------------------------------------------------
 ;; Key bindings
 ;;----------------------------------------------------------------------------
-;; Unbind unneeded keys
-(global-set-key (kbd "C-z") nil)
-(global-set-key (kbd "M-z") nil)
-(global-set-key (kbd "M-m") nil)
-(global-set-key (kbd "C-x C-z") nil)
-(global-set-key (kbd "M-/") nil)
-;; Truncate lines
-(global-set-key (kbd "C-x C-l") #'toggle-truncate-lines)
 ;; Adjust font size like web browsers
 (global-set-key (kbd "C-=") #'text-scale-increase)
 (global-set-key (kbd "C-+") #'text-scale-increase)
@@ -176,23 +139,6 @@
 ;; Move up/down paragraph
 (global-set-key (kbd "M-<down>") #'forward-paragraph)
 (global-set-key (kbd "M-<up>") #'backward-paragraph)
-
-;;----------------------------------------------------------------------------
-;; Smooth scrolling
-;;----------------------------------------------------------------------------
-;; Vertical Scroll
-(setq scroll-step 1)
-(setq scroll-margin 1)
-(setq scroll-conservatively 101)
-(setq scroll-up-aggressively 0.01)
-(setq scroll-down-aggressively 0.01)
-(setq auto-window-vscroll nil)
-(setq fast-but-imprecise-scrolling nil)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-(setq mouse-wheel-progressive-speed nil)
-;; Horizontal Scroll
-(setq hscroll-step 1)
-(setq hscroll-margin 1)
 
 ;;----------------------------------------------------------------------------
 ;; Backpups
@@ -246,25 +192,23 @@
 ;;----------------------------------------------------------------------------
 (use-package dashboard
   :ensure t
-  :config
+  :init
   (dashboard-setup-startup-hook)
   ;;(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
   ;; Set the title
   (setq dashboard-banner-logo-title "")
   ;; Set the banner
-  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-startup-banner 'official)
   ;; Value can be
   ;; 'official which displays the official emacs logo
   ;; 'logo which displays an alternative emacs logo
   ;; 1, 2 or 3 which displays one of the text banners
   ;; "path/to/your/image.png" which displays whatever image you would prefer;
-
   ;; Content is not centered by default. To center, set
   (setq dashboard-center-content t);
   ;; To disable shortcut "jump" indicators for each section, set
   ;;(setq dashboard-show-shortcuts nil)
-  (setq dashboard-items '((bookmarks . 5)
-			  (recents  . 10)
+  (setq dashboard-items '((recents  . 10)
                           (projects . 5)
 			  ))
   ;; To add icons to the widget headings and their items:
@@ -272,27 +216,8 @@
   (setq dashboard-set-file-icons t)
   ;; A randomly selected footnote will be displayed. To disable it:
   (setq dashboard-set-footer nil)
-  ;; to use it with counsel-projectile
-  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
   )
 
-;; bookmarks stuff--
-(define-key global-map [f5] 'bookmark-set)
-(define-key global-map [f6] 'bookmark-jump)
-(define-key global-map [f7] 'bookmark-delete)
-(setq bookmark-default-file "~/.emacs.d/bookmarks")  ;;define file to use.
-(setq bookmark-save-flag 1)  ;save bookmarks to .emacs.bmk after each entry
-
-;;----------------------------------------------------------------------------
-;; neotree
-;;----------------------------------------------------------------------------
-(use-package neotree
-  :ensure t
-  :bind ([f8] . neotree-toggle)
-  :config
-  (setq neo-default-system-application "open")
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-  (setq neo-window-width 30))
 
 ;;----------------------------------------------------------------------------
 ;; Dired
@@ -352,6 +277,16 @@
               ("Y" . dired-ranger-paste)))
 
 ;;----------------------------------------------------------------------------
+;; dired-sidebar
+;;----------------------------------------------------------------------------
+(use-package dired-sidebar
+  :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
+  :ensure t
+  :commands
+  (dired-sidebar-toggle-sidebar)
+  )
+
+;;----------------------------------------------------------------------------
 ;; transpose-frame
 ;;----------------------------------------------------------------------------
 (use-package transpose-frame
@@ -363,7 +298,7 @@
 ;; osx-trash
 ;;----------------------------------------------------------------------------
 ;; in macos delete-by...-to-trash does not work without this
-;; install brew install trash
+;; install: brew install trash
 (use-package osx-trash
   :ensure t
   :init
@@ -386,13 +321,6 @@
   :if (memq window-system '(mac ns x))
   :config
   (exec-path-from-shell-initialize))
-
-
-;;----------------------------------------------------------------------------
-;; restart-emacs
-;;----------------------------------------------------------------------------
-(use-package restart-emacs
-  :ensure t)
 
 ;;----------------------------------------------------------------------------
 ;; Page break lines
@@ -436,7 +364,7 @@
   :init
   (dimmer-mode)
   :custom
-  (dimmer-fraction 0.225))
+  (dimmer-fraction 0.2))
 
 ;;----------------------------------------------------------------------------
 ;; smartparens
@@ -468,18 +396,6 @@
 ;;Run M-x all-the-icons-install-fonts to do so.
 
 ;;----------------------------------------------------------------------------
-;; Fancy battery
-;;----------------------------------------------------------------------------
-(use-package fancy-battery
-  :ensure t
-  :config
-  (setq fancy-battery-show-percentage t)
-  (setq battery-update-interval 15)
-  (if window-system
-      (fancy-battery-mode)
-    (display-battery-Mode)))
-
-;;----------------------------------------------------------------------------
 ;; Ace window
 ;;----------------------------------------------------------------------------
 (use-package ace-window
@@ -503,24 +419,22 @@
   (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
 ;;----------------------------------------------------------------------------
-;; Drag-stuff
-;;----------------------------------------------------------------------------
-;; drag lines up and down
-(use-package drag-stuff
-  :ensure t
-  :diminish drag-stuff-mode
-  :init (setq drag-stuff-modifier 'ctrl) ;; hack to stop drag-stuff setting key mappings over ones our existing
-  :config (drag-stuff-global-mode 1)
-  (bind-keys :map drag-stuff-mode-map
-	     ("<M-S-down>" . drag-stuff-down) ;;S is shift
-	     ("<M-S-up>" . drag-stuff-up)))
-
-(eval-after-load "drag-stuff"
-  '(define-key drag-stuff-mode-map (kbd "<M-left>") nil))
-
-;;----------------------------------------------------------------------------
 ;; Ivy, ivy rich and dependatns
 ;;----------------------------------------------------------------------------
+(use-package counsel
+  :after ivy
+  :init
+  (setq counsel-yank-pop-separator
+	(concat "\n\n"
+		(concat (apply 'concat (make-list 50 "---")) "\n")))
+  :bind (
+	 ("M-y" . counsel-yank-pop)
+	 ("C-h f" . counsel-describe-function)
+	 ("C-h v" . counsel-describe-variable))
+  :config
+  (use-package smex :ensure t))
+
+
 (use-package ivy
   :ensure t
   :defer 0.1
@@ -536,22 +450,14 @@
 
 (use-package ivy-rich
   :ensure t
-  :after counsel
+  :after ivy
   :config (setq ivy-rich-path-style 'abbrev)
   :init (ivy-rich-mode 1))
 
-(use-package counsel
-  :ensure t
-  :init
-  (setq counsel-yank-pop-separator
-	(concat "\n\n"
-		(concat (apply 'concat (make-list 50 "---")) "\n")))
-  :bind (
-	 ("M-y" . counsel-yank-pop)
-	 ("C-h f" . counsel-describe-function)
-	 ("C-h v" . counsel-describe-variable))
-  :config
-  (use-package smex :ensure t))
+(use-package swiper
+  :after ivy
+  :bind (("C-s" . swiper)
+         ("C-r" . swiper)))
 
 ;;----------------------------------------------------------------------------
 ;; Counsel projectile
@@ -560,6 +466,7 @@
   :ensure t
   :config
   (counsel-projectile-mode))
+;;C-c p p which project
 
 ;;----------------------------------------------------------------------------
 ;; Company-mode
@@ -619,18 +526,7 @@
   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
   :config
-  (diff-hl-margin-mode)
-  (setq diff-hl-margin-side 'right))
-
-;;----------------------------------------------------------------------------
-;; yasnippet
-;;----------------------------------------------------------------------------
-(use-package yasnippet
-  :ensure t
-  :config
-  (use-package yasnippet-snippets
-    :ensure t)
-  (yas-global-mode 1))
+  (diff-hl-margin-mode))
 
 ;;----------------------------------------------------------------------------
 ;; popwin
@@ -665,15 +561,15 @@
   :hook ((ess-r-mode) . flycheck-mode)
   )
 
-(use-package flycheck-tip
-  :ensure t
-  :defer t
-  :commands 'flycheck-tip-cycle
-  :after flycheck
-  :bind (:map flycheck-mode-map
-              ("C-c C-n" . flycheck-tip-cycle))
-  :config
-  (setq flycheck-display-errors-function 'ignore))
+;(use-package flycheck-tip
+;  :ensure t
+;  :defer t
+;  :commands 'flycheck-tip-cycle
+;  :after flycheck
+;  :bind (:map flycheck-mode-map
+;              ("C-c C-n" . flycheck-tip-cycle))
+;  :config
+;  (setq flycheck-display-errors-function 'ignore))
 
 (use-package flycheck-pos-tip
   :ensure t
@@ -774,14 +670,6 @@
   :init
   (progn
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
-;;  :config
-;;  (set-face-attribute 'rainbow-delimiters-max-face-count 6)
-;;  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "yellow")
-;;  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "magenta")
-;;  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "cyan")
-;;  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "orange")
-;; (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "Green")
-;;  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "purple"))
 
 ;;----------------------------------------------------------------------------
 ;; Rainbow mode
@@ -839,10 +727,6 @@
 (use-package all-the-icons-dired
   :ensure t
   :hook (dired-mode . all-the-icons-dired-mode))
-
-(use-package all-the-icons-gnus
-  :ensure t
-  :init (all-the-icons-gnus-setup))
 
 (use-package all-the-icons-ibuffer
   :ensure t
@@ -1091,6 +975,15 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; ESS
 ;;(kill-buffer "*ESS*")
 
+;; https://github.com/davidshepherd7/electric-operator
+(use-package electric-operator  ;; Automatically add spaces around operators
+  :ensure t
+  :after ess
+  :hook ((ess-r-mode inferior-ess-r-mode) . electric-operator-mode)
+  :custom
+  (electric-operator-R-named-argument-style 'spaced))
+
+
 ;;----------------------------------------------------------------------------
 ;; lsp-mode
 ;;----------------------------------------------------------------------------
@@ -1102,11 +995,11 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
          (ess-r-mode . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
-	 (LaTeX-mode . lsp)
-	 (python-mode . lsp)
+					;(LaTeX-mode . lsp)
+					;(python-mode . lsp)
          )
   :commands lsp
-  :config
+  :init
   (setq lsp-idle-delay 0.5
         lsp-enable-symbol-highlighting nil
 	lsp-enable-snippet t
@@ -1120,39 +1013,15 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	lsp-eldoc-enable-hover t
 	lsp-pyls-plugins-pylint-enabled nil
         lsp-pyls-configuration-sources ["flake8"]
-	))
-
-;; to remove error ls does not support dired
-;;(when (string= system-type "darwin")
-;;  (setq dired-use-ls-dired nil))
-(setq gc-cons-threshold 100000000)
-(when (boundp 'read-process-output-max)
-  ;; New in Emacs 27
-  (setq read-process-output-max (* 1024 1024)))
-;(setq lsp-idle-delay 0.500)
-(setq lsp-log-io nil) ; if set to true can cause a performance hit
-
-(use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode
-  :hook (lsp-mode . lsp-ui-mode)
-  :config
-  (setq
-   lsp-ui-doc-enable nil
-   lsp-ui-doc-header nil
-   lsp-ui-doc-include-signature nil
-   lsp-ui-doc-delay 2
-   lsp-ui-doc-position 'at-point ;;top, bottom, or at-point
-   lsp-ui-doc-max-width 80
-   lsp-ui-doc-max-height 40
-   lsp-ui-doc-use-childframe t
-   lsp-ui-doc-use-webkit nil
-   ;;lsp-ui-doc-show-with-cursor nil
-   ;;lsp-ui-doc-show-with-mouse nil
-   lsp-ui-sideline-enable nil
-   lsp-ui-sideline-show-diagnostics nil
-   )
-  )
+	)
+  ;; to remove error ls does not support dired
+  ;;(when (string= system-type "darwin")
+  ;;  (setq dired-use-ls-dired nil))
+  (setq gc-cons-threshold 100000000)
+  (when (boundp 'read-process-output-max)
+    ;; New in Emacs 27
+    (setq read-process-output-max (* 1024 1024)))
+  (setq lsp-log-io nil)) ; if set to true can cause a performance hit)
 
 (use-package lsp-python-ms
   :ensure t
@@ -1169,8 +1038,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :ensure t
   :defer t
   :mode (("//.markdown" . markdown-mode)
-         ("//.md" . markdown-mode)
-         ("//.ronn?" . markdown-mode))
+         ("//.md" . markdown-mode))
   :init
   (setq markdown-command "markdown"))
 
