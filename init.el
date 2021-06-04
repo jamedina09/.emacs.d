@@ -135,6 +135,23 @@
 (setq column-number-mode t)
 (setq line-number-mode t)
 
+;; Set default font size and family.
+;;
+;; Disable font smoothing on Big Sur:
+;;   defaults -currentHost write -g AppleFontSmoothing -int 0
+;(set-face-attribute 'default nil :height 120 :family "PragmataPro Liga")
+;(set-face-attribute 'variable-pitch nil :family "Neue Haas Grotesk Text Pro")
+
+;; Fancy font when ligatures are available (Yamamoto Mitsuharu's Mac port)
+(defconst amk-use-fancy-ligatures (fboundp #'mac-auto-operator-composition-mode))
+(when amk-use-fancy-ligatures
+  ;; Fira Code: https://github.com/tonsky/FiraCode
+  ;; Iosevka: https://typeof.net/Iosevka/
+  ;; PragmataPro: https://www.fsd.it/shop/fonts/pragmatapro/
+  (set-face-attribute 'default nil :family "PragmataPro Liga") ; Or "Fira Code" or "Iosevka"
+  (setq split-height-threshold 100)
+  (mac-auto-operator-composition-mode))
+
 ;;----------------------------------------------------------------------------
 ;; Personal information
 ;;----------------------------------------------------------------------------
@@ -369,6 +386,7 @@
   :if (memq window-system '(mac ns x))
   :config
   (exec-path-from-shell-initialize))
+
 
 ;;----------------------------------------------------------------------------
 ;; restart-emacs
@@ -1107,8 +1125,12 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; to remove error ls does not support dired
 ;;(when (string= system-type "darwin")
 ;;  (setq dired-use-ls-dired nil))
-(setq read-process-output-max (* 1024 1024)) ;; 1mb
 (setq gc-cons-threshold 100000000)
+(when (boundp 'read-process-output-max)
+  ;; New in Emacs 27
+  (setq read-process-output-max (* 1024 1024)))
+;(setq lsp-idle-delay 0.500)
+(setq lsp-log-io nil) ; if set to true can cause a performance hit
 
 (use-package lsp-ui
   :ensure t
