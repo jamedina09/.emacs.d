@@ -132,6 +132,13 @@
 ;;----------------------------------------------------------------------------
 ;; Key bindings
 ;;----------------------------------------------------------------------------
+;; Unbind unneeded keys
+(global-set-key (kbd "C-z") nil)
+(global-set-key (kbd "M-z") nil)
+(global-set-key (kbd "M-m") nil)
+(global-set-key (kbd "C-x C-z") nil)
+(global-set-key (kbd "M-/") nil)
+
 ;; Adjust font size like web browsers
 (global-set-key (kbd "C-=") #'text-scale-increase)
 (global-set-key (kbd "C-+") #'text-scale-increase)
@@ -880,6 +887,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "-i --simple-prompt")
 
+(setq python-indent-guess-indent-offset t)
+(setq python-indent-guess-indent-offset-verbose nil)
+
 ;;----------------------------------------------------------------------------
 ;; ESS
 ;;----------------------------------------------------------------------------
@@ -979,7 +989,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (use-package electric-operator  ;; Automatically add spaces around operators
   :ensure t
   :after ess
-  :hook ((ess-r-mode inferior-ess-r-mode) . electric-operator-mode)
+  :hook ((ess-r-mode inferior-ess-r-mode python-mode) . electric-operator-mode)
   :custom
   (electric-operator-R-named-argument-style 'spaced))
 
