@@ -4,10 +4,46 @@
 ;;; Commentary:
 ;; I use  emacs-head@28 from:
 ;; https://github.com/daviderestivo/homebrew-emacs-head
+;;
 ;; To use c-spc as set-mark-command in mac you need to modify at
 ;; the mac os level:: System Preferences > Keyboard > Shortcuts >
 ;; Input Sources > Select the previous input source and uncheck
+;;
+;; I also used code from: https://github.com/MatthewZMD/.emacs.d#org9bf5ed1
 ;;; Code:
+
+
+;; BetterGC
+(defvar better-gc-cons-threshold 134217728 ; 128mb
+  "The default value to use for `gc-cons-threshold'.
+If you experience freezing, decrease this.  If you experience stuttering, increase this.")
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold better-gc-cons-threshold)
+            (setq file-name-handler-alist file-name-handler-alist-original)
+            (makunbound 'file-name-handler-alist-original)))
+;; -BetterGC
+
+;; AutoGC
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (if (boundp 'after-focus-change-function)
+                (add-function :after after-focus-change-function
+                              (lambda ()
+                                (unless (frame-focus-state)
+                                  (garbage-collect))))
+              (add-hook 'after-focus-change-function 'garbage-collect))
+            (defun gc-minibuffer-setup-hook ()
+              (setq gc-cons-threshold (* better-gc-cons-threshold 2)))
+
+            (defun gc-minibuffer-exit-hook ()
+              (garbage-collect)
+              (setq gc-cons-threshold better-gc-cons-threshold))
+
+            (add-hook 'minibuffer-setup-hook #'gc-minibuffer-setup-hook)
+            (add-hook 'minibuffer-exit-hook #'gc-minibuffer-exit-hook)))
+;; -AutoGC
 
 (require 'package)
 (package-initialize)
@@ -28,6 +64,10 @@
   (setq use-package-expand-minimally t)
   (setq use-package-compute-statistics t)
   (setq use-package-enable-imenu-support t))
+
+(eval-when-compile
+  (require 'use-package)
+  (require 'bind-key))
 
 ;;----------------------------------------------------------------------------
 ;; theme
@@ -73,13 +113,6 @@
 ;; Window size and features
 (add-to-list 'default-frame-alist '(height . 90))
 (add-to-list 'default-frame-alist '(width . 90))
-
-;; Remove tool bar an scroll bar
-(tool-bar-mode -1)
-(set-scroll-bar-mode nil)
-
-;; Remove menu bar
-(menu-bar-mode nil) ;-1
 
 ;; We don't want to type yes and no all the time so do y and n
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -138,7 +171,6 @@
 (global-set-key (kbd "M-m") nil)
 (global-set-key (kbd "C-x C-z") nil)
 (global-set-key (kbd "M-/") nil)
-
 ;; Adjust font size like web browsers
 (global-set-key (kbd "C-=") #'text-scale-increase)
 (global-set-key (kbd "C-+") #'text-scale-increase)
@@ -225,6 +257,16 @@
   (setq dashboard-set-footer nil)
   )
 
+;;----------------------------------------------------------------------------
+;; Page break lines
+;;----------------------------------------------------------------------------
+(use-package page-break-lines
+  :ensure t
+  :config
+  (setq global-page-break-lines-mode t)
+  (set-fontset-font "fontset-default"
+                    (cons page-break-lines-char page-break-lines-char)
+                    (face-attribute 'default :family)))
 
 ;;----------------------------------------------------------------------------
 ;; Dired
@@ -330,17 +372,6 @@
   (exec-path-from-shell-initialize))
 
 ;;----------------------------------------------------------------------------
-;; Page break lines
-;;----------------------------------------------------------------------------
-(use-package page-break-lines
-  :ensure t
-  :config
-  (setq global-page-break-lines-mode t)
-  (set-fontset-font "fontset-default"
-                    (cons page-break-lines-char page-break-lines-char)
-                    (face-attribute 'default :family)))
-
-;;----------------------------------------------------------------------------
 ;; all the icons
 ;;----------------------------------------------------------------------------
 ;; For this package to work best, you need to install the resource fonts
@@ -441,7 +472,6 @@
   :config
   (use-package smex :ensure t))
 
-
 (use-package ivy
   :ensure t
   :defer 0.1
@@ -507,9 +537,23 @@
       company-minimum-prefix-length 2
       company-tooltip-limit 10)
 
-
 (use-package company-emoji
   :ensure t)
+
+;; With use-package:
+(use-package company-box
+  :ensure t
+  :hook (company-mode . company-box-mode))
+
+;;----------------------------------------------------------------------------
+;; yasnippet
+;;----------------------------------------------------------------------------
+(use-package yasnippet
+  :ensure t
+  :config
+  (use-package yasnippet-snippets
+    :ensure t)
+  (yas-global-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; Magit
@@ -642,7 +686,7 @@
 ;;----------------------------------------------------------------------------
 (use-package undo-tree
   :ensure t
-  :defer t
+  :diminish undo-tree-mode
   :init (global-undo-tree-mode)
   :custom
   (undo-tree-visualizer-diff t)
@@ -665,6 +709,9 @@
 ;;----------------------------------------------------------------------------
 (use-package which-key
   :ensure t
+  :custom
+  (which-key-separator " ")
+  (which-key-prefix-prefix "+")
   :config
   (which-key-mode)
   (which-key-setup-side-window-right-bottom))
@@ -698,7 +745,7 @@
   (highlight-indent-guides-responsive t)
   (highlight-indent-guides-method 'character)
   :hook
-  (prog-mode  . highlight-indent-guides-mode))
+  (prog-mode . highlight-indent-guides-mode))
 
 ;;----------------------------------------------------------------------------
 ;; Beacon
@@ -998,48 +1045,46 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; lsp-mode
 ;;----------------------------------------------------------------------------
 (use-package lsp-mode
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  :init
-  (setq lsp-keymap-prefix "C-c l")
   :hook (
-         (ess-r-mode . lsp)
-         ;; if you want which-key integration
+         ((ess-r-mode python-mode) . lsp)
+         ;;if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
-					;(LaTeX-mode . lsp)
-					;(python-mode . lsp)
          )
   :commands lsp
   :init
-  (setq lsp-idle-delay 0.5
-        lsp-enable-symbol-highlighting nil
+  (setq lsp-keymap-prefix "C-c l"
+	lsp-auto-guess-root nil
+	lsp-eldoc-enable-hover t
+        lsp-enable-symbol-highlighting t
 	lsp-enable-snippet t
+	lsp-file-watch-threshold 2000 ;;nil to disable warning
+	lsp-idle-delay 0.5
+	lsp-signature-render-documentation t;nil
 	lsp-diagnostics-provider 'flycheck
 	lsp-prefer-flymake nil
-	lsp-signature-render-documentation nil
 	lsp-signature-auto-activate t
 	lsp-completion-show-detail t
 	lsp-completion-show-kind nil
 	lsp-modeline-code-actions-enable t
-	lsp-eldoc-enable-hover t
 	lsp-pyls-plugins-pylint-enabled nil
         lsp-pyls-configuration-sources ["flake8"]
+	lsp-lens-enable nil
 	)
-  ;; to remove error ls does not support dired
-  ;;(when (string= system-type "darwin")
-  ;;  (setq dired-use-ls-dired nil))
-  (setq gc-cons-threshold 100000000)
+  ;;to remove error ls does not support dired
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired nil))
   (when (boundp 'read-process-output-max)
-    ;; New in Emacs 27
+  ;;New in Emacs 27
     (setq read-process-output-max (* 1024 1024)))
   (setq lsp-log-io nil)) ; if set to true can cause a performance hit)
 
-(use-package lsp-python-ms
+
+(use-package lsp-ui
   :ensure t
-  :hook (python-mode . (lambda ()
-                         (require 'lsp-python-ms)
-                         (lsp)))
   :init
-  (setq lsp-python-ms-executable (executable-find "python-language-server")))
+  (setq lsp-ui-doc-enable nil
+	lsp-ui-sideline-show-code-actions nil
+	lsp-ui-sideline-enable nil))
 
 ;;----------------------------------------------------------------------------
 ;; Markdown-mode
@@ -1327,3 +1372,5 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;;----------------------------------------------------------------------------
 ;;----------------------------------------------------------------------------
 (provide 'init)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; init.el ends here

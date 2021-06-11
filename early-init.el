@@ -21,6 +21,10 @@
 
 ;; DisableUnnecessaryInterface
 (menu-bar-mode -1)
+;; Remove tool bar an scroll bar
+(tool-bar-mode -1)
+(set-scroll-bar-mode nil)
+
 (unless (and (display-graphic-p) (eq system-type 'darwin))
   (push '(menu-bar-lines . 0) default-frame-alist))
 (push '(tool-bar-lines . 0) default-frame-alist)
