@@ -79,7 +79,7 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   (setq doom-themes-enable-bold t;;  if nil, bold is universally disabled
         doom-themes-enable-italic t;;  if nil, italics is universally disabled
 	doom-themes-treemacs-theme "doom-colors")
-  (load-theme 'doom-one t);; Iosvkem
+  (load-theme 'doom-Iosvkem t);; Iosvkem
   ;;   Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
