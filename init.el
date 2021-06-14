@@ -673,7 +673,7 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   (ispell-hunspell-add-multi-dic "en_US,es_ANY"))
 ;; Spell checking should now work with M-x ispell
 
-(dolist (hook '(text-mode-hook markdown-mode-hook))
+(dolist (hook '(text-mode-hook))
   (add-hook hook (lambda () (flyspell-mode -1))))
 
 (eval-after-load "flyspell"
