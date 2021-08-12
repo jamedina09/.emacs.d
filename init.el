@@ -255,6 +255,8 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   (setq dashboard-set-file-icons t)
   ;; A randomly selected footnote will be displayed. To disable it:
   (setq dashboard-set-footer nil)
+  ;; horizontal lines
+  (setq dashboard-page-separator "\n\f\n")
   )
 
 ;;----------------------------------------------------------------------------
@@ -884,6 +886,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;;----------------------------------------------------------------------------
 (use-package org-roam
   :ensure t
+  :init
+  (setq org-roam-v2-ack t) ; to remove warning about upgrade v2 - modify notes
   :hook
   (after-init . org-roam-mode)
   :custom
@@ -900,6 +904,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; Org-roam requires sqlite to function. Org-roam optionally uses Graphviz for
 ;; graph-related functionality. It is recommended to install
 ;; PCRE-enabled ripgrep for better performance and extended functionality.
+
+
 
 ;;----------------------------------------------------------------------------
 ;; Org-bullets
