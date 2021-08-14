@@ -188,7 +188,7 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 (setq make-backup-files t ;;make backup first time a file is saved
       version-control t ;; number and keep versions of backups
       backup-by-copying t ;; and copy (don't clobber symlinks) them to...
-      backup-directory-alist '(("." . "~/Google Drive/EMACS_BACKUPS/")) ;; ... here
+      backup-directory-alist '(("." . "~/GDrive_Personal/EMACS_BACKUPS/")) ;; ... here
       kept-new-versions 6 ;; the number of newest version to keep
       kept-old-versions 2 ;; the number of old versions to keep
       delete-old-versions t ;; don't ask about deleting old versions
@@ -818,7 +818,7 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 (define-key global-map "\C-ca" 'org-agenda)
 
 ;; Define my agenda files
-(setq org-agenda-files (directory-files-recursively "~//Google Drive/org/" "\\.org$"))
+(setq org-agenda-files (directory-files-recursively "~//GDrive_Personal/org/" "\\.org$"))
 
 ;; to automatically add time when a certain TODO is done
 ;;(setq org-log-done 'time)
@@ -871,7 +871,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   ;; Change default prefix key; needs to be set before loading org-journal
   (setq org-journal-prefix-key "C-c j ")
   :config
-  (setq org-journal-dir "~/Google Drive/org/journal/"
+  (setq org-journal-dir "~/GDrive_Personal/org/journal/"
         org-journal-date-format "%A, %d %B %Y"
 	org-journal-file-format "%Y-%m-%d.org"
 	org-journal-find-file 'find-file
@@ -891,7 +891,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :hook
   (after-init . org-roam-mode)
   :custom
-  (org-roam-directory "~/Google Drive/org/notes/")
+  (org-roam-directory "~/GDrive_Personal/org/notes/")
   :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
                ("C-c n f" . org-roam-find-file)
