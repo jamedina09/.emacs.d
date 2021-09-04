@@ -1,3 +1,4 @@
+
 ;;; package --- Summary
 ;;; init.el ---
 
@@ -86,7 +87,7 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 
 ;; Removes *messages* from the buffer.
 (setq-default message-log-max nil)
-(kill-buffer "*Messages*")
+;; (kill-buffer "*Messages*")
 
 ;;----------------------------------------------------------------------------
 ;; Interface and General Tweaks
@@ -1034,8 +1035,10 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :after ess
   :hook ((ess-r-mode inferior-ess-r-mode python-mode) . electric-operator-mode)
   :custom
-  (electric-operator-R-named-argument-style 'spaced))
-
+  (electric-operator-R-named-argument-style 'spaced)
+  (electric-operator-add-rules-for-mode 'ess-r-mode
+					(cons "*" nil)
+					(cons "in" nil)))
 
 (defun then_R_operator ()
   "R - %>% operator or 'then' pipe operator"
