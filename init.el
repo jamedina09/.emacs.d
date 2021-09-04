@@ -1074,6 +1074,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	lsp-pyls-plugins-pylint-enabled nil
         lsp-pyls-configuration-sources ["flake8"]
 	lsp-lens-enable nil
+	lsp-response-timeout 30
 	)
   ;;to remove error ls does not support dired
   (when (string= system-type "darwin")
