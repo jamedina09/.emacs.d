@@ -537,11 +537,6 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 (use-package company-emoji
   :ensure t)
 
-;; With use-package:
-(use-package company-box
-  :ensure t
-  :hook (company-mode . company-box-mode))
-
 ;;----------------------------------------------------------------------------
 ;; yasnippet
 ;;----------------------------------------------------------------------------
