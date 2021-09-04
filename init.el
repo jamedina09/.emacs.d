@@ -2,8 +2,7 @@
 ;;; init.el ---
 
 ;;; Commentary:
-;; I use  emacs-head@28 from:
-;; https://github.com/daviderestivo/homebrew-emacs-head
+;; Download emacs: brew install --cask emacs
 ;;
 ;; To use c-spc as set-mark-command in mac you need to modify at
 ;; the mac os level:: System Preferences > Keyboard > Shortcuts >
@@ -610,15 +609,15 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   :hook ((ess-r-mode) . flycheck-mode)
   )
 
-;(use-package flycheck-tip
-;  :ensure t
-;  :defer t
-;  :commands 'flycheck-tip-cycle
-;  :after flycheck
-;  :bind (:map flycheck-mode-map
-;              ("C-c C-n" . flycheck-tip-cycle))
-;  :config
-;  (setq flycheck-display-errors-function 'ignore))
+					;(use-package flycheck-tip
+					;  :ensure t
+					;  :defer t
+					;  :commands 'flycheck-tip-cycle
+					;  :after flycheck
+					;  :bind (:map flycheck-mode-map
+					;              ("C-c C-n" . flycheck-tip-cycle))
+					;  :config
+					;  (setq flycheck-display-errors-function 'ignore))
 
 (use-package flycheck-pos-tip
   :ensure t
@@ -1085,7 +1084,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (when (string= system-type "darwin")
     (setq dired-use-ls-dired nil))
   (when (boundp 'read-process-output-max)
-  ;;New in Emacs 27
+    ;;New in Emacs 27
     (setq read-process-output-max (* 1024 1024)))
   (setq lsp-log-io nil)) ; if set to true can cause a performance hit)
 
