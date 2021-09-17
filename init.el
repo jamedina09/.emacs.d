@@ -440,7 +440,7 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   :init
   (custom-set-faces
    '(aw-leading-char-face
-     ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+     ((t (:inherit ace-jump-face-foreground  :height 3.0)))))
   (defun --count-frames ()
     "Return the number of visible frames"
     (let* ((frames (if (daemonp) (butlast (visible-frame-list) 1) (visible-frame-list))))
