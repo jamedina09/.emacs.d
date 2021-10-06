@@ -1,4 +1,5 @@
 
+
 ;;; package --- Summary
 ;;; init.el ---
 
@@ -46,9 +47,11 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 ;; -AutoGC
 
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
+
+(setq package-archives '(("elpa" . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("org" . "http://orgmode.org/elpa/")))
 
 ;; Install use-package if not installed
 (unless (package-installed-p 'use-package)
@@ -334,6 +337,16 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   )
 
 ;;----------------------------------------------------------------------------
+;; dired-hide-dotfiles
+;;----------------------------------------------------------------------------
+(use-package dired-hide-dotfiles
+  :ensure t
+  :hook (dired-mode . dired-hide-dotfiles-mode)
+  :bind (:map dired-mode-map
+              ("H" . dired-hide-dotfiles-mode)))
+
+
+;;----------------------------------------------------------------------------
 ;; transpose-frame
 ;;----------------------------------------------------------------------------
 (use-package transpose-frame
@@ -432,27 +445,11 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 ;;Run M-x all-the-icons-install-fonts to do so.
 
 ;;----------------------------------------------------------------------------
-;; Ace window
+;; switch-window
 ;;----------------------------------------------------------------------------
-(use-package ace-window
-  :ensure t
-  :bind ("M-o" . shackra/other-window)
-  :init
-  (custom-set-faces
-   '(aw-leading-char-face
-     ((t (:inherit ace-jump-face-foreground  :height 3.0)))))
-  (defun --count-frames ()
-    "Return the number of visible frames"
-    (let* ((frames (if (daemonp) (butlast (visible-frame-list) 1) (visible-frame-list))))
-      (length frames)))
-  (defun shackra/other-window ()
-    "Change the cursor's focus to another window"
-    (interactive)
-    (if (or (> (count-windows) 2) (> (--count-frames) 1))
-        (ace-window 1)
-      (ace-window 0)))
-  :config
-  (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+(use-package switch-window
+  :bind (("C-x o" . switch-window)
+         ("C-x w" . switch-window-then-swap-buffer)))
 
 ;;----------------------------------------------------------------------------
 ;; Ivy, ivy rich and dependatns
@@ -1383,3 +1380,16 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (provide 'init)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(switch-window dired-hide-dotfiles yasnippet-snippets which-key use-package undo-tree transpose-frame smex smartparens rainbow-mode rainbow-delimiters popwin poly-R pdf-tools page-break-lines osx-trash org-roam org-journal org-bullets magit lsp-ui latex-preview-pane highlight-indent-guides grip-mode goto-line-preview flycheck-stan flycheck-pos-tip fix-word exec-path-from-shell ess elpy electric-operator doom-themes doom-modeline dired-sidebar dired-ranger dired-narrow dired-k dimmer diff-hl dashboard counsel-projectile company-stan company-emoji beacon auctex-latexmk all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer all-the-icons-dired ace-window)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
