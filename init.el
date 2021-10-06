@@ -1380,16 +1380,3 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (provide 'init)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(switch-window dired-hide-dotfiles yasnippet-snippets which-key use-package undo-tree transpose-frame smex smartparens rainbow-mode rainbow-delimiters popwin poly-R pdf-tools page-break-lines osx-trash org-roam org-journal org-bullets magit lsp-ui latex-preview-pane highlight-indent-guides grip-mode goto-line-preview flycheck-stan flycheck-pos-tip fix-word exec-path-from-shell ess elpy electric-operator doom-themes doom-modeline dired-sidebar dired-ranger dired-narrow dired-k dimmer diff-hl dashboard counsel-projectile company-stan company-emoji beacon auctex-latexmk all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer all-the-icons-dired ace-window)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
