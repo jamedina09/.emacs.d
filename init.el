@@ -15,7 +15,7 @@
 
 
 ;; BetterGC
-(defvar better-gc-cons-threshold 134217728 ; 128mb
+(defvar better-gc-cons-threshold 800000;134217728 ; 128mb
   "The default value to use for `gc-cons-threshold'.
 If you experience freezing, decrease this.  If you experience stuttering, increase this.")
 
@@ -46,13 +46,19 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
             (add-hook 'minibuffer-exit-hook #'gc-minibuffer-exit-hook)))
 ;; -AutoGC
 
+
+
 (require 'package)
 (package-initialize)
 
-(setq package-archives '(("elpa" . "https://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")
-                         ("org" . "http://orgmode.org/elpa/")))
+(setq package-archives '(("gnu"   . "https://elpa.gnu.org/packages/")
+			 ("melpa" . "https://melpa.org/packages/")
+			 ;; ("cselpa" . "https://elpa.thecybershadow.net/packages/")
+			 ;; ("melpa-cn" . "http://mirrors.cloud.tencent.com/elpa/melpa/")
+			 ;; ("gnu-cn"   . "http://mirrors.cloud.tencent.com/elpa/gnu/")
+			 ))
 
+;; ConfigureUsePackage
 ;; Install use-package if not installed
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -67,6 +73,7 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 (eval-when-compile
   (require 'use-package)
   (require 'bind-key))
+;; -ConfigureUsePackage
 
 ;;----------------------------------------------------------------------------
 ;; theme
