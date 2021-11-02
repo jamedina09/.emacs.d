@@ -59,7 +59,7 @@
 ;;----------------------------------------------------------------------------
 ;; Interface and General Tweaks
 ;;----------------------------------------------------------------------------
-; Define the home directory
+					; Define the home directory
 (cd (getenv "HOME"))
 (message "Current dir: %s" (pwd))
 (message "Current buffer: %s" (buffer-name))
@@ -944,8 +944,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (electric-operator-R-named-argument-style 'spaced)
   (electric-operator-add-rules-for-mode 'ess-r-mode
 					(cons "*" nil)
-					(cons "in" nil)
-					(cons "?" nil)))
+					(cons "in" nil)))
 
 (defun then_R_operator ()
   "R - %>% operator or 'then' pipe operator"
