@@ -11,40 +11,6 @@
 ;; I also used code from: https://github.com/MatthewZMD/.emacs.d#org9bf5ed1
 ;;; Code:
 
-
-;; BetterGC
-(defvar better-gc-cons-threshold 134217728 ; 128mb
-  "The default value to use for `gc-cons-threshold'.
-If you experience freezing, decrease this.  If you experience stuttering, increase this.")
-
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (setq gc-cons-threshold better-gc-cons-threshold)
-            (setq file-name-handler-alist file-name-handler-alist-original)
-            (makunbound 'file-name-handler-alist-original)))
-;; -BetterGC
-
-;; AutoGC
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (if (boundp 'after-focus-change-function)
-                (add-function :after after-focus-change-function
-                              (lambda ()
-                                (unless (frame-focus-state)
-                                  (garbage-collect))))
-              (add-hook 'after-focus-change-function 'garbage-collect))
-            (defun gc-minibuffer-setup-hook ()
-              (setq gc-cons-threshold (* better-gc-cons-threshold 2)))
-
-            (defun gc-minibuffer-exit-hook ()
-              (garbage-collect)
-              (setq gc-cons-threshold better-gc-cons-threshold))
-
-            (add-hook 'minibuffer-setup-hook #'gc-minibuffer-setup-hook)
-            (add-hook 'minibuffer-exit-hook #'gc-minibuffer-exit-hook)))
-;; -AutoGC
-
-
 (require 'package)
 (package-initialize)
 
@@ -55,13 +21,6 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 			 ;; ("melpa-cn" . "http://mirrors.cloud.tencent.com/elpa/melpa/")
 			 ;; ("gnu-cn"   . "http://mirrors.cloud.tencent.com/elpa/gnu/")
 			 ))
-
-
-;; ConfigurePackageManager
-(unless (bound-and-true-p package--initialized)
-  (setq package-enable-at-startup nil)          ; To prevent initializing twice
-  (package-initialize))
-
 
 ;; ConfigureUsePackage
 ;; Install use-package if not installed
@@ -83,7 +42,7 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   (setq doom-themes-enable-bold t;;  if nil, bold is universally disabled
         doom-themes-enable-italic t;;  if nil, italics is universally disabled
 	doom-themes-treemacs-theme "doom-colors")
-  (load-theme 'doom-one t);; Iosvkem
+  (load-theme 'doom-dracula t)
   ;;   Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
@@ -154,12 +113,11 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 (setq-default fill-column 80)
 
 ;; line and column number
-(global-linum-mode -1)
+(setq column-number-mode t)
+(setq line-number-mode t)
+(global-linum-mode t)
 
- (use-package nlinum
-      :ensure t
-      :config
-      (global-nlinum-mode 1))
+(setq linum-format "%d ")
 
 ;; highlight current line
 (global-hl-line-mode)
@@ -847,32 +805,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
    ("C-c C-s" . org-journal-search)))
 
 ;;----------------------------------------------------------------------------
-;; Org-roam
-;;----------------------------------------------------------------------------
-(use-package org-roam
-  :ensure t
-  :init
-  (setq org-roam-v2-ack t) ; to remove warning about upgrade v2 - modify notes
-  :hook
-  (after-init . org-roam-mode)
-  :custom
-  (org-roam-directory "~/GDrive_Personal/org/notes/")
-  :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
-
-;; From: https://github.com/org-roam/org-roam
-;; Org-roam requires sqlite to function. Org-roam optionally uses Graphviz for
-;; graph-related functionality. It is recommended to install
-;; PCRE-enabled ripgrep for better performance and extended functionality.
-
-
-
-;;----------------------------------------------------------------------------
 ;; Org-bullets
 ;;----------------------------------------------------------------------------
 (use-package org-bullets
@@ -1357,16 +1289,3 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (provide 'init)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(nlinum yasnippet-snippets which-key use-package undo-tree transpose-frame switch-window smex smartparens rainbow-mode rainbow-delimiters popwin poly-R pdf-tools page-break-lines osx-trash org-roam org-journal org-bullets magit lsp-ui latex-preview-pane highlight-indent-guides grip-mode goto-line-preview flycheck-stan flycheck-pos-tip fix-word exec-path-from-shell ess elpy electric-operator doom-themes doom-modeline dired-sidebar dired-ranger dired-narrow dired-k dired-hide-dotfiles dimmer diff-hl dashboard counsel-projectile company-stan company-emoji beacon auctex-latexmk all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer all-the-icons-dired)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
