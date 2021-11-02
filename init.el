@@ -1,5 +1,3 @@
-
-
 ;;; package --- Summary
 ;;; init.el ---
 
@@ -15,7 +13,7 @@
 
 
 ;; BetterGC
-(defvar better-gc-cons-threshold 800000;134217728 ; 128mb
+(defvar better-gc-cons-threshold 134217728 ; 128mb
   "The default value to use for `gc-cons-threshold'.
 If you experience freezing, decrease this.  If you experience stuttering, increase this.")
 
@@ -47,9 +45,9 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 ;; -AutoGC
 
 
-
 (require 'package)
 (package-initialize)
+
 
 (setq package-archives '(("gnu"   . "https://elpa.gnu.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")
@@ -58,21 +56,21 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 			 ;; ("gnu-cn"   . "http://mirrors.cloud.tencent.com/elpa/gnu/")
 			 ))
 
+
+;; ConfigurePackageManager
+(unless (bound-and-true-p package--initialized)
+  (setq package-enable-at-startup nil)          ; To prevent initializing twice
+  (package-initialize))
+
+
 ;; ConfigureUsePackage
 ;; Install use-package if not installed
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
-(eval-and-compile
-  (setq use-package-always-ensure t)
-  (setq use-package-expand-minimally t)
-  (setq use-package-compute-statistics t)
-  (setq use-package-enable-imenu-support t))
-
 (eval-when-compile
-  (require 'use-package)
-  (require 'bind-key))
+  (require 'use-package))
 ;; -ConfigureUsePackage
 
 ;;----------------------------------------------------------------------------
@@ -102,7 +100,7 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 ;;----------------------------------------------------------------------------
 ;; Interface and General Tweaks
 ;;----------------------------------------------------------------------------
-;; Define the home directory
+; Define the home directory
 (cd (getenv "HOME"))
 (message "Current dir: %s" (pwd))
 (message "Current buffer: %s" (buffer-name))
@@ -146,7 +144,6 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 (setq-default frame-title-format '("" user-login-name "@" system-name " - %b"))
 
 ;; Make the fringe narrower
-;; make the left fringe 4 pixels wide and the right disappear
 (fringe-mode '1)
 
 ;; Trim spaces
@@ -155,12 +152,17 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 
 ;; Wrap lines automatically
 (setq-default fill-column 80)
-(add-hook 'text-mode-hook #'auto-fill-mode)
-(add-hook 'prog-mode-hook #'auto-fill-mode)
 
 ;; line and column number
-(setq column-number-mode t)
-(setq line-number-mode t)
+(global-linum-mode -1)
+
+ (use-package nlinum
+      :ensure t
+      :config
+      (global-nlinum-mode 1))
+
+;; highlight current line
+(global-hl-line-mode)
 
 ;;----------------------------------------------------------------------------
 ;; Personal information
@@ -333,9 +335,12 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
               ("X" . dired-ranger-move)
               ("Y" . dired-ranger-paste)))
 
-;;----------------------------------------------------------------------------
-;; dired-sidebar
-;;----------------------------------------------------------------------------
+(use-package dired-hide-dotfiles
+  :ensure t
+  :hook (dired-mode . dired-hide-dotfiles-mode)
+  :bind (:map dired-mode-map
+              ("H" . dired-hide-dotfiles-mode)))
+
 (use-package dired-sidebar
   :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
   :ensure t
@@ -343,15 +348,13 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   (dired-sidebar-toggle-sidebar)
   )
 
-;;----------------------------------------------------------------------------
-;; dired-hide-dotfiles
-;;----------------------------------------------------------------------------
-(use-package dired-hide-dotfiles
+(use-package dired-k
   :ensure t
-  :hook (dired-mode . dired-hide-dotfiles-mode)
-  :bind (:map dired-mode-map
-              ("H" . dired-hide-dotfiles-mode)))
-
+  :defer t
+  :init
+  ;; always execute dired-k when dired buffer is opened
+  (add-hook 'dired-initial-position-hook 'dired-k)
+  (add-hook 'dired-after-readin-hook #'dired-k-no-revert))
 
 ;;----------------------------------------------------------------------------
 ;; transpose-frame
@@ -360,6 +363,13 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   :ensure t
   :bind (("C-c t" . transpose-frame)
 	 ("C-c f" . rotate-frame)))
+
+;;----------------------------------------------------------------------------
+;; switch-window
+;;----------------------------------------------------------------------------
+(use-package switch-window
+  :bind (("C-x o" . switch-window)
+         ("C-x w" . switch-window-then-swap-buffer)))
 
 ;;----------------------------------------------------------------------------
 ;; osx-trash
@@ -377,8 +387,9 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 ;; goto-line-preview
 ;;----------------------------------------------------------------------------
 (use-package goto-line-preview
-  :ensure t)
-(global-set-key [remap goto-line] 'goto-line-preview)
+  :ensure t
+  :config
+  (global-set-key [remap goto-line] 'goto-line-preview))
 
 ;;----------------------------------------------------------------------------
 ;; exec-path-from-shell
@@ -409,8 +420,9 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   :init
   (projectile-mode +1)
   :bind (:map projectile-mode-map
-              ("C-c p" . projectile-command-map)))
-(setq projectile-sort-order 'recently-active)
+              ("C-c p" . projectile-command-map))
+  :config
+  (setq projectile-sort-order 'recently-active))
 
 ;;----------------------------------------------------------------------------
 ;; Dimmer
@@ -452,11 +464,25 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 ;;Run M-x all-the-icons-install-fonts to do so.
 
 ;;----------------------------------------------------------------------------
-;; switch-window
+;; all the icons
 ;;----------------------------------------------------------------------------
-(use-package switch-window
-  :bind (("C-x o" . switch-window)
-         ("C-x w" . switch-window-then-swap-buffer)))
+(use-package all-the-icons-ivy
+  :ensure t
+  :init
+  (all-the-icons-ivy-setup))
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init
+  (all-the-icons-ivy-rich-mode 1))
+
+(use-package all-the-icons-dired
+  :ensure t
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(use-package all-the-icons-ibuffer
+  :ensure t
+  :init (all-the-icons-ibuffer-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; Ivy, ivy rich and dependatns
@@ -520,27 +546,8 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
         '((company-files          ; files & directory
            company-keywords       ; keywords
            company-capf ; completion-at-point-functions
-	   company-emoji
            company-abbrev
 	   company-dabbrev))))
-
-;; Company binds ‘RET’ key to ‘company-complete-selection’.
-;; This is rather inconvenient in inferior R buffers.
-;; One solution is to use ‘TAB’ to complete common
-;; part and ‘M-TAB’ for full selection:
-(define-key company-active-map [return] nil)
-(define-key company-active-map [tab] 'company-complete-common)
-(define-key company-active-map (kbd "TAB") 'company-complete-common)
-(define-key company-active-map (kbd "M-TAB") 'company-complete-selection)
-
-(setq company-selection-wrap-around t
-      company-tooltip-align-annotations t
-      company-idle-delay 0.5
-      company-minimum-prefix-length 2
-      company-tooltip-limit 10)
-
-(use-package company-emoji
-  :ensure t)
 
 ;;----------------------------------------------------------------------------
 ;; yasnippet
@@ -609,15 +616,10 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   :hook ((ess-r-mode) . flycheck-mode)
   )
 
-					;(use-package flycheck-tip
-					;  :ensure t
-					;  :defer t
-					;  :commands 'flycheck-tip-cycle
-					;  :after flycheck
-					;  :bind (:map flycheck-mode-map
-					;              ("C-c C-n" . flycheck-tip-cycle))
-					;  :config
-					;  (setq flycheck-display-errors-function 'ignore))
+(setq flycheck-check-syntax-automatically '(save mode-enable))
+;; the default value was '(save idle-change new-line mode-enabled)
+;; This way, syntax checking will occur only when you save your file or change
+;; the major mode.
 
 (use-package flycheck-pos-tip
   :ensure t
@@ -691,17 +693,6 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 ;; Open with C-x u
 
 ;;----------------------------------------------------------------------------
-;; Dired k
-;;----------------------------------------------------------------------------
-(use-package dired-k
-  :ensure t
-  :defer t
-  :init
-  ;; always execute dired-k when dired buffer is opened
-  (add-hook 'dired-initial-position-hook 'dired-k)
-  (add-hook 'dired-after-readin-hook #'dired-k-no-revert))
-
-;;----------------------------------------------------------------------------
 ;; Which key  - Do not use with Ivi because it blocks its use
 ;;----------------------------------------------------------------------------
 (use-package which-key
@@ -761,27 +752,6 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
   (setq beacon-blink-duration .2)
   (setq beacon-blink-delay .2)
   (setq beacon-size 20));end beacon
-
-;;----------------------------------------------------------------------------
-;; all the icons
-;;----------------------------------------------------------------------------
-(use-package all-the-icons-ivy
-  :ensure t
-  :init
-  (all-the-icons-ivy-setup))
-
-(use-package all-the-icons-ivy-rich
-  :ensure t
-  :init
-  (all-the-icons-ivy-rich-mode 1))
-
-(use-package all-the-icons-dired
-  :ensure t
-  :hook (dired-mode . all-the-icons-dired-mode))
-
-(use-package all-the-icons-ibuffer
-  :ensure t
-  :init (all-the-icons-ibuffer-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; pdf-tools
@@ -1042,7 +1012,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (electric-operator-R-named-argument-style 'spaced)
   (electric-operator-add-rules-for-mode 'ess-r-mode
 					(cons "*" nil)
-					(cons "in" nil)))
+					(cons "in" nil)
+					(cons "?" nil)))
 
 (defun then_R_operator ()
   "R - %>% operator or 'then' pipe operator"
@@ -1109,7 +1080,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
          ("//.md" . markdown-mode))
   :init
   (setq markdown-command "markdown"))
-
 
 ;;----------------------------------------------------------------------------
 ;; grip-mode
@@ -1387,3 +1357,16 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (provide 'init)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(nlinum yasnippet-snippets which-key use-package undo-tree transpose-frame switch-window smex smartparens rainbow-mode rainbow-delimiters popwin poly-R pdf-tools page-break-lines osx-trash org-roam org-journal org-bullets magit lsp-ui latex-preview-pane highlight-indent-guides grip-mode goto-line-preview flycheck-stan flycheck-pos-tip fix-word exec-path-from-shell ess elpy electric-operator doom-themes doom-modeline dired-sidebar dired-ranger dired-narrow dired-k dired-hide-dotfiles dimmer diff-hl dashboard counsel-projectile company-stan company-emoji beacon auctex-latexmk all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer all-the-icons-dired)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
