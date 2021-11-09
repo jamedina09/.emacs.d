@@ -667,6 +667,7 @@
 ;; Rainbow delimiters
 ;;----------------------------------------------------------------------------
 (use-package rainbow-delimiters
+  :ensure t
   :demand
   :init
   (progn
@@ -677,6 +678,7 @@
 ;;----------------------------------------------------------------------------
 ;;Show Hex Color Codes
 (use-package rainbow-mode
+  :ensure t
   :commands rainbow-mode
   :hook (
 	 (prog-mode . rainbow-mode)))
@@ -1065,3 +1067,16 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (provide 'init)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(flycheck-stan company-stan stan-mode poly-R lsp-ui rainbow-mode yasnippet-snippets which-key use-package undo-tree transpose-frame smex smartparens rainbow-delimiters popwin pdf-tools page-break-lines osx-trash org-journal org-bullets magit highlight-indent-guides goto-line-preview flycheck-pos-tip fix-word exec-path-from-shell ess electric-operator doom-themes doom-modeline dired-subtree dired-ranger dired-narrow dired-k dired-hide-dotfiles dimmer diff-hl dashboard counsel-projectile company beacon all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer all-the-icons-dired)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
