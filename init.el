@@ -299,13 +299,6 @@
   :bind (:map dired-mode-map
               ("H" . dired-hide-dotfiles-mode)))
 
-(use-package dired-sidebar
-  :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
-  :ensure t
-  :commands
-  (dired-sidebar-toggle-sidebar)
-  )
-
 (use-package dired-k
   :ensure t
   :defer t
@@ -368,7 +361,7 @@
 
 ;; If you experience a slow down in performance when rendering multiple icons
 ;; simultaneously, you can try setting the following variable
-(setq inhibit-compacting-font-caches t)
+;; (setq inhibit-compacting-font-caches t)
 
 ;;----------------------------------------------------------------------------
 ;; Projectile
@@ -421,26 +414,6 @@
 ;;This package requires the fonts included with all-the-icons to be installed.
 ;;Run M-x all-the-icons-install-fonts to do so.
 
-;;----------------------------------------------------------------------------
-;; all the icons
-;;----------------------------------------------------------------------------
-(use-package all-the-icons-ivy
-  :ensure t
-  :init
-  (all-the-icons-ivy-setup))
-
-(use-package all-the-icons-ivy-rich
-  :ensure t
-  :init
-  (all-the-icons-ivy-rich-mode 1))
-
-(use-package all-the-icons-dired
-  :ensure t
-  :hook (dired-mode . all-the-icons-dired-mode))
-
-(use-package all-the-icons-ibuffer
-  :ensure t
-  :init (all-the-icons-ibuffer-mode 1))
 
 ;;----------------------------------------------------------------------------
 ;; Ivy, ivy rich and dependatns
@@ -492,6 +465,27 @@
 ;;C-c p p which project
 
 ;;----------------------------------------------------------------------------
+;; all the icons
+;;----------------------------------------------------------------------------
+(use-package all-the-icons-ivy
+  :ensure t
+  :init
+  (all-the-icons-ivy-setup))
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init
+  (all-the-icons-ivy-rich-mode 1))
+
+(use-package all-the-icons-dired
+  :ensure t
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(use-package all-the-icons-ibuffer
+  :ensure t
+  :init (all-the-icons-ibuffer-mode 1))
+
+;;----------------------------------------------------------------------------
 ;; Company-mode
 ;;----------------------------------------------------------------------------
 (use-package company
@@ -501,21 +495,28 @@
   :config
   ;; set default `company-backends'
   (setq company-backends
-        '((company-files          ; files & directory
+        '((company-capf ; completion-at-point-functions
            company-keywords       ; keywords
-           company-capf ; completion-at-point-functions
-           company-abbrev
-	   company-dabbrev))))
+	   company-files  ; files & directory
+	   company-yasnippet))))
 
 ;;----------------------------------------------------------------------------
 ;; yasnippet
 ;;----------------------------------------------------------------------------
-(use-package yasnippet
+(use-package yasnippet                  ; Snippets
   :ensure t
   :config
-  (use-package yasnippet-snippets
-    :ensure t)
-  (yas-global-mode 1))
+  (setq yas-verbosity 1                      ; No need to be so verbose
+   yas-wrap-around-region t)
+
+  (with-eval-after-load 'yasnippet
+    (setq yas-snippet-dirs '(yasnippet-snippets-dir)))
+
+  (yas-reload-all)
+  (yas-global-mode))
+
+(use-package yasnippet-snippets         ; Collection of snippets
+  :ensure t)
 
 ;;----------------------------------------------------------------------------
 ;; Magit
@@ -813,34 +814,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (org-mode . (lambda () (org-bullets-mode 1))))
 
 ;;----------------------------------------------------------------------------
-;; Elpy
-;;----------------------------------------------------------------------------
-(use-package elpy
-  :ensure t
-  :bind
-  (:map elpy-mode-map
-        ("C-M-n" . elpy-nav-forward-block)
-        ("C-M-p" . elpy-nav-backward-block))
-  :hook ((elpy-mode . flycheck-mode)
-         (elpy-mode . (lambda ()
-                        (set (make-local-variable 'company-backends)
-                             '((elpy-company-backend :with company-yasnippet))))))
-  :init
-  (elpy-enable)
-  :config
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  ;; fix for MacOS, see https://github.com/jorgenschaefer/elpy/issues/1550
-  (setq elpy-shell-echo-output nil)
-  (setq elpy-rpc-python-command "python3")
-  (setq elpy-rpc-timeout 2))
-
-(setq python-shell-interpreter "ipython"
-      python-shell-interpreter-args "-i --simple-prompt")
-
-(setq python-indent-guess-indent-offset t)
-(setq python-indent-guess-indent-offset-verbose nil)
-
-;;----------------------------------------------------------------------------
 ;; ESS
 ;;----------------------------------------------------------------------------
 (use-package ess
@@ -939,7 +912,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (use-package electric-operator  ;; Automatically add spaces around operators
   :ensure t
   :after ess
-  :hook ((ess-r-mode inferior-ess-r-mode python-mode) . electric-operator-mode)
+  :hook ((ess-r-mode inferior-ess-r-mode) . electric-operator-mode)
   :custom
   (electric-operator-R-named-argument-style 'spaced)
   (electric-operator-add-rules-for-mode 'ess-r-mode
@@ -960,7 +933,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;;----------------------------------------------------------------------------
 (use-package lsp-mode
   :hook (
-         ((ess-r-mode python-mode) . lsp)
+         ((ess-r-mode LaTeX-mode) . lsp)
          ;;if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
          )
@@ -971,9 +944,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	lsp-eldoc-enable-hover t
         lsp-enable-symbol-highlighting t
 	lsp-enable-snippet t
-	lsp-file-watch-threshold 2000 ;;nil to disable warning
+	lsp-file-watch-threshold nil ;; nil to disable warning
 	lsp-idle-delay 0.5
-	lsp-signature-render-documentation t;nil
+	lsp-signature-render-documentation nil
 	lsp-diagnostics-provider 'flycheck
 	lsp-prefer-flymake nil
 	lsp-signature-auto-activate t
@@ -983,7 +956,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	lsp-pyls-plugins-pylint-enabled nil
         lsp-pyls-configuration-sources ["flake8"]
 	lsp-lens-enable nil
-	lsp-response-timeout 30
+	lsp-response-timeout 20
+	lsp-headerline-breadcrumb-enable nil
 	)
   ;;to remove error ls does not support dired
   (when (string= system-type "darwin")
@@ -993,13 +967,14 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
     (setq read-process-output-max (* 1024 1024)))
   (setq lsp-log-io nil)) ; if set to true can cause a performance hit)
 
-
 (use-package lsp-ui
   :ensure t
   :init
   (setq lsp-ui-doc-enable nil
 	lsp-ui-sideline-show-code-actions nil
-	lsp-ui-sideline-enable nil))
+	lsp-ui-sideline-enable nil
+	lsp-ui-doc-show-with-cursor nil
+	lsp-ui-doc-show-with-mouse t))
 
 ;;----------------------------------------------------------------------------
 ;; Markdown-mode
@@ -1011,16 +986,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
          ("//.md" . markdown-mode))
   :init
   (setq markdown-command "markdown"))
-
-;;----------------------------------------------------------------------------
-;; grip-mode
-;;----------------------------------------------------------------------------
-;; it uses python grip package
-;; pip install grip
-(use-package grip-mode
-  :ensure t
-  :bind (:map markdown-mode-command-map
-              ("g" . grip-mode)))
 
 ;;----------------------------------------------------------------------------
 ;; Polymode - Poly R
@@ -1094,194 +1059,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   ;; If nil, defaults to `stanc3'
   (setq flycheck-stanc3-executable nil))
 
-;;----------------------------------------------------------------------------
-;; AucTeX
-;;----------------------------------------------------------------------------
-;; for lsp support you need to install a server
-;; https://github.com/latex-lsp/texlab#building-from-source
-;; 1) (in terminal) curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-;; 2) $HOME/.cargo/env
-;; 3) cargo install --git https://github.com/latex-lsp/texlab.git --locked
-;; Installed in: /Users/josemedina/.cargo/bin/texlab
-;;; LaTeX with AUCTeX
-(use-package tex-site                   ;; AUCTeX initialization
-  :ensure auctex)
-
-(use-package tex                        ;; TeX editing/processing
-  :ensure auctex
-  :defer t
-  :config
-  (setq TeX-parse-self t                ;; Parse documents to provide completion
-        ;; for packages, etc.
-        TeX-auto-save t                 ;; Automatically save style information
-        TeX-electric-sub-and-superscript t ;; Automatically insert braces after
-        ;; sub- and superscripts in math mode
-        TeX-electric-math '("\\(" "\\)")
-        ;; Don't insert magic quotes right away.
-        TeX-quote-after-quote t
-        ;; Don't ask for confirmation when cleaning
-        TeX-clean-confirm nil)
-  (setq-default TeX-master nil          ;; Ask for the master file
-                TeX-engine 'luatex      ;; Use a modern engine
-                ;; Redundant in 11.88, but keep for older AUCTeX
-                TeX-PDF-mode t)
-  ;; Move to chktex
-  (setcar (cdr (assoc "Check" TeX-command-list)) "chktex -v6 %s")
-  :custom
-  (TeX-master nil)
-  ;;to use pdfview with auctex
-  (TeX-view-program-selection '((output-pdf "pdf-tools"))
-                              TeX-source-correlate-start-server t)
-  (TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
-  (TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
-  ;; Provide forward and inverse search with SyncTeX
-  (TeX-source-correlate-method '((dvi . source-specials) (pdf . synctex)))
-  (TeX-source-correlate-mode t)
-  (add-hook 'LaTeX-mode-hook 'company-mode))
-
-;; Update PDF buffers after successful LaTeX runs
-(add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
-          #'TeX-revert-document-buffer)
-
-
-(use-package tex-buf                    ;; TeX buffer management
-  :ensure auctex
-  :defer t
-  ;; Don't ask for confirmation when saving before processing
-  :config (setq TeX-save-query nil))
-
-(use-package tex-style                  ;; TeX style
-  :ensure auctex
-  :defer t
-  :config
-  ;; Enable support for csquotes
-  (setq LaTeX-csquotes-close-quote "}"
-        LaTeX-csquotes-open-quote "\\enquote{"))
-
-(use-package tex-fold                  ;; TeX folding
-  :ensure auctex
-  :defer t
-  :init (add-hook 'TeX-mode-hook #'TeX-fold-mode))
-
-(use-package tex-mode                   ;; TeX mode
-  :ensure auctex
-  :defer t
-  :config
-  (font-lock-add-keywords 'latex-mode
-                          `((,(rx "\\"
-                                  symbol-start
-                                  "fx" (1+ (or (syntax word) (syntax symbol)))
-                                  symbol-end)
-                             . font-lock-warning-face))))
-
-(use-package latex                      ;; LaTeX editing
-  :ensure auctex
-  :defer t
-  :config
-  ;; Teach TeX folding about KOMA script sections
-  (setq TeX-outline-extra `((,(rx (0+ space) "\\section*{") 2)
-                            (,(rx (0+ space) "\\subsection*{") 3)
-                            (,(rx (0+ space) "\\subsubsection*{") 4)
-                            (,(rx (0+ space) "\\minisec{") 5))
-        ;; No language-specific hyphens please
-        LaTeX-babel-hyphen nil)
-
-  (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode) ;; Easy math input
-  (add-hook 'LaTeX-mode-hook 'company-mode))
-
-(use-package auctex-latexmk             ;; latexmk command for AUCTeX
-  :ensure t
-  :defer t
-  :after latex
-  :config (auctex-latexmk-setup))
-
-(use-package auctex-skim                ;; Skim as viewer for AUCTeX
-  :load-path "lisp/"
-  :commands (auctex-skim-select)
-  :after tex
-  :config (auctex-skim-select))
-
-(use-package bibtex                     ;; BibTeX editing
-  :defer t
-  :config
-  ;; Run prog mode hooks for bibtex
-  (add-hook 'bibtex-mode-hook (lambda () (run-hooks 'prog-mode-hook)))
-
-  ;; Use a modern BibTeX dialect
-  (bibtex-set-dialect 'biblatex))
-
-(defun lunaryorn-reftex-find-ams-environment-caption (environment)
-  "Find the caption of an AMS ENVIRONMENT."
-  (let ((re (rx-to-string `(and "\\begin{" ,environment "}"))))
-    ;; Go to the beginning of the label first
-    (re-search-backward re)
-    (goto-char (match-end 0)))
-  (if (not (looking-at (rx (zero-or-more space) "[")))
-      (error "Environment %s has no title" environment)
-    (let ((beg (match-end 0)))
-      ;; Move point onto the title start bracket and move over to the end,
-      ;; skipping any other brackets in between, and eventually extract the text
-      ;; between the brackets
-      (goto-char (1- beg))
-      (forward-list)
-      (buffer-substring-no-properties beg (1- (point))))))
-
-(use-package reftex                     ;; TeX/BibTeX cross-reference management
-  :defer t
-  :init (add-hook 'LaTeX-mode-hook #'reftex-mode)
-  :config
-  ;; Plug into AUCTeX
-  (setq reftex-plug-into-AUCTeX t
-        ;; Automatically derive labels, and prompt for confirmation
-        reftex-insert-label-flags '(t t)
-        reftex-label-alist
-        '(
-          ;; Additional label definitions for RefTeX.
-          ("definition" ?d "def:" "~\\ref{%s}"
-           lunaryorn-reftex-find-ams-environment-caption
-           ("definition" "def.") -3)
-          ("theorem" ?h "thm:" "~\\ref{%s}"
-           lunaryorn-reftex-find-ams-environment-caption
-           ("theorem" "th.") -3)
-          ("example" ?x "ex:" "~\\ref{%s}"
-           lunaryorn-reftex-find-ams-environment-caption
-           ("example" "ex") -3)
-          ;; Algorithms package
-          ("algorithm" ?a "alg:" "~\\ref{%s}"
-           "\\\\caption[[{]" ("algorithm" "alg") -3)))
-
-  ;; Provide basic RefTeX support for biblatex
-  (unless (assq 'biblatex reftex-cite-format-builtin)
-    (add-to-list 'reftex-cite-format-builtin
-                 '(biblatex "The biblatex package"
-                            ((?\C-m . "\\cite[]{%l}")
-                             (?t . "\\textcite{%l}")
-                             (?a . "\\autocite[]{%l}")
-                             (?p . "\\parencite{%l}")
-                             (?f . "\\footcite[][]{%l}")
-                             (?F . "\\fullcite[]{%l}")
-                             (?x . "[]{%l}")
-                             (?X . "{%l}"))))
-    (setq reftex-cite-format 'biblatex))
-  :diminish reftex-mode)
-
-;;; Markup languages
-(use-package rst ;; ReStructuredText
-  :defer t
-  :config
-  ;; Indent with 3 spaces after all kinds of literal blocks
-  (setq rst-indent-literal-minimized 3
-        rst-indent-literal-normal 3)
-
-  (bind-key "C-=" nil rst-mode-map)
-  ;; For similarity with AUCTeX
-  (bind-key "C-c C-j" #'rst-insert-list rst-mode-map)
-  ;; …and with Markdown Mode
-  (bind-key "M-RET" #'rst-insert-list rst-mode-map))
-
-(use-package latex-preview-pane
-  :defer t
-  :ensure t)
 
 ;;----------------------------------------------------------------------------
 ;;----------------------------------------------------------------------------
