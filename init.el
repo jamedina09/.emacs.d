@@ -487,25 +487,38 @@
 (use-package company
   :ensure t
   :init
-  (global-company-mode)
+  (global-company-mode 1)
   :config
   ;; set default `company-backends'
   (setq company-backends
         '((company-capf ; completion-at-point-functions
            company-keywords       ; keywords
 	   company-files  ; files & directory
-	   company-yasnippet)))
+	   company-yasnippet
+	   company-bibtex
+           company-reftex-labels
+           company-reftex-citations
+           company-latex-commands)))
   (setq company-idle-delay 1))
 
 ;;----------------------------------------------------------------------------
 ;; yasnippet
 ;;----------------------------------------------------------------------------
-(use-package yasnippet
+(use-package yasnippet                  ; Snippets
   :ensure t
   :config
-  (use-package yasnippet-snippets
-    :ensure t)
-  (yas-global-mode 1))
+  (setq yas-verbosity 1                      ; No need to be so verbose
+   yas-wrap-around-region t)
+
+  (with-eval-after-load 'yasnippet
+    (setq yas-snippet-dirs '(yasnippet-snippets-dir)))
+
+  (yas-reload-all)
+  (yas-global-mode))
+
+(use-package yasnippet-snippets         ; Collection of snippets
+  :ensure t)
+
 
 ;;----------------------------------------------------------------------------
 ;; Magit
@@ -922,7 +935,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;;----------------------------------------------------------------------------
 (use-package lsp-mode
   :hook (
-         ((ess-r-mode) . lsp)
+         ((ess-r-mode LaTeX-mode) . lsp)
          ;;if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
          )
@@ -1053,10 +1066,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; AucTeX
 ;;----------------------------------------------------------------------------
 ;; for lsp support you need to install a server
-;; https://github.com/latex-lsp/texlab#building-from-source
+;; https://github.com/latex-lsp/texlab
 ;; 1) (in terminal) curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-;; 2) $HOME/.cargo/env
-;; 3) cargo install --git https://github.com/latex-lsp/texlab.git --locked
+;; 2) cargo install --git https://github.com/latex-lsp/texlab.git --locked
 ;; Installed in: /Users/josemedina/.cargo/bin/texlab
 ;;; LaTeX with AUCTeX
 (use-package tex-site                   ;; AUCTeX initialization
@@ -1098,26 +1110,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (add-hook 'TeX-after-TeX-LaTeX-command-finished-hook
           #'TeX-revert-document-buffer)
 
-
-(use-package tex-buf                    ;; TeX buffer management
-  :ensure auctex
-  :defer t
-  ;; Don't ask for confirmation when saving before processing
-  :config (setq TeX-save-query nil))
-
-(use-package tex-style                  ;; TeX style
-  :ensure auctex
-  :defer t
-  :config
-  ;; Enable support for csquotes
-  (setq LaTeX-csquotes-close-quote "}"
-        LaTeX-csquotes-open-quote "\\enquote{"))
-
-(use-package tex-fold                  ;; TeX folding
-  :ensure auctex
-  :defer t
-  :init (add-hook 'TeX-mode-hook #'TeX-fold-mode))
-
 (use-package tex-mode                   ;; TeX mode
   :ensure auctex
   :defer t
@@ -1141,8 +1133,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         ;; No language-specific hyphens please
         LaTeX-babel-hyphen nil)
 
-  (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode) ;; Easy math input
-  (add-hook 'LaTeX-mode-hook 'company-mode))
+  (add-hook 'LaTeX-mode-hook #'LaTeX-math-mode))
 
 (use-package auctex-latexmk             ;; latexmk command for AUCTeX
   :ensure t
@@ -1234,8 +1225,14 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   ;; …and with Markdown Mode
   (bind-key "M-RET" #'rst-insert-list rst-mode-map))
 
-(use-package latex-preview-pane
-  :defer t
+
+(use-package company-auctex
+  :ensure t)
+
+(use-package company-reftex
+  :ensure t)
+
+(use-package company-bibtex
   :ensure t)
 
 ;;----------------------------------------------------------------------------
