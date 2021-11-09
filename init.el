@@ -319,6 +319,7 @@
 ;; switch-window
 ;;----------------------------------------------------------------------------
 (use-package switch-window
+  :ensure t
   :bind (("C-x o" . switch-window)
          ("C-x w" . switch-window-then-swap-buffer)))
 
@@ -934,6 +935,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; lsp-mode
 ;;----------------------------------------------------------------------------
 (use-package lsp-mode
+  :ensure t
   :hook (
          ((ess-r-mode LaTeX-mode) . lsp)
          ;;if you want which-key integration
