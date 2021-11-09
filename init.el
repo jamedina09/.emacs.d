@@ -11,6 +11,8 @@
 ;; I also used code from: https://github.com/MatthewZMD/.emacs.d#org9bf5ed1
 ;;; Code:
 
+(setq gc-cons-threshold 100000000)
+
 (require 'package)
 (package-initialize)
 
@@ -59,10 +61,16 @@
 ;;----------------------------------------------------------------------------
 ;; Interface and General Tweaks
 ;;----------------------------------------------------------------------------
-					; Define the home directory
+;; Define the home directory
 (cd (getenv "HOME"))
 (message "Current dir: %s" (pwd))
 (message "Current buffer: %s" (buffer-name))
+
+;; DisableUnnecessaryInterface
+(menu-bar-mode -1)
+;; Remove tool bar an scroll bar
+(tool-bar-mode -1)
+(set-scroll-bar-mode nil)
 
 ;; Coding systems
 (set-selection-coding-system 'utf-8)
@@ -270,13 +278,6 @@
                   (local-set-key (kbd "^")
                                  (lambda () (interactive) (find-alternate-file ".."))))))
 
-;;narrow dired to match filter
-(use-package dired-narrow
-  :ensure t
-  :after dired
-  :bind (:map dired-mode-map
-              ("/" . dired-narrow)))
-
 ;; make small subtrees within the same buffer
 (use-package dired-subtree
   :ensure t
@@ -284,14 +285,6 @@
   (bind-keys :map dired-mode-map
              ("i" . dired-subtree-insert)
              (";" . dired-subtree-remove)))
-
-;; copy paste easy in dired :)
-(use-package dired-ranger
-  :ensure t
-  :bind (:map dired-mode-map
-              ("W" . dired-ranger-copy)
-              ("X" . dired-ranger-move)
-              ("Y" . dired-ranger-paste)))
 
 (use-package dired-hide-dotfiles
   :ensure t
@@ -492,31 +485,33 @@
 (use-package company
   :ensure t
   :init
-  (global-company-mode)
-  :config
-  ;; set default `company-backends'
-  (setq company-backends
-        '((company-capf ; completion-at-point-functions
-           company-keywords       ; keywords
-	   company-files  ; files & directory
-	   company-yasnippet))))
+  (global-company-mode))
+
+;(use-package company
+;  :ensure t
+;  :init
+;  (global-company-mode)
+;  :config
+;  ;; set default `company-backends'
+;  (setq company-backends
+;        '((company-capf ; completion-at-point-functions
+;           company-keywords       ; keywords
+;	   company-files  ; files & directory))))
 
 ;;----------------------------------------------------------------------------
 ;; yasnippet
 ;;----------------------------------------------------------------------------
-(use-package yasnippet                  ; Snippets
+(use-package yasnippet                  ;; Snippets
   :ensure t
   :config
-  (setq yas-verbosity 1                      ; No need to be so verbose
-   yas-wrap-around-region t)
-
+  (setq yas-verbosity 1                      ;; No need to be so verbose
+	yas-wrap-around-region t)
   (with-eval-after-load 'yasnippet
     (setq yas-snippet-dirs '(yasnippet-snippets-dir)))
-
   (yas-reload-all)
   (yas-global-mode))
 
-(use-package yasnippet-snippets         ; Collection of snippets
+(use-package yasnippet-snippets         ;; Collection of snippets
   :ensure t)
 
 ;;----------------------------------------------------------------------------
@@ -580,14 +575,6 @@
 ;; the default value was '(save idle-change new-line mode-enabled)
 ;; This way, syntax checking will occur only when you save your file or change
 ;; the major mode.
-
-(use-package flycheck-pos-tip
-  :ensure t
-  :defer t
-  :if (display-graphic-p)
-  :after flycheck
-  :commands flycheck-pos-tip-mode
-  :hook (flycheck-mode . flycheck-pos-tip-mode))
 
 ;;----------------------------------------------------------------------------
 ;; Fix word - upcase - downcase region
@@ -902,7 +889,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	  (ess-fl-keyword:= . t)
 	  (ess-R-fl-keyword:F&T . t))))
   (unless (getenv "LC_ALL") (setenv "LC_ALL" "en_US.UTF-8"))
-					; code below to make it more like R-studio
+  ;; code below to make it more like R-studio
   (eval-after-load "ess-r-mode"
     '(progn
        (define-key ess-r-mode-map [(control return)] nil)
@@ -910,17 +897,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	 'ess-eval-region-or-line-visibly-and-step))))
 ;; ESS
 ;;(kill-buffer "*ESS*")
-
-;; https://github.com/davidshepherd7/electric-operator
-(use-package electric-operator  ;; Automatically add spaces around operators
-  :ensure t
-  :after ess
-  :hook ((ess-r-mode inferior-ess-r-mode) . electric-operator-mode)
-  :custom
-  (electric-operator-R-named-argument-style 'spaced)
-  (electric-operator-add-rules-for-mode 'ess-r-mode
-					(cons "*" nil)
-					(cons "in" nil)))
 
 (defun then_R_operator ()
   "R - %>% operator or 'then' pipe operator"
@@ -930,6 +906,17 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (reindent-then-newline-and-indent))
 (define-key ess-mode-map (kbd "C->") 'then_R_operator)
 (define-key inferior-ess-mode-map (kbd "C->") 'then_R_operator)
+
+;; https://github.com/davidshepherd7/electric-operator
+;(use-package electric-operator  ;; Automatically add spaces around operators
+;  :ensure t
+;  :after ess
+;  :hook ((ess-r-mode inferior-ess-r-mode) . electric-operator-mode)
+;  :custom
+;  (electric-operator-R-named-argument-style 'spaced)
+;  (electric-operator-add-rules-for-mode 'ess-r-mode
+;					(cons "*" nil)
+;					(cons "in" nil)))
 
 ;;----------------------------------------------------------------------------
 ;; lsp-mode
@@ -948,7 +935,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	lsp-eldoc-enable-hover t
         lsp-enable-symbol-highlighting t
 	lsp-enable-snippet t
-	lsp-file-watch-threshold nil ;; nil to disable warning
+	lsp-file-watch-threshold nil
 	lsp-idle-delay 0.5
 	lsp-signature-render-documentation nil
 	lsp-diagnostics-provider 'flycheck
@@ -956,9 +943,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	lsp-signature-auto-activate t
 	lsp-completion-show-detail t
 	lsp-completion-show-kind nil
-	lsp-modeline-code-actions-enable t
-	lsp-pyls-plugins-pylint-enabled nil
-        lsp-pyls-configuration-sources ["flake8"]
+	lsp-modeline-code-actions-enable nil
 	lsp-lens-enable nil
 	lsp-response-timeout 20
 	lsp-headerline-breadcrumb-enable nil
@@ -978,7 +963,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	lsp-ui-sideline-show-code-actions nil
 	lsp-ui-sideline-enable nil
 	lsp-ui-doc-show-with-cursor nil
-	lsp-ui-doc-show-with-mouse t))
+	lsp-ui-doc-show-with-mouse nil))
 
 ;;----------------------------------------------------------------------------
 ;; Markdown-mode
