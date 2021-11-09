@@ -59,7 +59,7 @@
 ;;----------------------------------------------------------------------------
 ;; Interface and General Tweaks
 ;;----------------------------------------------------------------------------
-					; Define the home directory
+;; Define the home directory
 (cd (getenv "HOME"))
 (message "Current dir: %s" (pwd))
 (message "Current buffer: %s" (buffer-name))
@@ -116,7 +116,6 @@
 (setq column-number-mode t)
 (setq line-number-mode t)
 (global-linum-mode t)
-
 (setq linum-format "%d ")
 
 ;; highlight current line
@@ -299,13 +298,6 @@
   :bind (:map dired-mode-map
               ("H" . dired-hide-dotfiles-mode)))
 
-(use-package dired-sidebar
-  :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
-  :ensure t
-  :commands
-  (dired-sidebar-toggle-sidebar)
-  )
-
 (use-package dired-k
   :ensure t
   :defer t
@@ -368,7 +360,7 @@
 
 ;; If you experience a slow down in performance when rendering multiple icons
 ;; simultaneously, you can try setting the following variable
-(setq inhibit-compacting-font-caches t)
+;; (setq inhibit-compacting-font-caches t)
 
 ;;----------------------------------------------------------------------------
 ;; Projectile
@@ -422,27 +414,6 @@
 ;;Run M-x all-the-icons-install-fonts to do so.
 
 ;;----------------------------------------------------------------------------
-;; all the icons
-;;----------------------------------------------------------------------------
-(use-package all-the-icons-ivy
-  :ensure t
-  :init
-  (all-the-icons-ivy-setup))
-
-(use-package all-the-icons-ivy-rich
-  :ensure t
-  :init
-  (all-the-icons-ivy-rich-mode 1))
-
-(use-package all-the-icons-dired
-  :ensure t
-  :hook (dired-mode . all-the-icons-dired-mode))
-
-(use-package all-the-icons-ibuffer
-  :ensure t
-  :init (all-the-icons-ibuffer-mode 1))
-
-;;----------------------------------------------------------------------------
 ;; Ivy, ivy rich and dependatns
 ;;----------------------------------------------------------------------------
 (use-package counsel
@@ -492,6 +463,25 @@
 ;;C-c p p which project
 
 ;;----------------------------------------------------------------------------
+;; all the icons
+;;----------------------------------------------------------------------------
+(use-package all-the-icons-ivy
+  :ensure t
+  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package all-the-icons-dired
+  :ensure t
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(use-package all-the-icons-ibuffer
+  :ensure t
+  :init (all-the-icons-ibuffer-mode 1))
+
+;;----------------------------------------------------------------------------
 ;; Company-mode
 ;;----------------------------------------------------------------------------
 (use-package company
@@ -501,11 +491,11 @@
   :config
   ;; set default `company-backends'
   (setq company-backends
-        '((company-files          ; files & directory
+        '((company-capf ; completion-at-point-functions
            company-keywords       ; keywords
-           company-capf ; completion-at-point-functions
-           company-abbrev
-	   company-dabbrev))))
+	   company-files  ; files & directory
+	   company-yasnippet)))
+  (setq company-idle-delay 1))
 
 ;;----------------------------------------------------------------------------
 ;; yasnippet
@@ -651,7 +641,7 @@
 ;; Open with C-x u
 
 ;;----------------------------------------------------------------------------
-;; Which key  - Do not use with Ivi because it blocks its use
+;; Which key
 ;;----------------------------------------------------------------------------
 (use-package which-key
   :ensure t
@@ -813,34 +803,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (org-mode . (lambda () (org-bullets-mode 1))))
 
 ;;----------------------------------------------------------------------------
-;; Elpy
-;;----------------------------------------------------------------------------
-(use-package elpy
-  :ensure t
-  :bind
-  (:map elpy-mode-map
-        ("C-M-n" . elpy-nav-forward-block)
-        ("C-M-p" . elpy-nav-backward-block))
-  :hook ((elpy-mode . flycheck-mode)
-         (elpy-mode . (lambda ()
-                        (set (make-local-variable 'company-backends)
-                             '((elpy-company-backend :with company-yasnippet))))))
-  :init
-  (elpy-enable)
-  :config
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  ;; fix for MacOS, see https://github.com/jorgenschaefer/elpy/issues/1550
-  (setq elpy-shell-echo-output nil)
-  (setq elpy-rpc-python-command "python3")
-  (setq elpy-rpc-timeout 2))
-
-(setq python-shell-interpreter "ipython"
-      python-shell-interpreter-args "-i --simple-prompt")
-
-(setq python-indent-guess-indent-offset t)
-(setq python-indent-guess-indent-offset-verbose nil)
-
-;;----------------------------------------------------------------------------
 ;; ESS
 ;;----------------------------------------------------------------------------
 (use-package ess
@@ -939,7 +901,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (use-package electric-operator  ;; Automatically add spaces around operators
   :ensure t
   :after ess
-  :hook ((ess-r-mode inferior-ess-r-mode python-mode) . electric-operator-mode)
+  :hook ((ess-r-mode inferior-ess-r-mode) . electric-operator-mode)
   :custom
   (electric-operator-R-named-argument-style 'spaced)
   (electric-operator-add-rules-for-mode 'ess-r-mode
@@ -960,7 +922,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;;----------------------------------------------------------------------------
 (use-package lsp-mode
   :hook (
-         ((ess-r-mode python-mode) . lsp)
+         ((ess-r-mode) . lsp)
          ;;if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
          )
@@ -971,9 +933,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	lsp-eldoc-enable-hover t
         lsp-enable-symbol-highlighting t
 	lsp-enable-snippet t
-	lsp-file-watch-threshold 2000 ;;nil to disable warning
+	lsp-file-watch-threshold nil ;; nil to disable warning
 	lsp-idle-delay 0.5
-	lsp-signature-render-documentation t;nil
+	lsp-signature-render-documentation nil
 	lsp-diagnostics-provider 'flycheck
 	lsp-prefer-flymake nil
 	lsp-signature-auto-activate t
@@ -983,7 +945,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 	lsp-pyls-plugins-pylint-enabled nil
         lsp-pyls-configuration-sources ["flake8"]
 	lsp-lens-enable nil
-	lsp-response-timeout 30
+	lsp-response-timeout 20
+	lsp-headerline-breadcrumb-enable nil
 	)
   ;;to remove error ls does not support dired
   (when (string= system-type "darwin")
@@ -999,7 +962,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :init
   (setq lsp-ui-doc-enable nil
 	lsp-ui-sideline-show-code-actions nil
-	lsp-ui-sideline-enable nil))
+	lsp-ui-sideline-enable nil
+	lsp-ui-doc-show-with-cursor nil
+	lsp-ui-doc-show-with-mouse t))
 
 ;;----------------------------------------------------------------------------
 ;; Markdown-mode
@@ -1011,16 +976,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
          ("//.md" . markdown-mode))
   :init
   (setq markdown-command "markdown"))
-
-;;----------------------------------------------------------------------------
-;; grip-mode
-;;----------------------------------------------------------------------------
-;; it uses python grip package
-;; pip install grip
-(use-package grip-mode
-  :ensure t
-  :bind (:map markdown-mode-command-map
-              ("g" . grip-mode)))
 
 ;;----------------------------------------------------------------------------
 ;; Polymode - Poly R
