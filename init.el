@@ -487,17 +487,6 @@
   :init
   (global-company-mode))
 
-;(use-package company
-;  :ensure t
-;  :init
-;  (global-company-mode)
-;  :config
-;  ;; set default `company-backends'
-;  (setq company-backends
-;        '((company-capf ; completion-at-point-functions
-;           company-keywords       ; keywords
-;	   company-files  ; files & directory))))
-
 ;;----------------------------------------------------------------------------
 ;; yasnippet
 ;;----------------------------------------------------------------------------
