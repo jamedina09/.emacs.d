@@ -100,7 +100,7 @@
 (setq locale-coding-system 'utf-8)
 
 ;; Set initial window size
-(add-to-list 'default-frame-alist '(height . 90))
+(add-to-list 'default-frame-alist '(height . 50))
 (add-to-list 'default-frame-alist '(width . 90))
 
 ;; Use 'y' or 'n' instead of 'yes' or 'no'
