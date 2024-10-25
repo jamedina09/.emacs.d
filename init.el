@@ -82,9 +82,12 @@
 ;; Interface and General Tweaks
 ;;----------------------------------------------------------------------------
 
-;; Background transparency
-(set-frame-parameter nil 'alpha-background 100) ; For current frame
-(add-to-list 'default-frame-alist '(alpha-background . 100)) ; For all new frames henceforth
+;; transparency
+(defun on-after-init ()
+  (unless (display-graphic-p (selected-frame))
+    (set-face-background 'default "unspecified-bg" (selected-frame))))
+
+(add-hook 'window-setup-hook 'on-after-init)
 
 ;; Define the home directory
 (cd (getenv "HOME"))
