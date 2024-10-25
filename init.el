@@ -74,7 +74,7 @@
 (setq-default message-log-max nil)
 
 ;; Optionally kill *Messages* buffer
-;; (kill-buffer "*Messages*")
+(kill-buffer "*Messages*")
 
 ;;----------------------------------------------------------------------------
 ;; Interface and General Tweaks
@@ -259,39 +259,39 @@
               (name 20 -1)
               " " filename)))
 
-;;----------------------------------------------------------------------------
-;; Dashboard
-;;----------------------------------------------------------------------------
-(use-package dashboard
-  :ensure t
-  :init
-  (dashboard-setup-startup-hook)
-  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-  ;; Set the title
-  (setq dashboard-banner-logo-title "")
-  ;; Set the banner
-  (setq dashboard-startup-banner 'official)
-  ;; Value can be
-  ;; 'official which displays the official emacs logo
-  ;; 'logo which displays an alternative emacs logo
-  ;; 1, 2 or 3 which displays one of the text banners
-  ;; "path/to/your/image.png" which displays whatever image you would prefer;
-  ;; Content is not centered by default. To center, set
-  (setq dashboard-center-content t)
-  ;; To disable shortcut "jump" indicators for each section, set
-  ;;(setq dashboard-show-shortcuts nil)
-(setq dashboard-items '((recents . 10)
-                        (projects . 5)
-                        (bookmarks . 5)
-                        (agenda . 5)))
-  ;; To add icons to the widget headings and their items:
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons t)
-  ;; A randomly selected footnote will be displayed. To disable it:
-  (setq dashboard-set-footer nil)
-  ;; horizontal lines
-  (setq dashboard-page-separator "\n\f\n")
-  )
+;;;;----------------------------------------------------------------------------
+;;;; Dashboard
+;;;;----------------------------------------------------------------------------
+;;(use-package dashboard
+;;  :ensure t
+;;  :init
+;;  (dashboard-setup-startup-hook)
+;;  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+;;  ;; Set the title
+;;  (setq dashboard-banner-logo-title "")
+;;  ;; Set the banner
+;;  (setq dashboard-startup-banner 'official)
+;;  ;; Value can be
+;;  ;; 'official which displays the official emacs logo
+;;  ;; 'logo which displays an alternative emacs logo
+;;  ;; 1, 2 or 3 which displays one of the text banners
+;;  ;; "path/to/your/image.png" which displays whatever image you would prefer;
+;;  ;; Content is not centered by default. To center, set
+;;  (setq dashboard-center-content t)
+;;  ;; To disable shortcut "jump" indicators for each section, set
+;;  ;;(setq dashboard-show-shortcuts nil)
+;;(setq dashboard-items '((recents . 10)
+;;                        (projects . 5)
+;;                        (bookmarks . 5)
+;;                        (agenda . 5)))
+;;  ;; To add icons to the widget headings and their items:
+;;  (setq dashboard-set-heading-icons t)
+;;  (setq dashboard-set-file-icons t)
+;;  ;; A randomly selected footnote will be displayed. To disable it:
+;;  (setq dashboard-set-footer nil)
+;;  ;; horizontal lines
+;;  (setq dashboard-page-separator "\n\f\n")
+;;  )
 
 ;;----------------------------------------------------------------------------
 ;; Page break lines
@@ -568,91 +568,91 @@
 ;; M-x all-the-icons-install-fonts
 
 
-;;----------------------------------------------------------------------------
-;; Company-mode
-;;----------------------------------------------------------------------------
-;; Install and configure company-mode
-(use-package company
-  :ensure t
-  :init
-  (global-company-mode)  ; Enable company-mode globally
-  :custom
-  ;; Set the minimum prefix length to trigger suggestions
-  (company-minimum-prefix-length 2)
-  ;; Number of candidates to display at once
-  (company-tooltip-limit 20)
-  ;; Delay before suggestions pop up
-  (company-idle-delay 0.2)
-  ;; Delay after typing before suggestions are shown
-  (company-tooltip-idle-delay 0.2)
-  ;; Set the company backends for completion
-  (company-backends '((company-files
-                       company-keywords
-                       company-capf
-                       company-dabbrev-code
-                       company-dabbrev)))
-  :bind
-  ;; Key bindings for company-mode
-  (:map company-active-map
-        ("<tab>" . company-complete)
-        ("<backtab>" . company-select-previous))
-  :config
-  ;; Customize appearance
-  (setq company-tooltip-align-annotations t
-        company-tooltip-flip-when-above t))
+;;;;----------------------------------------------------------------------------
+;;;; Company-mode
+;;;;----------------------------------------------------------------------------
+;;;; Install and configure company-mode
+;;(use-package company
+;;  :ensure t
+;;  :init
+;;  (global-company-mode)  ; Enable company-mode globally
+;;  :custom
+;;  ;; Set the minimum prefix length to trigger suggestions
+;;  (company-minimum-prefix-length 2)
+;;  ;; Number of candidates to display at once
+;;  (company-tooltip-limit 20)
+;;  ;; Delay before suggestions pop up
+;;  (company-idle-delay 0.2)
+;;  ;; Delay after typing before suggestions are shown
+;;  (company-tooltip-idle-delay 0.2)
+;;  ;; Set the company backends for completion
+;;  (company-backends '((company-files
+;;                       company-keywords
+;;                       company-capf
+;;                       company-dabbrev-code
+;;                       company-dabbrev)))
+;;  :bind
+;;  ;; Key bindings for company-mode
+;;  (:map company-active-map
+;;        ("<tab>" . company-complete)
+;;        ("<backtab>" . company-select-previous))
+;;  :config
+;;  ;; Customize appearance
+;;  (setq company-tooltip-align-annotations t
+;;        company-tooltip-flip-when-above t))
 
-;;----------------------------------------------------------------------------
-;; yasnippet
-;;----------------------------------------------------------------------------
-(use-package yasnippet
-  :ensure t
-  :config
-  (setq yas-verbosity 1                      ;; Reduce verbosity
-        yas-wrap-around-region t)            ;; Enable wrapping around region
-  (with-eval-after-load 'yasnippet
-    (setq yas-snippet-dirs '(yasnippet-snippets-dir)))  ;; Set snippet directories
-  (yas-reload-all)                           ;; Reload all snippets
-  (yas-global-mode))                        ;; Enable yasnippet globally
+;;;;----------------------------------------------------------------------------
+;;;; yasnippet
+;;;;----------------------------------------------------------------------------
+;;(use-package yasnippet
+;;  :ensure t
+;;  :config
+;;  (setq yas-verbosity 1                      ;; Reduce verbosity
+;;        yas-wrap-around-region t)            ;; Enable wrapping around region
+;;  (with-eval-after-load 'yasnippet
+;;    (setq yas-snippet-dirs '(yasnippet-snippets-dir)))  ;; Set snippet directories
+;;  (yas-reload-all)                           ;; Reload all snippets
+;;  (yas-global-mode))                        ;; Enable yasnippet globally
+;;
+;;(use-package yasnippet-snippets
+;;  :ensure t)
+;;
+;;;; Custom Snippet Directory:
+;;;; (add-to-list 'yas-snippet-dirs "/Users/MedinaJA/.emacs.d/snippets")
+;;
+;;;; (add-hook 'python-mode-hook #'yas-minor-mode)
+;;
+;;(with-eval-after-load 'yasnippet
+;;  (define-key yas-minor-mode-map (kbd "TAB") #'yas-expand))
 
-(use-package yasnippet-snippets
-  :ensure t)
-
-;; Custom Snippet Directory:
-;; (add-to-list 'yas-snippet-dirs "/Users/MedinaJA/.emacs.d/snippets")
-
-;; (add-hook 'python-mode-hook #'yas-minor-mode)
-
-(with-eval-after-load 'yasnippet
-  (define-key yas-minor-mode-map (kbd "TAB") #'yas-expand))
-
-;;----------------------------------------------------------------------------
-;; Magit
-;;----------------------------------------------------------------------------
-;; Magit Setup
-(use-package magit
-  :ensure t
-  :bind (("C-x g" . magit-status)
-         ("C-c C-g l" . magit-file-log)
-         ("C-c C-g s" . magit-status)
-         ("C-c C-g c" . magit-commit)
-         ("C-c C-g p" . magit-push)
-         ("C-c C-g f" . magit-fetch))
-  :config
-  (setq magit-diff-refine-hunk 'all)   ;; Highlight all changes in a hunk
-  (setq magit-commit-arguments '("--no-edit"))  ;; Default commit arguments
-  ;; Bind `magit-dispatch` to `C-x M-g` for additional command access
-  (bind-key "C-x M-g" 'magit-dispatch magit-mode-map))
-
-;; Optional Extensions
-(use-package forge
-  :ensure t
-  :after magit)
-
-(use-package magit-delta
-  :ensure t
-  :after magit
-  :config
-  (magit-delta-mode))
+;;;;----------------------------------------------------------------------------
+;;;; Magit
+;;;;----------------------------------------------------------------------------
+;;;; Magit Setup
+;;(use-package magit
+;;  :ensure t
+;;  :bind (("C-x g" . magit-status)
+;;         ("C-c C-g l" . magit-file-log)
+;;         ("C-c C-g s" . magit-status)
+;;         ("C-c C-g c" . magit-commit)
+;;         ("C-c C-g p" . magit-push)
+;;         ("C-c C-g f" . magit-fetch))
+;;  :config
+;;  (setq magit-diff-refine-hunk 'all)   ;; Highlight all changes in a hunk
+;;  (setq magit-commit-arguments '("--no-edit"))  ;; Default commit arguments
+;;  ;; Bind `magit-dispatch` to `C-x M-g` for additional command access
+;;  (bind-key "C-x M-g" 'magit-dispatch magit-mode-map))
+;;
+;;;; Optional Extensions
+;;(use-package forge
+;;  :ensure t
+;;  :after magit)
+;;
+;;(use-package magit-delta
+;;  :ensure t
+;;  :after magit
+;;  :config
+;;  (magit-delta-mode))
 
 ;;----------------------------------------------------------------------------
 ;; diff-hl
@@ -705,31 +705,31 @@
     ;; Activate popwin
     (popwin-mode 1)))
 
-;;----------------------------------------------------------------------------
-;; flycheck
-;;----------------------------------------------------------------------------
-(use-package flycheck
-  :ensure t
-  :defer t
-  :hook ((prog-mode . flycheck-mode) ;; Enable Flycheck for all programming modes
-         (ess-r-mode . flycheck-mode)) ;; Specifically for ESS R mode
-  :custom
-  (flycheck-check-syntax-automatically '(save mode-enable)) ;; Check on save and mode enable
-  (flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)) ;; Customize error display
-
-;; Optionally add Flycheck Popup Tip for improved error display
-(use-package flycheck-popup-tip
-  :ensure t
-  :after flycheck
-  :config
-  (flycheck-popup-tip-mode))
-
-;; Optionally integrate with lsp-mode
-(use-package lsp-mode
-  :ensure t
-  :hook ((lsp-mode . flycheck-mode))
-  :config
-  (setq lsp-enable-symbol-highlighting nil))
+;;;;----------------------------------------------------------------------------
+;;;; flycheck
+;;;;----------------------------------------------------------------------------
+;;(use-package flycheck
+;;  :ensure t
+;;  :defer t
+;;  :hook ((prog-mode . flycheck-mode) ;; Enable Flycheck for all programming modes
+;;         (ess-r-mode . flycheck-mode)) ;; Specifically for ESS R mode
+;;  :custom
+;;  (flycheck-check-syntax-automatically '(save mode-enable)) ;; Check on save and mode enable
+;;  (flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)) ;; Customize error display
+;;
+;;;; Optionally add Flycheck Popup Tip for improved error display
+;;(use-package flycheck-popup-tip
+;;  :ensure t
+;;  :after flycheck
+;;  :config
+;;  (flycheck-popup-tip-mode))
+;;
+;;;; Optionally integrate with lsp-mode
+;;(use-package lsp-mode
+;;  :ensure t
+;;  :hook ((lsp-mode . flycheck-mode))
+;;  :config
+;;  (setq lsp-enable-symbol-highlighting nil))
 
 ;;----------------------------------------------------------------------------
 ;; Fix word - upcase - downcase region
@@ -740,44 +740,44 @@
          ("M-l" . fix-word-downcase)   ;; Lowercase the word or region
          ("M-c" . fix-word-capitalize))) ;; Capitalize the word or region
 
-;;----------------------------------------------------------------------------
-;; Dictionary Setup
-;;----------------------------------------------------------------------------
-
-;; brew install hunspell
-
-;; check dictionaries here:
-;; https://extensions.libreoffice.org/en/extensions/show/english-dictionaries
-
-;; cd ~/Library/Spelling
-;; make the directory if not available
-;; wget https://extensions.libreoffice.org/assets/downloads/41/1722502287/dict-en-20240801_lo.oxt
-;; unzip dict-en-20240801_lo.oxt
-
-(setenv "LANG" "en_US")  ;; Adjust as needed
-;; path below is after you installed hunspell
-(setq-default ispell-program-name "/usr/local/bin/hunspell")
-
-(with-eval-after-load "ispell"
-  (setq ispell-really-hunspell t)
-  (setq ispell-program-name "hunspell")
-  (setq ispell-dictionary "en_US")
-  (ispell-set-spellchecker-params)
-  (ispell-hunspell-add-multi-dic "en_US"))
-
-;; Spell checking should now work with M-x ispell
-
-;; Enable flyspell in more modes if needed
-(dolist (hook '(text-mode-hook
-                org-mode-hook
-                prog-mode-hook))  ;; Add other hooks as needed
-  (add-hook hook 'flyspell-mode))
-
-;; Customize flyspell mouse bindings
-(eval-after-load "flyspell"
-  '(progn
-     (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
-     (define-key flyspell-mouse-map [mouse-3] #'undefined)))
+;;;;----------------------------------------------------------------------------
+;;;; Dictionary Setup
+;;;;----------------------------------------------------------------------------
+;;
+;;;; brew install hunspell
+;;
+;;;; check dictionaries here:
+;;;; https://extensions.libreoffice.org/en/extensions/show/english-dictionaries
+;;
+;;;; cd ~/Library/Spelling
+;;;; make the directory if not available
+;;;; wget https://extensions.libreoffice.org/assets/downloads/41/1722502287/dict-en-20240801_lo.oxt
+;;;; unzip dict-en-20240801_lo.oxt
+;;
+;;(setenv "LANG" "en_US")  ;; Adjust as needed
+;;;; path below is after you installed hunspell
+;;(setq-default ispell-program-name "/usr/local/bin/hunspell")
+;;
+;;(with-eval-after-load "ispell"
+;;  (setq ispell-really-hunspell t)
+;;  (setq ispell-program-name "hunspell")
+;;  (setq ispell-dictionary "en_US")
+;;  (ispell-set-spellchecker-params)
+;;  (ispell-hunspell-add-multi-dic "en_US"))
+;;
+;;;; Spell checking should now work with M-x ispell
+;;
+;;;; Enable flyspell in more modes if needed
+;;(dolist (hook '(text-mode-hook
+;;                org-mode-hook
+;;                prog-mode-hook))  ;; Add other hooks as needed
+;;  (add-hook hook 'flyspell-mode))
+;;
+;;;; Customize flyspell mouse bindings
+;;(eval-after-load "flyspell"
+;;  '(progn
+;;     (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+;;     (define-key flyspell-mouse-map [mouse-3] #'undefined)))
 
 ;;----------------------------------------------------------------------------
 ;; Undo-tree
@@ -888,415 +888,415 @@
 ;; Optionally, toggle beacon mode with a keybinding
 (global-set-key (kbd "C-c b") #'beacon-mode)
 
-;;----------------------------------------------------------------------------
-;; Org-mode
-;;----------------------------------------------------------------------------
-;; Define keybinding for org-agenda
-(define-key global-map "\C-ca" 'org-agenda)
+;;;;----------------------------------------------------------------------------
+;;;; Org-mode
+;;;;----------------------------------------------------------------------------
+;;;; Define keybinding for org-agenda
+;;(define-key global-map "\C-ca" 'org-agenda)
+;;
+;;;; Define agenda files
+;;(setq org-agenda-files (directory-files-recursively "~/GDrive_Personal/org/" "\\.org$"))
+;;
+;;;; Automatically add time when a TODO is done
+;;(setq org-log-done 'time)
+;;
+;;;; Define TODO states
+;;(setq org-todo-keywords
+;;      '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELLED")))
+;;
+;;;; Function to skip subtrees with specific priority
+;;(defun air-org-skip-subtree-if-priority (priority)
+;;  "Skip an agenda subtree if it has a priority of PRIORITY.
+;;
+;;PRIORITY may be one of the characters ?A, ?B, or ?C."
+;;  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+;;        (pri-value (* 1000 (- org-lowest-priority priority)))
+;;        (pri-current (org-get-priority (thing-at-point 'line t))))
+;;    (if (= pri-value pri-current)
+;;        subtree-end
+;;      nil)))
+;;
+;;;; Function to skip subtrees with a STYLE property of "habit"
+;;(defun air-org-skip-subtree-if-habit ()
+;;  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
+;;  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+;;    (if (string= (org-entry-get nil "STYLE") "habit")
+;;        subtree-end
+;;      nil)))
+;;
+;;;; Define custom agenda views
+;;(setq org-agenda-custom-commands
+;;      '(("d" "Daily agenda and all TODOs"
+;;         ((tags "PRIORITY=\"A\""
+;;                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+;;                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
+;;          (agenda "" ((org-agenda-ndays 1)))
+;;          (alltodo ""
+;;                   ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
+;;                                                   (air-org-skip-subtree-if-priority ?A)
+;;                                                   (org-agenda-skip-if nil '(scheduled deadline))))
+;;                    (org-agenda-overriding-header "ALL normal priority tasks:"))))
+;;         ((org-agenda-compact-blocks nil))))) ;; Change to t if you want to remove the equal divisions
 
-;; Define agenda files
-(setq org-agenda-files (directory-files-recursively "~/GDrive_Personal/org/" "\\.org$"))
+;;;;----------------------------------------------------------------------------
+;;;; Org-journal
+;;;;----------------------------------------------------------------------------
+;;(use-package org-journal
+;;  :ensure t
+;;  :defer t
+;;  :init
+;;  ;; Change default prefix key; needs to be set before loading org-journal
+;;  (setq org-journal-prefix-key "C-c j ")
+;;  :config
+;;  (setq org-journal-dir "~/GDrive_Personal/org/journal/"
+;;        org-journal-date-format "%A, %d %B %Y"
+;;	org-journal-file-format "%Y-%m-%d.org"
+;;	org-journal-find-file 'find-file
+;;	org-journal-file-type 'weekly
+;;	org-journal-enable-agenda-integration 't)
+;;  :bind
+;;  (("C-c C-j" . org-journal-new-entry)
+;;   ("C-c C-s" . org-journal-search)))
+;;
+;;;;----------------------------------------------------------------------------
+;;;; Org-bullets
+;;;;----------------------------------------------------------------------------
+;;(use-package org-bullets
+;;  :ensure t
+;;  :hook
+;;  (org-mode . (lambda () (org-bullets-mode 1)))
+;;  :custom
+;;  (org-bullets-bullet-list '("◉" "○" "✸" "✿"))) ;; Customize bullet symbols as desired
 
-;; Automatically add time when a TODO is done
-(setq org-log-done 'time)
+;;;;----------------------------------------------------------------------------
+;;;; Additional Configurations
+;;;;----------------------------------------------------------------------------
+;;;; Set up Org Babel for code block execution
+;;(org-babel-do-load-languages
+;; 'org-babel-load-languages
+;; '((emacs-lisp . t)
+;;   (python . t)
+;;   (shell . t)
+;;   (sql . t)))
+;;
+;;;; Use `org-super-agenda` if installed for more advanced agenda views
+;;;; (use-package org-super-agenda
+;;;;   :ensure t
+;;;;   :config
+;;;;   (org-super-agenda-mode))
+;;
+;;;; Adjust Org mode appearance and behavior
+;;(setq org-hide-emphasis-markers t) ; Hide markup characters (e.g., *bold*)
+;;(setq org-startup-indented t)      ; Indent headings
+;;(setq org-ellipsis " ▾")           ; Customize ellipsis symbol
+;;
+;;;; Make sure flyspell mode is off in Org mode, as it can conflict with spell-checking
+;;(dolist (hook '(text-mode-hook))
+;;  (add-hook hook (lambda () (flyspell-mode -1))))
+;;
+;;;; Set up spell checking with Hunspell
+;;(setq-default ispell-program-name "/usr/local/bin/hunspell")
+;;(with-eval-after-load "ispell"
+;;  (setq ispell-really-hunspell t)
+;;  (setq ispell-dictionary "en_US")
+;;  (ispell-set-spellchecker-params)
+;;  (ispell-hunspell-add-multi-dic "en_US"))
+;;
+;;;; Define keybindings for Org mode
+;;(define-key global-map (kbd "C-c a") 'org-agenda) ; Use C-c a for org-agenda
 
-;; Define TODO states
-(setq org-todo-keywords
-      '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELLED")))
+;;;;----------------------------------------------------------------------------
+;;;; ESS (Emacs Speaks Statistics)
+;;;;----------------------------------------------------------------------------
+;;(use-package ess
+;;  :ensure t
+;;  :defer t
+;;  :init
+;;  (require 'ess-site)
+;;  ;; Configure hooks for ESS
+;;  (add-hook 'ess-r-mode-hook
+;;            (lambda () (flycheck-mode t)))
+;;  (add-hook 'ess-mode-hook
+;;            (lambda ()
+;;              (outline-minor-mode)
+;;              (setq outline-regexp "^#.*----")
+;;              (defun outline-level ()
+;;                (cond ((looking-at "^#.*----") 1)
+;;                      (t 1000)))
+;;              (defun send-section-to-R ()
+;;                (interactive)
+;;                (let ((beg))
+;;                  (if (outline-on-heading-p)
+;;                      (beginning-of-line)
+;;                    (outline-previous-visible-heading 1))
+;;                  (setq beg (point))
+;;                  (set-mark (point))
+;;                  (outline-next-visible-heading 1)
+;;                  (previous-line 1)
+;;                  (end-of-line 1)
+;;                  (ess-eval-region-or-function-or-paragraph-and-step)))
+;;              (local-set-key (kbd "C-c h") 'outline-hide-body)
+;;              (local-set-key (kbd "C-c s") 'outline-show-all)
+;;              (local-set-key (kbd "C-c <left>") 'outline-hide-entry)
+;;              (local-set-key (kbd "C-c <right>") 'outline-show-entry)
+;;              (local-set-key (kbd "C-c <up>") 'outline-previous-heading)
+;;              (local-set-key (kbd "C-c <down>") 'outline-next-heading)
+;;              (local-set-key (kbd "C-c e") 'send-section-to-R)))
+;;  :config
+;;  ;; Key bindings
+;;  (define-key ess-r-mode-map ";" #'ess-insert-assign)
+;;  (define-key inferior-ess-r-mode-map ";" #'ess-insert-assign)
+;;  (define-key company-active-map (kbd "M-h") 'company-show-doc-buffer)
+;;
+;;  ;; General settings
+;;  (setq ess-use-eldoc 'script-only)
+;;  (setq ess-history-directory "~/.cache")
+;;  (setq inferior-ess-r-program "R")
+;;  (setq ess-eval-visibly t)
+;;  (setq ess-use-flymake nil) ;; disable Flymake
+;;  (setq ess-use-auto-complete nil)
+;;  (setq ess-use-company t)
+;;  (setq ess-fancy-comments nil)
+;;
+;;  ;; Syntax highlighting settings
+;;  (setq ess-R-font-lock-keywords
+;;        '((ess-R-fl-keyword:keywords . t)
+;;          (ess-R-fl-keyword:constants . t)
+;;          (ess-R-fl-keyword:modifiers . t)
+;;          (ess-R-fl-keyword:fun-defs . t)
+;;          (ess-R-fl-keyword:assign-ops . t)
+;;          (ess-R-fl-keyword:%op% . t)
+;;          (ess-fl-keyword:fun-calls . t)
+;;          (ess-fl-keyword:numbers . t)
+;;          (ess-fl-keyword:operators . t)
+;;          (ess-fl-keyword:delimiters . t)
+;;          (ess-fl-keyword:= . t)
+;;          (ess-R-fl-keyword:F&T . t)))
+;;  (setq inferior-ess-r-font-lock-keywords
+;;        '((ess-S-fl-keyword:prompt . t)
+;;          (ess-R-fl-keyword:keywords . t)
+;;          (ess-R-fl-keyword:constants . t)
+;;          (ess-R-fl-keyword:modifiers . t)
+;;          (ess-R-fl-keyword:messages . t)
+;;          (ess-R-fl-keyword:fun-defs . t)
+;;          (ess-R-fl-keyword:assign-ops . t)
+;;          (ess-fl-keyword:matrix-labels . t)
+;;          (ess-fl-keyword:fun-calls . t)
+;;          (ess-fl-keyword:numbers . t)
+;;          (ess-fl-keyword:operators . t)
+;;          (ess-fl-keyword:delimiters . t)
+;;          (ess-fl-keyword:= . t)
+;;          (ess-R-fl-keyword:F&T . t)))
+;;
+;;  ;; Ensure locale is set
+;;  (unless (getenv "LC_ALL") (setenv "LC_ALL" "en_US.UTF-8"))
+;;
+;;  ;; Customize ESS behavior
+;;  (eval-after-load "ess-r-mode"
+;;    '(progn
+;;       (define-key ess-r-mode-map [(control return)] nil)
+;;       (define-key ess-r-mode-map [(shift return)]
+;;         'ess-eval-region-or-line-visibly-and-step)))
+;;
+;;  ;; Custom R pipe operator
+;;  (defun then_R_operator ()
+;;    "R - %>% operator or 'then' pipe operator"
+;;    (interactive)
+;;    (just-one-space 1)
+;;    (insert "%>%")
+;;    (reindent-then-newline-and-indent))
+;;  (define-key ess-mode-map (kbd "C->") 'then_R_operator)
+;;  (define-key inferior-ess-mode-map (kbd "C->") 'then_R_operator))
+;;
+;;;; ESS Configuration
+;;;;(kill-buffer "*ESS*") ;; Uncomment if you want to kill any existing ESS buffers on startup
+;;
+;;(defun then_R_operator ()
+;;  "Insert the R pipe operator '%>%', or the 'then' pipe operator.
+;;   Automatically adds a space before the operator and indents the line."
+;;  (interactive)
+;;  (just-one-space 1)
+;;  (insert "%>%")
+;;  (reindent-then-newline-and-indent))
+;;
+;;;; Bind 'then_R_operator' to 'C->' in ESS modes
+;;(define-key ess-mode-map (kbd "C->") 'then_R_operator)
+;;(define-key inferior-ess-mode-map (kbd "C->") 'then_R_operator)
+;;
+;;;; Optional configuration for electric-operator
+;;;; Uncomment to enable automatic spacing around operators
+;;;; (use-package electric-operator
+;;;;   :ensure t
+;;;;   :after ess
+;;;;   :hook ((ess-r-mode inferior-ess-r-mode) . electric-operator-mode)
+;;;;   :custom
+;;;;   (electric-operator-R-named-argument-style 'spaced)
+;;;;   (electric-operator-add-rules-for-mode 'ess-r-mode
+;;;;                                         (cons "*" nil)
+;;;;                                         (cons "in" nil)))
 
-;; Function to skip subtrees with specific priority
-(defun air-org-skip-subtree-if-priority (priority)
-  "Skip an agenda subtree if it has a priority of PRIORITY.
+;;;;----------------------------------------------------------------------------
+;;;; lsp-mode
+;;;;----------------------------------------------------------------------------
+;;(use-package lsp-mode
+;;  :ensure t
+;;  :hook (
+;;         ;; Enable LSP for ESS R mode and LaTeX mode
+;;         ((ess-r-mode LaTeX-mode) . lsp)
+;;         ;; Enable LSP which-key integration
+;;         (lsp-mode . lsp-enable-which-key-integration)
+;;         )
+;;  :commands lsp
+;;  :init
+;;  (setq lsp-keymap-prefix "C-c l"               ;; Keymap prefix for LSP commands
+;;        lsp-auto-guess-root nil                 ;; Do not auto-guess project root
+;;        lsp-eldoc-enable-hover t                ;; Enable hover documentation
+;;        lsp-enable-symbol-highlighting t        ;; Highlight symbols in the code
+;;        lsp-enable-snippet t                    ;; Enable snippet completion
+;;        lsp-file-watch-threshold nil            ;; No file watch threshold
+;;        lsp-idle-delay 0.5                      ;; Idle delay before triggering LSP
+;;        lsp-signature-render-documentation nil ;; Do not render documentation in signature help
+;;        lsp-diagnostics-provider 'flycheck      ;; Use Flycheck for diagnostics
+;;        lsp-prefer-flymake nil                  ;; Prefer Flycheck over Flymake
+;;        lsp-signature-auto-activate t           ;; Automatically activate signature help
+;;        lsp-completion-show-detail t            ;; Show details in completions
+;;        lsp-completion-show-kind nil            ;; Do not show completion kind
+;;        lsp-modeline-code-actions-enable nil    ;; Disable modeline code actions
+;;        lsp-lens-enable nil                     ;; Disable lens features
+;;        lsp-response-timeout 20                 ;; Set response timeout
+;;        lsp-headerline-breadcrumb-enable nil)   ;; Disable headerline breadcrumbs
+;;  ;; Adjust settings for macOS
+;;  (when (string= system-type "darwin")
+;;    (setq dired-use-ls-dired nil))
+;;  (when (boundp 'read-process-output-max)
+;;    (setq read-process-output-max (* 1024 1024))) ;; Increase process output max for Emacs 27+
+;;  (setq lsp-log-io nil)) ;; Disable LSP I/O logging to avoid performance issues
+;;
+;;(use-package lsp-ui
+;;  :ensure t
+;;  :init
+;;  (setq lsp-ui-doc-enable nil              ;; Disable documentation popup
+;;        lsp-ui-sideline-show-code-actions nil ;; Disable sideline code actions
+;;        lsp-ui-sideline-enable nil          ;; Disable sideline display
+;;        lsp-ui-doc-show-with-cursor nil     ;; Do not show documentation with cursor
+;;        lsp-ui-doc-show-with-mouse nil))    ;; Do not show documentation with mouse
 
-PRIORITY may be one of the characters ?A, ?B, or ?C."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-        (pri-value (* 1000 (- org-lowest-priority priority)))
-        (pri-current (org-get-priority (thing-at-point 'line t))))
-    (if (= pri-value pri-current)
-        subtree-end
-      nil)))
+;;;;----------------------------------------------------------------------------
+;;;; Markdown-mode
+;;;;----------------------------------------------------------------------------
+;;(use-package markdown-mode
+;;  :ensure t
+;;  :defer t
+;;  :mode (("\\.markdown\\'" . markdown-mode)
+;;         ("\\.md\\'" . markdown-mode))
+;;  :init
+;;  ;; Set the markdown command to use for converting markdown files
+;;  (setq markdown-command "markdown"))
 
-;; Function to skip subtrees with a STYLE property of "habit"
-(defun air-org-skip-subtree-if-habit ()
-  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-    (if (string= (org-entry-get nil "STYLE") "habit")
-        subtree-end
-      nil)))
+;;;;----------------------------------------------------------------------------
+;;;; Polymode - Poly R
+;;;;----------------------------------------------------------------------------
+;;(use-package poly-R
+;;  :ensure t
+;;  :defer t
+;;  :mode (("\\.Rnw\\'" . poly-noweb+r-mode)
+;;         ("\\.Rmd\\'" . poly-markdown+r-mode)
+;;         ("\\.Snw\\'" . poly-noweb+r-mode)
+;;         ("\\.rmd\\'" . poly-markdown+r-mode))
+;;  :config
+;;  ;; Wrap lines at column limit, but don't put hard returns in
+;;  (add-hook 'markdown-mode-hook (lambda () (visual-line-mode 1)))
+;;  ;; Enable Flyspell in markdown mode
+;;  (add-hook 'markdown-mode-hook (lambda () (flyspell-mode 1))))
 
-;; Define custom agenda views
-(setq org-agenda-custom-commands
-      '(("d" "Daily agenda and all TODOs"
-         ((tags "PRIORITY=\"A\""
-                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
-          (agenda "" ((org-agenda-ndays 1)))
-          (alltodo ""
-                   ((org-agenda-skip-function '(or (air-org-skip-subtree-if-habit)
-                                                   (air-org-skip-subtree-if-priority ?A)
-                                                   (org-agenda-skip-if nil '(scheduled deadline))))
-                    (org-agenda-overriding-header "ALL normal priority tasks:"))))
-         ((org-agenda-compact-blocks nil))))) ;; Change to t if you want to remove the equal divisions
+;;;;----------------------------------------------------------------------------
+;;;; Insert new chunk for Rmarkdown
+;;;;----------------------------------------------------------------------------
+;;(defun tws-insert-r-chunk (header)
+;;  "Insert an R chunk in markdown mode. Necessary due to interactions between Polymode and yasnippet."
+;;  (interactive "sHeader: ")
+;;  (insert (concat "```{r " header "}\n\n```"))
+;;  (forward-line -1))
+;;
+;;(global-set-key (kbd "C-c c") 'tws-insert-r-chunk)
 
-;;----------------------------------------------------------------------------
-;; Org-journal
-;;----------------------------------------------------------------------------
-(use-package org-journal
-  :ensure t
-  :defer t
-  :init
-  ;; Change default prefix key; needs to be set before loading org-journal
-  (setq org-journal-prefix-key "C-c j ")
-  :config
-  (setq org-journal-dir "~/GDrive_Personal/org/journal/"
-        org-journal-date-format "%A, %d %B %Y"
-	org-journal-file-format "%Y-%m-%d.org"
-	org-journal-find-file 'find-file
-	org-journal-file-type 'weekly
-	org-journal-enable-agenda-integration 't)
-  :bind
-  (("C-c C-j" . org-journal-new-entry)
-   ("C-c C-s" . org-journal-search)))
+;;;;----------------------------------------------------------------------------
+;;;; Polymode Exporter Output File Format
+;;;;----------------------------------------------------------------------------
+;;(defcustom polymode-exporter-output-file-format "%s"
+;;  "Format of the exported files.
+;;%s is substituted with the current file name sans extension."
+;;  :group 'polymode-export
+;;  :type 'string)
 
-;;----------------------------------------------------------------------------
-;; Org-bullets
-;;----------------------------------------------------------------------------
-(use-package org-bullets
-  :ensure t
-  :hook
-  (org-mode . (lambda () (org-bullets-mode 1)))
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "✸" "✿"))) ;; Customize bullet symbols as desired
+;;;;----------------------------------------------------------------------------
+;;;; Quarto Mode
+;;;;----------------------------------------------------------------------------
+;;(use-package quarto-mode
+;;  :ensure t
+;;  :defer t
+;;  :mode (("\\.qmd\\'" . quarto-mode)
+;;         ("\\.qmd\\'" . quarto-mode))  ;; Ensure qmd files open in quarto-mode
+;;  :hook
+;;  (quarto-mode . (lambda ()
+;;                   (setq-local compile-command "quarto render %f")))
+;;  :config
+;;  ;; Optional: Set up custom key bindings
+;;  (define-key quarto-mode-map (kbd "C-c C-r") 'quarto-render)
+;;  (define-key quarto-mode-map (kbd "C-c C-p") 'quarto-preview)
+;;  (define-key quarto-mode-map (kbd "C-c C-b") 'quarto-build)
+;;  (define-key quarto-mode-map (kbd "C-c C-c") 'quarto-compile)
+;;
+;;  ;; Optional: Customize the rendering process
+;;  (setq quarto-render-command "quarto render %s")
+;;
+;;  ;; Optional: Define how you want to preview documents
+;;  (setq quarto-preview-command "quarto preview %s"))
+;;
+;;;; Optionally, set up Quarto command line tool integration
+;;(when (executable-find "quarto")
+;;  (setq quarto-command "quarto"))
+;;
+;;;; Optionally, you might want to add Quarto directory to your exec path
+;;;; (add-to-list 'exec-path "/path/to/quarto")
 
-;;----------------------------------------------------------------------------
-;; Additional Configurations
-;;----------------------------------------------------------------------------
-;; Set up Org Babel for code block execution
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (python . t)
-   (shell . t)
-   (sql . t)))
-
-;; Use `org-super-agenda` if installed for more advanced agenda views
-;; (use-package org-super-agenda
-;;   :ensure t
-;;   :config
-;;   (org-super-agenda-mode))
-
-;; Adjust Org mode appearance and behavior
-(setq org-hide-emphasis-markers t) ; Hide markup characters (e.g., *bold*)
-(setq org-startup-indented t)      ; Indent headings
-(setq org-ellipsis " ▾")           ; Customize ellipsis symbol
-
-;; Make sure flyspell mode is off in Org mode, as it can conflict with spell-checking
-(dolist (hook '(text-mode-hook))
-  (add-hook hook (lambda () (flyspell-mode -1))))
-
-;; Set up spell checking with Hunspell
-(setq-default ispell-program-name "/usr/local/bin/hunspell")
-(with-eval-after-load "ispell"
-  (setq ispell-really-hunspell t)
-  (setq ispell-dictionary "en_US")
-  (ispell-set-spellchecker-params)
-  (ispell-hunspell-add-multi-dic "en_US"))
-
-;; Define keybindings for Org mode
-(define-key global-map (kbd "C-c a") 'org-agenda) ; Use C-c a for org-agenda
-
-;;----------------------------------------------------------------------------
-;; ESS (Emacs Speaks Statistics)
-;;----------------------------------------------------------------------------
-(use-package ess
-  :ensure t
-  :defer t
-  :init
-  (require 'ess-site)
-  ;; Configure hooks for ESS
-  (add-hook 'ess-r-mode-hook
-            (lambda () (flycheck-mode t)))
-  (add-hook 'ess-mode-hook
-            (lambda ()
-              (outline-minor-mode)
-              (setq outline-regexp "^#.*----")
-              (defun outline-level ()
-                (cond ((looking-at "^#.*----") 1)
-                      (t 1000)))
-              (defun send-section-to-R ()
-                (interactive)
-                (let ((beg))
-                  (if (outline-on-heading-p)
-                      (beginning-of-line)
-                    (outline-previous-visible-heading 1))
-                  (setq beg (point))
-                  (set-mark (point))
-                  (outline-next-visible-heading 1)
-                  (previous-line 1)
-                  (end-of-line 1)
-                  (ess-eval-region-or-function-or-paragraph-and-step)))
-              (local-set-key (kbd "C-c h") 'outline-hide-body)
-              (local-set-key (kbd "C-c s") 'outline-show-all)
-              (local-set-key (kbd "C-c <left>") 'outline-hide-entry)
-              (local-set-key (kbd "C-c <right>") 'outline-show-entry)
-              (local-set-key (kbd "C-c <up>") 'outline-previous-heading)
-              (local-set-key (kbd "C-c <down>") 'outline-next-heading)
-              (local-set-key (kbd "C-c e") 'send-section-to-R)))
-  :config
-  ;; Key bindings
-  (define-key ess-r-mode-map ";" #'ess-insert-assign)
-  (define-key inferior-ess-r-mode-map ";" #'ess-insert-assign)
-  (define-key company-active-map (kbd "M-h") 'company-show-doc-buffer)
-
-  ;; General settings
-  (setq ess-use-eldoc 'script-only)
-  (setq ess-history-directory "~/.cache")
-  (setq inferior-ess-r-program "R")
-  (setq ess-eval-visibly t)
-  (setq ess-use-flymake nil) ;; disable Flymake
-  (setq ess-use-auto-complete nil)
-  (setq ess-use-company t)
-  (setq ess-fancy-comments nil)
-
-  ;; Syntax highlighting settings
-  (setq ess-R-font-lock-keywords
-        '((ess-R-fl-keyword:keywords . t)
-          (ess-R-fl-keyword:constants . t)
-          (ess-R-fl-keyword:modifiers . t)
-          (ess-R-fl-keyword:fun-defs . t)
-          (ess-R-fl-keyword:assign-ops . t)
-          (ess-R-fl-keyword:%op% . t)
-          (ess-fl-keyword:fun-calls . t)
-          (ess-fl-keyword:numbers . t)
-          (ess-fl-keyword:operators . t)
-          (ess-fl-keyword:delimiters . t)
-          (ess-fl-keyword:= . t)
-          (ess-R-fl-keyword:F&T . t)))
-  (setq inferior-ess-r-font-lock-keywords
-        '((ess-S-fl-keyword:prompt . t)
-          (ess-R-fl-keyword:keywords . t)
-          (ess-R-fl-keyword:constants . t)
-          (ess-R-fl-keyword:modifiers . t)
-          (ess-R-fl-keyword:messages . t)
-          (ess-R-fl-keyword:fun-defs . t)
-          (ess-R-fl-keyword:assign-ops . t)
-          (ess-fl-keyword:matrix-labels . t)
-          (ess-fl-keyword:fun-calls . t)
-          (ess-fl-keyword:numbers . t)
-          (ess-fl-keyword:operators . t)
-          (ess-fl-keyword:delimiters . t)
-          (ess-fl-keyword:= . t)
-          (ess-R-fl-keyword:F&T . t)))
-
-  ;; Ensure locale is set
-  (unless (getenv "LC_ALL") (setenv "LC_ALL" "en_US.UTF-8"))
-
-  ;; Customize ESS behavior
-  (eval-after-load "ess-r-mode"
-    '(progn
-       (define-key ess-r-mode-map [(control return)] nil)
-       (define-key ess-r-mode-map [(shift return)]
-         'ess-eval-region-or-line-visibly-and-step)))
-
-  ;; Custom R pipe operator
-  (defun then_R_operator ()
-    "R - %>% operator or 'then' pipe operator"
-    (interactive)
-    (just-one-space 1)
-    (insert "%>%")
-    (reindent-then-newline-and-indent))
-  (define-key ess-mode-map (kbd "C->") 'then_R_operator)
-  (define-key inferior-ess-mode-map (kbd "C->") 'then_R_operator))
-
-;; ESS Configuration
-;;(kill-buffer "*ESS*") ;; Uncomment if you want to kill any existing ESS buffers on startup
-
-(defun then_R_operator ()
-  "Insert the R pipe operator '%>%', or the 'then' pipe operator.
-   Automatically adds a space before the operator and indents the line."
-  (interactive)
-  (just-one-space 1)
-  (insert "%>%")
-  (reindent-then-newline-and-indent))
-
-;; Bind 'then_R_operator' to 'C->' in ESS modes
-(define-key ess-mode-map (kbd "C->") 'then_R_operator)
-(define-key inferior-ess-mode-map (kbd "C->") 'then_R_operator)
-
-;; Optional configuration for electric-operator
-;; Uncomment to enable automatic spacing around operators
-;; (use-package electric-operator
-;;   :ensure t
-;;   :after ess
-;;   :hook ((ess-r-mode inferior-ess-r-mode) . electric-operator-mode)
-;;   :custom
-;;   (electric-operator-R-named-argument-style 'spaced)
-;;   (electric-operator-add-rules-for-mode 'ess-r-mode
-;;                                         (cons "*" nil)
-;;                                         (cons "in" nil)))
-
-;;----------------------------------------------------------------------------
-;; lsp-mode
-;;----------------------------------------------------------------------------
-(use-package lsp-mode
-  :ensure t
-  :hook (
-         ;; Enable LSP for ESS R mode and LaTeX mode
-         ((ess-r-mode LaTeX-mode) . lsp)
-         ;; Enable LSP which-key integration
-         (lsp-mode . lsp-enable-which-key-integration)
-         )
-  :commands lsp
-  :init
-  (setq lsp-keymap-prefix "C-c l"               ;; Keymap prefix for LSP commands
-        lsp-auto-guess-root nil                 ;; Do not auto-guess project root
-        lsp-eldoc-enable-hover t                ;; Enable hover documentation
-        lsp-enable-symbol-highlighting t        ;; Highlight symbols in the code
-        lsp-enable-snippet t                    ;; Enable snippet completion
-        lsp-file-watch-threshold nil            ;; No file watch threshold
-        lsp-idle-delay 0.5                      ;; Idle delay before triggering LSP
-        lsp-signature-render-documentation nil ;; Do not render documentation in signature help
-        lsp-diagnostics-provider 'flycheck      ;; Use Flycheck for diagnostics
-        lsp-prefer-flymake nil                  ;; Prefer Flycheck over Flymake
-        lsp-signature-auto-activate t           ;; Automatically activate signature help
-        lsp-completion-show-detail t            ;; Show details in completions
-        lsp-completion-show-kind nil            ;; Do not show completion kind
-        lsp-modeline-code-actions-enable nil    ;; Disable modeline code actions
-        lsp-lens-enable nil                     ;; Disable lens features
-        lsp-response-timeout 20                 ;; Set response timeout
-        lsp-headerline-breadcrumb-enable nil)   ;; Disable headerline breadcrumbs
-  ;; Adjust settings for macOS
-  (when (string= system-type "darwin")
-    (setq dired-use-ls-dired nil))
-  (when (boundp 'read-process-output-max)
-    (setq read-process-output-max (* 1024 1024))) ;; Increase process output max for Emacs 27+
-  (setq lsp-log-io nil)) ;; Disable LSP I/O logging to avoid performance issues
-
-(use-package lsp-ui
-  :ensure t
-  :init
-  (setq lsp-ui-doc-enable nil              ;; Disable documentation popup
-        lsp-ui-sideline-show-code-actions nil ;; Disable sideline code actions
-        lsp-ui-sideline-enable nil          ;; Disable sideline display
-        lsp-ui-doc-show-with-cursor nil     ;; Do not show documentation with cursor
-        lsp-ui-doc-show-with-mouse nil))    ;; Do not show documentation with mouse
-
-;;----------------------------------------------------------------------------
-;; Markdown-mode
-;;----------------------------------------------------------------------------
-(use-package markdown-mode
-  :ensure t
-  :defer t
-  :mode (("\\.markdown\\'" . markdown-mode)
-         ("\\.md\\'" . markdown-mode))
-  :init
-  ;; Set the markdown command to use for converting markdown files
-  (setq markdown-command "markdown"))
-
-;;----------------------------------------------------------------------------
-;; Polymode - Poly R
-;;----------------------------------------------------------------------------
-(use-package poly-R
-  :ensure t
-  :defer t
-  :mode (("\\.Rnw\\'" . poly-noweb+r-mode)
-         ("\\.Rmd\\'" . poly-markdown+r-mode)
-         ("\\.Snw\\'" . poly-noweb+r-mode)
-         ("\\.rmd\\'" . poly-markdown+r-mode))
-  :config
-  ;; Wrap lines at column limit, but don't put hard returns in
-  (add-hook 'markdown-mode-hook (lambda () (visual-line-mode 1)))
-  ;; Enable Flyspell in markdown mode
-  (add-hook 'markdown-mode-hook (lambda () (flyspell-mode 1))))
-
-;;----------------------------------------------------------------------------
-;; Insert new chunk for Rmarkdown
-;;----------------------------------------------------------------------------
-(defun tws-insert-r-chunk (header)
-  "Insert an R chunk in markdown mode. Necessary due to interactions between Polymode and yasnippet."
-  (interactive "sHeader: ")
-  (insert (concat "```{r " header "}\n\n```"))
-  (forward-line -1))
-
-(global-set-key (kbd "C-c c") 'tws-insert-r-chunk)
-
-;;----------------------------------------------------------------------------
-;; Polymode Exporter Output File Format
-;;----------------------------------------------------------------------------
-(defcustom polymode-exporter-output-file-format "%s"
-  "Format of the exported files.
-%s is substituted with the current file name sans extension."
-  :group 'polymode-export
-  :type 'string)
-
-;;----------------------------------------------------------------------------
-;; Quarto Mode
-;;----------------------------------------------------------------------------
-(use-package quarto-mode
-  :ensure t
-  :defer t
-  :mode (("\\.qmd\\'" . quarto-mode)
-         ("\\.qmd\\'" . quarto-mode))  ;; Ensure qmd files open in quarto-mode
-  :hook
-  (quarto-mode . (lambda ()
-                   (setq-local compile-command "quarto render %f")))
-  :config
-  ;; Optional: Set up custom key bindings
-  (define-key quarto-mode-map (kbd "C-c C-r") 'quarto-render)
-  (define-key quarto-mode-map (kbd "C-c C-p") 'quarto-preview)
-  (define-key quarto-mode-map (kbd "C-c C-b") 'quarto-build)
-  (define-key quarto-mode-map (kbd "C-c C-c") 'quarto-compile)
-
-  ;; Optional: Customize the rendering process
-  (setq quarto-render-command "quarto render %s")
-
-  ;; Optional: Define how you want to preview documents
-  (setq quarto-preview-command "quarto preview %s"))
-
-;; Optionally, set up Quarto command line tool integration
-(when (executable-find "quarto")
-  (setq quarto-command "quarto"))
-
-;; Optionally, you might want to add Quarto directory to your exec path
-;; (add-to-list 'exec-path "/path/to/quarto")
-
-;;----------------------------------------------------------------------------
-;; Stan Mode
-;;----------------------------------------------------------------------------
-(use-package stan-mode
-  :ensure t
-  ;; Uncomment if directly loading from your development repo
-  ;; :load-path "your-path/stan-mode/stan-mode"
-  :mode ("\\.stan\\'" . stan-mode)
-  :hook (stan-mode . stan-mode-setup)
-  :config
-  ;; Set the indentation offset for Stan code
-  (setq stan-indentation-offset 2))
-
-;;----------------------------------------------------------------------------
-;; Company-Stan
-;;----------------------------------------------------------------------------
-(use-package company-stan
-  :ensure t
-  ;; Uncomment if directly loading from your development repo
-  ;; :load-path "your-path/stan-mode/company-stan/"
-  :hook (stan-mode . company-stan-setup)
-  :config
-  ;; Whether to use fuzzy matching in company-stan
-  (setq company-stan-fuzzy nil))
-
-;;----------------------------------------------------------------------------
-;; Flycheck-Stan
-;;----------------------------------------------------------------------------
-(use-package flycheck-stan
-  :ensure t
-  :hook ((stan-mode . flycheck-stan-stanc2-setup)
-         (stan-mode . flycheck-stan-stanc3-setup))
-  :config
-  ;; Path to the `stanc2` executable, defaults to `stanc2` if nil
-  (setq flycheck-stanc-executable nil)
-  ;; Path to the `stanc3` executable, defaults to `stanc3` if nil
-  (setq flycheck-stanc3-executable nil))
+;;;;----------------------------------------------------------------------------
+;;;; Stan Mode
+;;;;----------------------------------------------------------------------------
+;;(use-package stan-mode
+;;  :ensure t
+;;  ;; Uncomment if directly loading from your development repo
+;;  ;; :load-path "your-path/stan-mode/stan-mode"
+;;  :mode ("\\.stan\\'" . stan-mode)
+;;  :hook (stan-mode . stan-mode-setup)
+;;  :config
+;;  ;; Set the indentation offset for Stan code
+;;  (setq stan-indentation-offset 2))
+;;
+;;;;----------------------------------------------------------------------------
+;;;; Company-Stan
+;;;;----------------------------------------------------------------------------
+;;(use-package company-stan
+;;  :ensure t
+;;  ;; Uncomment if directly loading from your development repo
+;;  ;; :load-path "your-path/stan-mode/company-stan/"
+;;  :hook (stan-mode . company-stan-setup)
+;;  :config
+;;  ;; Whether to use fuzzy matching in company-stan
+;;  (setq company-stan-fuzzy nil))
+;;
+;;;;----------------------------------------------------------------------------
+;;;; Flycheck-Stan
+;;;;----------------------------------------------------------------------------
+;;(use-package flycheck-stan
+;;  :ensure t
+;;  :hook ((stan-mode . flycheck-stan-stanc2-setup)
+;;         (stan-mode . flycheck-stan-stanc3-setup))
+;;  :config
+;;  ;; Path to the `stanc2` executable, defaults to `stanc2` if nil
+;;  (setq flycheck-stanc-executable nil)
+;;  ;; Path to the `stanc3` executable, defaults to `stanc3` if nil
+;;  (setq flycheck-stanc3-executable nil))
 
 ;;----------------------------------------------------------------------------
 ;;----------------------------------------------------------------------------
