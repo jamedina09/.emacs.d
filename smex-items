@@ -1,16 +1,19 @@
 
 ;; ----- smex-history -----
 (
+ describe-variable
+ imenu
+ run-python
+ kill-emacs
  cd
  5x5
  arp
- dbx
- dig
- erc
- ert
 )
 
 ;; ----- smex-data -----
 (
- 
+ (kill-emacs . 3)
+ (run-python . 1)
+ (imenu . 1)
+ (describe-variable . 2)
 )
