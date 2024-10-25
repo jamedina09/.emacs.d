@@ -200,16 +200,16 @@
 ;; (setq auto-save-default t
 ;;      auto-save-file-name-transforms `((".*" ,my-backup-dir t)))
 
-;;----------------------------------------------------------------------------
-;; Time-stamp
-;;----------------------------------------------------------------------------
-;; When there is a "Time-stamp: <>" in the first 10 lines of the file,
-;; Emacs will write time-stamp information there when saving the file.
-(setq time-stamp-active t              ;; Enable time-stamp updating
-      time-stamp-line-limit 10         ;; Check the first 10 lines for Time-stamp: <>
-      time-stamp-format "Last changed %Y-%02m-%02d %02H:%02M:%02S by %L") ;; Date format
+;; ;;----------------------------------------------------------------------------
+;; ;; Time-stamp
+;; ;;----------------------------------------------------------------------------
+;; ;; When there is a "Time-stamp: <>" in the first 10 lines of the file,
+;; ;; Emacs will write time-stamp information there when saving the file.
+;; (setq time-stamp-active t              ;; Enable time-stamp updating
+;;       time-stamp-line-limit 10         ;; Check the first 10 lines for Time-stamp: <>
+;;       time-stamp-format "Last changed %Y-%02m-%02d %02H:%02M:%02S by %L") ;; Date format
 
-(add-hook 'write-file-functions 'time-stamp) ;; Update the time-stamp before saving
+;; (add-hook 'write-file-functions 'time-stamp) ;; Update the time-stamp before saving
 
 ;;----------------------------------------------------------------------------
 ;; Use ibuffer instead of normal buffer list
@@ -431,17 +431,17 @@
 ;; simultaneously, you can try setting the following variable
 ;; (setq inhibit-compacting-font-caches t)
 
-;;----------------------------------------------------------------------------
-;; Projectile
-;;----------------------------------------------------------------------------
-(use-package projectile
-  :ensure t
-  :init
-  (projectile-mode +1)
-  :bind (:map projectile-mode-map
-              ("C-c p" . projectile-command-map))
-  :config
-  (setq projectile-sort-order 'recently-active))
+;; ;;----------------------------------------------------------------------------
+;; ;; Projectile
+;; ;;----------------------------------------------------------------------------
+;; (use-package projectile
+;;   :ensure t
+;;   :init
+;;   (projectile-mode +1)
+;;   :bind (:map projectile-mode-map
+;;               ("C-c p" . projectile-command-map))
+;;   :config
+;;   (setq projectile-sort-order 'recently-active))
 
 ;;----------------------------------------------------------------------------
 ;; Dimmer
@@ -526,18 +526,18 @@
   :bind (("C-s" . swiper)
          ("C-r" . swiper)))
 
-;;----------------------------------------------------------------------------
-;; Counsel projectile
-;;----------------------------------------------------------------------------
-;; Install and configure Counsel Projectile
-(use-package counsel-projectile
-  :ensure t
-  :after (counsel projectile) ; Ensure counsel and projectile are loaded first
-  :config
-  (counsel-projectile-mode)) ; Enable counsel-projectile integration
+;; ;;----------------------------------------------------------------------------
+;; ;; Counsel projectile
+;; ;;----------------------------------------------------------------------------
+;; ;; Install and configure Counsel Projectile
+;; (use-package counsel-projectile
+;;   :ensure t
+;;   :after (counsel projectile) ; Ensure counsel and projectile are loaded first
+;;   :config
+;;   (counsel-projectile-mode)) ; Enable counsel-projectile integration
 
-;; Bind `C-c p p` to `projectile-switch-project`
-(bind-key "C-c p p" 'projectile-switch-project projectile-mode-map)
+;; ;; Bind `C-c p p` to `projectile-switch-project`
+;; (bind-key "C-c p p" 'projectile-switch-project projectile-mode-map)
 
 ;;----------------------------------------------------------------------------
 ;; all the icons
@@ -834,19 +834,19 @@
      ;; Add more depth faces as needed
     )))
 
-;;----------------------------------------------------------------------------
-;; Rainbow mode
-;;----------------------------------------------------------------------------
-;; Show Hex Color Codes
-(use-package rainbow-mode
-  :ensure t
-  :commands rainbow-mode
-  :hook (
-	 (prog-mode . rainbow-mode)
-	 (css-mode . rainbow-mode)
-	 (html-mode . rainbow-mode))
-  :custom
-  (rainbow-mode t))
+;; ;;----------------------------------------------------------------------------
+;; ;; Rainbow mode
+;; ;;----------------------------------------------------------------------------
+;; ;; Show Hex Color Codes
+;; (use-package rainbow-mode
+;;   :ensure t
+;;   :commands rainbow-mode
+;;   :hook (
+;; 	 (prog-mode . rainbow-mode)
+;; 	 (css-mode . rainbow-mode)
+;; 	 (html-mode . rainbow-mode))
+;;   :custom
+;;   (rainbow-mode t))
 
 ;;----------------------------------------------------------------------------
 ;; Highlight-Indentation
