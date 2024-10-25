@@ -88,7 +88,7 @@
 ;; Disable unnecessary UI elements
 (menu-bar-mode -1)         ;; Disable menu bar
 (tool-bar-mode -1)         ;; Disable tool bar
-(set-scroll-bar-mode nil)  ;; Disable scroll bar
+;; (set-scroll-bar-mode nil)  ;; Disable scroll bar
 
 ;; Set UTF-8 as the default encoding system
 (set-selection-coding-system 'utf-8)
@@ -129,7 +129,7 @@
 (setq-default frame-title-format '("" user-login-name "@" system-name " - %b"))
 
 ;; Make the fringe narrower
-(fringe-mode 1)
+;; (fringe-mode 1)
 
 ;; Automatically trim trailing whitespace before saving
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -293,16 +293,16 @@
 ;;  (setq dashboard-page-separator "\n\f\n")
 ;;  )
 
-;;----------------------------------------------------------------------------
-;; Page break lines
-;;----------------------------------------------------------------------------
-(use-package page-break-lines
-  :ensure t
-  :config
-  (setq global-page-break-lines-mode t)
-  (set-fontset-font "fontset-default"
-                    (cons page-break-lines-char page-break-lines-char)
-                    (face-attribute 'default :family)))
+;;;;----------------------------------------------------------------------------
+;;;; Page break lines
+;;;;----------------------------------------------------------------------------
+;;(use-package page-break-lines
+;;  :ensure t
+;;  :config
+;;  (setq global-page-break-lines-mode t)
+;;  (set-fontset-font "fontset-default"
+;;                    (cons page-break-lines-char page-break-lines-char)
+;;                    (face-attribute 'default :family)))
 
 ;; (custom-set-faces
 ;;  '(page-break-lines
