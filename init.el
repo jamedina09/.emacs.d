@@ -1302,24 +1302,5 @@
 ;;----------------------------------------------------------------------------
 
 (provide 'init) ;; Optional: Provides the 'init' feature
-
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages '(smex doom-themes)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(beacon ((t (:background "#ff5555" :foreground "#ffffff"))))
- '(diff-hl-change ((t (:background "light blue" :foreground "blue"))))
- '(diff-hl-delete ((t (:background "light coral" :foreground "red"))))
- '(diff-hl-insert ((t (:background "light green" :foreground "green"))))
- '(rainbow-delimiters-depth-1-face ((t (:foreground "#ff5555"))))
- '(rainbow-delimiters-depth-2-face ((t (:foreground "#50fa7b"))))
- '(rainbow-delimiters-depth-3-face ((t (:foreground "#ffb86c"))))
- '(rainbow-delimiters-depth-4-face ((t (:foreground "#ff79c6")))))
+
