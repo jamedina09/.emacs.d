@@ -1303,4 +1303,3 @@
 
 (provide 'init) ;; Optional: Provides the 'init' feature
 ;;; init.el ends here
-
